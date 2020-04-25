@@ -1,6 +1,5 @@
 from stanfordcorenlp import StanfordCoreNLP
 import logging
-import stanfordnlp
 from string import punctuation
 
 # nlp = StanfordCoreNLP('stanford-corenlp-full-2020-04-20/', lang='zh', logging_level=logging.INFO)
