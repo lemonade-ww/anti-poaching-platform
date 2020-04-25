@@ -165,4 +165,4 @@ def main(file, keyword, get_location=False, get_info=False, get_name_all_occurre
 
 
 if __name__ == '__main__':
-    main('/Users/henry3510/3.txt', '被告人', True, True, True)
+    main('./files/3.txt', '被告人', True, True, True)
