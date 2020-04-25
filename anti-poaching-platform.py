@@ -17,11 +17,11 @@ def getName(data, keyword):
     nameDict = {}
 
     for line in data:
-        location = line.find(keyword)
-        if location == -1:
+        keyword_location = line.find(keyword)
+        if keyword_location == -1:
             continue
 
-        checkRange = line[location:len(line)]
+        checkRange = line[keyword_location:len(line)].replace('）','') # just in case
 
         # try to match names from previous results
         '''for possibleName in nameList:
@@ -33,8 +33,6 @@ def getName(data, keyword):
         if nerResult[1][1] == 'PERSON':  # nerResult[0] is keyword
 
             name = nerResult[1][0]
-
-            #print('FOUND NAME: ' + name + ' IN: ' + line)
 
             if not nameDict.__contains__(name):
                 nameDict[name] = 1
@@ -64,8 +62,7 @@ def getInfo(data, name):
                         info['race'] = i[0]
                         break
 
-            splited_text = line.split('。')[0].split('，')
-            #education_level_tags = ['文化', '文盲']
+            splited_text = line.split('。')[0].split('，')  # may not work
 
             for i in splited_text:
                 if '生' in i:
@@ -131,8 +128,27 @@ def getLocation(data):
 
     return (None, None, isDetected)
 
+def getSentence(data):
+    sentence = []
+    data_reversed = list(reversed(data))
+    number = 0
 
-def main(file, keyword, get_location=False, get_info=False, get_name_all_occurrences=False):
+    for number in range(0, len(data_reversed)):
+        if data_reversed[number][len(data_reversed[number])-5:] == '判决如下：':
+            print(data_reversed[number])
+            print(number)
+            break
+    
+    for i in range(number-1, 0-1, -1):
+        text = data_reversed[i]
+        nerResult = nlp.ner(text)
+        if nerResult[0][1] != 'NUMBER' and text[0] != '（':
+            break
+        sentence.append(data_reversed[i])
+    
+    return sentence
+
+def main(file, keyword, get_location=False, get_info=False, get_name_all_occurrences=False, get_sentence=False, vaild_person_only=False):
     global full_text
 
     with open(file, 'r') as file:
@@ -161,8 +177,15 @@ def main(file, keyword, get_location=False, get_info=False, get_name_all_occurre
             if person_info['is_valid_person']:
                 print(person_info)
             else:
-                print('MAY NOT BE A VALID PERSON: ', person_info)
+                if not vaild_person_only:
+                    print('MAY NOT BE A VALID PERSON: ', person_info)
+    if get_sentence:
+        sentence = getSentence(data)
+        print('SENTENCE:')
+        for i in sentence:
+            print(i)
 
 
 if __name__ == '__main__':
-    main('./files/3.txt', '被告人', True, True, True)
+    main('./files/6.txt', '被告人', get_location=True,
+         get_info=True, get_sentence=True, vaild_person_only=False)
