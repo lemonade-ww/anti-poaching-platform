@@ -36,8 +36,10 @@ def getName(data, keyword):
 
 
 def getInfo(data, name):
-    info = {'name': name, 'birth': None, 'race': None,
+    info = {'name': name, 'gender': None, 'birth': None, 'race': None,
             'education_level': None, 'is_valid_person': True}
+    
+    gender = ['男','女']
     splited_text = []
 
     for line in data:
@@ -56,8 +58,18 @@ def getInfo(data, name):
 
             splited_text = line.split('。')[0].split('，')  # may not work
 
+            gender_found = False
+            birth_found = False
+            education_level_found = False
             for i in splited_text:
-                if '生' in i:
+                if gender_found and birth_found and education_level_found:
+                    break
+
+                if i in gender:
+                    info['gender'] = i
+                    gender_found = True
+
+                if '生' in i and not birth_found:
                     nerResult = nlp.ner(i)
                     birth = ''
                     for j in nerResult:
@@ -66,12 +78,11 @@ def getInfo(data, name):
 
                     if birth:
                         info['birth'] = birth
-                        break
+                        birth_found = True
 
-            for i in splited_text:
-                if '文化' in i or '文盲' in i:
+                if '文化' in i or '文盲' in i and not education_level_found:
                     info['education_level'] = i
-                    break
+                    education_level_found = True
 
             break
 
@@ -182,5 +193,5 @@ if __name__ == '__main__':
     nlp = StanfordCoreNLP('http://localhost', lang='zh', port=9000)
     #nlp = StanfordCoreNLP('../../stanford-corenlp-full-2020-04-20/', lang='zh', logging_level=logging.INFO, port=9000)
 
-    main('./files/9.txt', '被告人', get_location=True,
+    main('./files/3.txt', '被告人', get_location=True,
          get_info=True, get_sentence=True, vaild_person_only=False)
