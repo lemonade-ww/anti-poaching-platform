@@ -1,15 +1,8 @@
 from stanfordcorenlp import StanfordCoreNLP
 import logging
-from string import punctuation
 
-# nlp = StanfordCoreNLP('stanford-corenlp-full-2020-04-20/', lang='zh', logging_level=logging.INFO)
-nlp = StanfordCoreNLP('http://localhost', lang='zh', port=9000)
-
-punc = '，。、【 】 “”：；（）《》‘’「」？！⑦()、%^>℃：.”“^-——=&#@￥' + punctuation
 full_text = ''
 data = []
-#nameList = []
-
 
 def getName(data, keyword):
     name = None
@@ -118,7 +111,7 @@ def getLocation(data):
             isDetected = False
 
             from string import punctuation
-            punc = '，。、【 】 “”：；（）《》‘’「」？！⑦()、%^>℃：.”“^-——=&#@￥' + punctuation
+            punc = '，。、【 】 “”：；（）《》‘’「」？！()、%^>℃：.”“^-——=&#@￥' + punctuation
 
             location = line[line.find(
                 place) + len(place):len(line)].strip(punc)
@@ -134,14 +127,12 @@ def getSentence(data):
 
     for number in range(0, len(data_reversed)):
         if data_reversed[number][len(data_reversed[number])-5:] == '判决如下：':
-            print(data_reversed[number])
-            print(number)
             break
     
     for i in range(number-1, 0-1, -1):
         text = data_reversed[i]
         nerResult = nlp.ner(text)
-        if nerResult[0][1] != 'NUMBER' and text[0] != '（':
+        if nerResult[0][1] != 'NUMBER' and text[0] != '（' and text[0:2] != '被告人':
             break
         sentence.append(data_reversed[i])
     
@@ -150,8 +141,8 @@ def getSentence(data):
 def main(file, keyword, get_location=False, get_info=False, get_name_all_occurrences=False, get_sentence=False, vaild_person_only=False):
     global full_text
 
-    with open(file, 'r') as file:
-        for line in file.readlines():
+    with open(file, 'r') as doc:
+        for line in doc.readlines():
             if line.strip():
                 full_text += line
                 data.append(line.strip())
@@ -178,6 +169,7 @@ def main(file, keyword, get_location=False, get_info=False, get_name_all_occurre
             else:
                 if not vaild_person_only:
                     print('MAY NOT BE A VALID PERSON: ', person_info)
+                    
     if get_sentence:
         sentence = getSentence(data)
         print('SENTENCE:')
@@ -186,5 +178,9 @@ def main(file, keyword, get_location=False, get_info=False, get_name_all_occurre
 
 
 if __name__ == '__main__':
-    main('./files/6.txt', '被告人', get_location=True,
+
+    nlp = StanfordCoreNLP('http://localhost', lang='zh', port=9000)
+    #nlp = StanfordCoreNLP('../../stanford-corenlp-full-2020-04-20/', lang='zh', logging_level=logging.INFO, port=9000)
+
+    main('./files/9.txt', '被告人', get_location=True,
          get_info=True, get_sentence=True, vaild_person_only=False)
