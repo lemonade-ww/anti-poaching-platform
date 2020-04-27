@@ -4,6 +4,7 @@ import logging
 full_text = ''
 data = []
 
+
 def getName(data, keyword):
     name = None
     nameDict = {}
@@ -13,7 +14,8 @@ def getName(data, keyword):
         if keyword_location == -1:
             continue
 
-        checkRange = line[keyword_location:len(line)].replace('）','') # just in case
+        checkRange = line[keyword_location:len(
+            line)].replace('）', '')  # just in case
 
         # try to match names from previous results
         '''for possibleName in nameList:
@@ -38,8 +40,8 @@ def getName(data, keyword):
 def getInfo(data, name):
     info = {'name': name, 'gender': None, 'birth': None, 'race': None,
             'education_level': None, 'is_valid_person': True}
-    
-    gender = ['男','女']
+
+    gender = ['男', '女']
     splited_text = []
 
     for line in data:
@@ -56,7 +58,7 @@ def getInfo(data, name):
                         info['race'] = i[0]
                         break
 
-            splited_text = line.split('。')[0].split('，')  # may not work
+            splited_text = line.split('。')[0].split('，')
 
             gender_found = False
             birth_found = False
@@ -131,6 +133,7 @@ def getLocation(data):
 
     return (None, None, isDetected)
 
+
 def getSentence(data):
     sentence = []
     data_reversed = list(reversed(data))
@@ -139,17 +142,34 @@ def getSentence(data):
     for number in range(0, len(data_reversed)):
         if data_reversed[number][len(data_reversed[number])-5:] == '判决如下：':
             break
-    
+
     for i in range(number-1, 0-1, -1):
         text = data_reversed[i]
         nerResult = nlp.ner(text)
         if nerResult[0][1] != 'NUMBER' and text[0] != '（' and text[0:2] != '被告人':
             break
         sentence.append(data_reversed[i])
-    
+
     return sentence
 
-def main(file, keyword, get_location=False, get_info=False, get_name_all_occurrences=False, get_sentence=False, vaild_person_only=False):
+
+def getSpeciesInfo(text):
+
+    appeared_species = {}
+
+    from ast import literal_eval
+
+    with open('result.txt', 'r') as file:
+        data = literal_eval(file.read())
+
+    for species in data.keys():
+        if species in text:
+            appeared_species[species] = data[species]
+
+    return appeared_species
+
+
+def main(file, keyword, get_location=False, get_info=False, get_name_all_occurrences=False, get_sentence=False, get_species_info=False, vaild_person_only=False):
     global full_text
 
     with open(file, 'r') as doc:
@@ -180,18 +200,38 @@ def main(file, keyword, get_location=False, get_info=False, get_name_all_occurre
             else:
                 if not vaild_person_only:
                     print('MAY NOT BE A VALID PERSON: ', person_info)
-                    
+
     if get_sentence:
         sentence = getSentence(data)
         print('SENTENCE:')
         for i in sentence:
             print(i)
 
+    if get_species_info:
+        species_info = getSpeciesInfo(full_text)
+        print(species_info)
+
 
 if __name__ == '__main__':
 
-    nlp = StanfordCoreNLP('http://localhost', lang='zh', port=9000)
-    #nlp = StanfordCoreNLP('../../stanford-corenlp-full-2020-04-20/', lang='zh', logging_level=logging.INFO, port=9000)
+    try:
+        import urllib.request
+        urllib.request.urlopen('http://127.0.0.1:9000')
 
-    main('./files/3.txt', '被告人', get_location=True,
-         get_info=True, get_sentence=True, vaild_person_only=False)
+    except urllib.error.URLError:
+        print('INITIALIZING STANFORD CORENLP...')
+
+        try:
+            from psutil import AccessDenied
+            from sys import exit
+            nlp = StanfordCoreNLP('../../stanford-corenlp-full-2020-04-20/',
+                                  lang='zh', logging_level=logging.INFO, port=9000)
+        except AccessDenied:
+            print('ACCESS DENIED, PLEASE RUN AS ROOT')
+            exit()
+
+    print('USING EXISTING SERVER ON http://127.0.0.1:9000')
+    nlp = StanfordCoreNLP('http://localhost', lang='zh', port=9000)
+
+    main('./files/10.txt', '被告人', get_location=True,
+         get_info=True, get_sentence=True, get_species_info=True, vaild_person_only=False)
