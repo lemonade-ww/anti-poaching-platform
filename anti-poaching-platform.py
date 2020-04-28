@@ -1,12 +1,36 @@
 from stanfordcorenlp import StanfordCoreNLP
-import logging
 from pprint import pprint
 
 full_text = ''
 data = []
+nlp = None
 
 
-def getName(data, keyword):
+def initStanfordCoreNLP(port):
+    global nlp
+
+    try:
+        import urllib.request
+        urllib.request.urlopen('http://127.0.0.1:' + str(port))
+
+    except urllib.error.URLError:
+        print('INITIALIZING STANFORD CORENLP...')
+
+        try:
+            from psutil import AccessDenied
+            from sys import exit
+            nlp = StanfordCoreNLP('../../stanford-corenlp-full-2020-04-20/',
+                                  lang='zh', port=port)
+        except AccessDenied:
+            print('ACCESS DENIED, PLEASE RUN AS ROOT')
+            exit()
+
+    print('USING EXISTING SERVER ON http://127.0.0.1:' + str(port))
+    nlp = StanfordCoreNLP('http://localhost', lang='zh', port=port)
+
+
+def getName(data):
+    keyword = '被告人'
     name = None
     nameDict = {}
 
@@ -150,11 +174,14 @@ def getSentence(data):
         if data_reversed[number][len(data_reversed[number])-5:] == '判决如下：':
             break
 
-    for i in range(number-1, 0-1, -1):
-        text = data_reversed[i]
+    for i in range(number, 0-1, -1):
+        if not data_reversed[i].strip():
+            break
+
+        '''text = data_reversed[i]
         nerResult = nlp.ner(text)
         if nerResult[0][1] != 'NUMBER' and text[0] != '（' and text[0:2] != '被告人':
-            break
+            break'''
         sentence.append(data_reversed[i])
 
     return sentence
@@ -166,7 +193,7 @@ def getSpeciesInfo(text):
 
     from ast import literal_eval
 
-    with open('result.txt', 'r') as file:
+    with open('./lexicon.txt', 'r') as file:
         data = literal_eval(file.read())
 
     for species in data.keys():
@@ -180,120 +207,120 @@ def fromOpenLaw(file):
     import openpyxl
 
     data = {}
-    book = openpyxl.load_workbook('openlaw.xlsx')
+    book = openpyxl.load_workbook(file)
 
     sheet = book.active
 
-    for i in range(2, sheet.max_row + 1):
-        detail = {}
+    max_row = sheet.max_row
+    for i in range(2, max_row + 1):
+    # for i in range(2, 5):
         '''
         G:  location
         J:  defendant
         R:  defendant info
         AD: sentence
+        V:  details
         '''
+
+        print('\rNOW PROCESSING: ' + str(i - 1) + '/' + str(max_row), end='')
+        detail = {}
+
+        defendant = sheet['J' + str(i)].value
+        if not defendant:
+            data[i-1] = {}
+            continue
+        defendant = defendant.split('、')
+        for j in defendant:
+            if len(j) > 4:
+                defendant.remove(j)
+        detail['defendant'] = defendant
+
+        # print(sheet['G' + str(i)])
         location = sheet['G' + str(i)].value
         detail['location'] = location
 
-        defendant = sheet['J' + str(i)].value.split('、')
-        detail['defendant'] = defendant
-
         defendant_info = []
         for name in defendant:
-            defendant_info.append(
-                getInfo(sheet['R' + str(i)].value.split('。、'), name))
-
+            tmp = []
+            tmp.append(sheet['R' + str(i)].value.split('。、')[1])
+            defendant_info.append(getInfo(tmp, name))
         detail['defendant_info'] = defendant_info
 
-        sentence = sheet['AD' + str(i)].value
+        sentence = sheet['AD' + str(i)].value.replace(':、',
+                                                      '：\n').replace('：、', '：\n').replace('。、', '。\n').split()
         detail['sentence'] = sentence
+
+        species_info = getSpeciesInfo(sheet['V' + str(i)].value)
+        detail['species_info'] = species_info
 
         data[i-1] = detail
 
     return data
 
 
-def main(file, keyword, get_location=False, get_info=False, get_name_all_occurrences=False, get_sentence=False, get_species_info=False, vaild_person_only=False):
+def fromFile(file):
     global full_text
 
-    print(file)
-    if file[-5:] == '.xlsx':
-        pprint(fromOpenLaw(file))
+    detail = {}
 
-    else:
-        with open(file, 'r') as doc:
-            for line in doc.readlines():
-                if line.strip():
-                    full_text += line
-                    data.append(line.strip())
+    with open(file, 'r') as doc:
+        for line in doc.readlines():
+            if line.strip():
+                full_text += line
+                data.append(line.strip())
 
-        detail = {}
-        defendant = getName(data, keyword)
+        defendant = getName(data)
         detail['defendant'] = defendant
 
-        # print('NAMES MATCH KEYWORD \"' + keyword + '\": ' + str(names))
+        location = getLocation(data)
 
-        if get_location:
-            location = getLocation(data)
+        detail['location'] = location
 
-            detail['location'] = location
-            '''if not location[2]:
-                print('CAN\'T DETECT LOCATION, THE RESULT IS: ', location)
+        defendant_info = []
+        for name in defendant:
+            person_info = getInfo(data, name)
+            defendant_info.append(person_info)
 
-            else:
-                print('LOCATION: ', location[0])'''
+        detail['defendant_info'] = defendant_info
 
-        if get_name_all_occurrences:
-            print('ALL OCCURRENCES: ', getNameAllOccurrences(full_text, defendant))
+        sentence = getSentence(data)
+        detail['sentence'] = sentence
 
-        if get_info:
-            defendant_info = []
-            for name in defendant:
-                person_info = getInfo(data, name)
-                defendant_info.append(person_info)
-            
-            detail['defendant_info'] = defendant_info
-            '''if person_info['is_valid_person']:
-                    print(person_info)
-                else:
-                    if not vaild_person_only:
-                        print('MAY NOT BE A VALID PERSON: ', person_info)'''
+        species_info = getSpeciesInfo(full_text)
+        detail['species_info '] = species_info
 
-        if get_sentence:
-            sentence = getSentence(data)
-            detail['sentence'] = sentence
-            '''print('SENTENCE:')
-            for i in sentence:
-                print(i)'''
+    return detail
 
-        # under develpoment
-        if get_species_info:
-            species_info = getSpeciesInfo(full_text)
-            print(species_info)
 
-        pprint(detail)
+def main(file, optFile):
+    import json
+
+    if file[-5:] == '.xlsx':
+        print('DETECTED: OpenLaw data')
+        result = fromOpenLaw(file)
+        pprint(result)
+        if optFile:
+            with open(optFile, 'w') as opt:
+                json.dump(result, opt, ensure_ascii=False)
+
+    else:
+        print('DETECTED: file')
+        result = fromFile(file)
+        pprint(result)
+        if optFile:
+            with open(optFile, 'w') as opt:
+                json.dump(result, opt, ensure_ascii=False)
 
 
 if __name__ == '__main__':
+    initStanfordCoreNLP(9000)
 
-    try:
-        import urllib.request
-        urllib.request.urlopen('http://127.0.0.1:9000')
+    import time
 
-    except urllib.error.URLError:
-        print('INITIALIZING STANFORD CORENLP...')
+    starttime = time.time()
 
-        try:
-            from psutil import AccessDenied
-            from sys import exit
-            nlp = StanfordCoreNLP('../../stanford-corenlp-full-2020-04-20/',
-                                  lang='zh', logging_level=logging.INFO, port=9000)
-        except AccessDenied:
-            print('ACCESS DENIED, PLEASE RUN AS ROOT')
-            exit()
+    main('./data/openlaw_full.xlsx', 'opt.json')
 
-    print('USING EXISTING SERVER ON http://127.0.0.1:9000')
-    nlp = StanfordCoreNLP('http://localhost', lang='zh', port=9000)
+    endtime = time.time()
 
-    main('./files/10.txt', '被告人', get_location=True,
-         get_info=True, get_sentence=True, get_species_info=True, vaild_person_only=False)
+    print('USED: ' + str(endtime - starttime) + 's')

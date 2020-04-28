@@ -3,7 +3,8 @@ from bs4 import BeautifulSoup
 from pprint import pprint
 
 result = {}
-filename = 'result.txt'
+filename = 'lexicon.txt'
+
 
 def download_info(URL):
     req = requests.get(URL)
@@ -26,20 +27,19 @@ def download_info(URL):
 
     return (species, order, family, genus)
 
+
 def main():
     for i in range(1, 1330):
         print(i)
         url = 'http://www.cnbird.org.cn/shouce/b' + str(i) + '.htm'
         data = download_info(url)
         result[data[0]] = data[1] + ' ' + data[2] + ' ' + data[3]
-    
+
     print('DONE!')
     pprint(result)
 
     with open(filename, 'w') as file:
         file.write(str(result))
-
-
 
 
 if __name__ == '__main__':
