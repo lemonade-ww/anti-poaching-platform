@@ -1,5 +1,6 @@
 from stanfordcorenlp import StanfordCoreNLP
 import logging
+from pprint import pprint
 
 full_text = ''
 data = []
@@ -38,11 +39,14 @@ def getName(data, keyword):
 
 
 def getInfo(data, name):
-    info = {'name': name, 'gender': None, 'birth': None, 'race': None,
-            'education_level': None, 'is_valid_person': True}
+    import re
 
-    gender = ['男', '女']
+    info = {'name': name, 'gender': None, 'birth': None, 'race': None,
+            'education_level': None, 'is_valid_person': True, 'all_found': False}
+
+    gender = {'男': '男', '女': '女', '男性': '男', '女性': '女'}
     splited_text = []
+    # print(data)
 
     for line in data:
         if name not in line:
@@ -68,7 +72,7 @@ def getInfo(data, name):
                     break
 
                 if i in gender:
-                    info['gender'] = i
+                    info['gender'] = gender[i]
                     gender_found = True
 
                 if '生' in i and not birth_found:
@@ -78,7 +82,7 @@ def getInfo(data, name):
                         if j[1] == 'DATE':
                             birth += j[0]
 
-                    if birth:
+                    if birth and re.compile('[0-9]+').findall(birth):
                         info['birth'] = birth
                         birth_found = True
 
@@ -92,6 +96,9 @@ def getInfo(data, name):
 
     if Counter(info.values())[None] == len(info) - 2:
         info['is_valid_person'] = False
+
+    if not Counter(info.values())[None]:
+        info['all_found'] = True
 
     return info
 
@@ -169,47 +176,102 @@ def getSpeciesInfo(text):
     return appeared_species
 
 
+def fromOpenLaw(file):
+    import openpyxl
+
+    data = {}
+    book = openpyxl.load_workbook('openlaw.xlsx')
+
+    sheet = book.active
+
+    for i in range(2, sheet.max_row + 1):
+        detail = {}
+        '''
+        G:  location
+        J:  defendant
+        R:  defendant info
+        AD: sentence
+        '''
+        location = sheet['G' + str(i)].value
+        detail['location'] = location
+
+        defendant = sheet['J' + str(i)].value.split('、')
+        detail['defendant'] = defendant
+
+        defendant_info = []
+        for name in defendant:
+            defendant_info.append(
+                getInfo(sheet['R' + str(i)].value.split('。、'), name))
+
+        detail['defendant_info'] = defendant_info
+
+        sentence = sheet['AD' + str(i)].value
+        detail['sentence'] = sentence
+
+        data[i-1] = detail
+
+    return data
+
+
 def main(file, keyword, get_location=False, get_info=False, get_name_all_occurrences=False, get_sentence=False, get_species_info=False, vaild_person_only=False):
     global full_text
 
-    with open(file, 'r') as doc:
-        for line in doc.readlines():
-            if line.strip():
-                full_text += line
-                data.append(line.strip())
+    print(file)
+    if file[-5:] == '.xlsx':
+        pprint(fromOpenLaw(file))
 
-    names = getName(data, keyword)
-    print('NAMES MATCH KEYWORD \"' + keyword + '\": ' + str(names))
+    else:
+        with open(file, 'r') as doc:
+            for line in doc.readlines():
+                if line.strip():
+                    full_text += line
+                    data.append(line.strip())
 
-    if get_location:
-        location = getLocation(data)
-        if not location[2]:
-            print('CAN\'T DETECT LOCATION, THE RESULT IS: ', location)
+        detail = {}
+        defendant = getName(data, keyword)
+        detail['defendant'] = defendant
 
-        else:
-            print('LOCATION: ', location[0])
+        # print('NAMES MATCH KEYWORD \"' + keyword + '\": ' + str(names))
 
-    if get_name_all_occurrences:
-        print('ALL OCCURRENCES: ', getNameAllOccurrences(full_text, names))
+        if get_location:
+            location = getLocation(data)
 
-    if get_info:
-        for name in names:
-            person_info = getInfo(data, name)
-            if person_info['is_valid_person']:
-                print(person_info)
+            detail['location'] = location
+            '''if not location[2]:
+                print('CAN\'T DETECT LOCATION, THE RESULT IS: ', location)
+
             else:
-                if not vaild_person_only:
-                    print('MAY NOT BE A VALID PERSON: ', person_info)
+                print('LOCATION: ', location[0])'''
 
-    if get_sentence:
-        sentence = getSentence(data)
-        print('SENTENCE:')
-        for i in sentence:
-            print(i)
+        if get_name_all_occurrences:
+            print('ALL OCCURRENCES: ', getNameAllOccurrences(full_text, defendant))
 
-    if get_species_info:
-        species_info = getSpeciesInfo(full_text)
-        print(species_info)
+        if get_info:
+            defendant_info = []
+            for name in defendant:
+                person_info = getInfo(data, name)
+                defendant_info.append(person_info)
+            
+            detail['defendant_info'] = defendant_info
+            '''if person_info['is_valid_person']:
+                    print(person_info)
+                else:
+                    if not vaild_person_only:
+                        print('MAY NOT BE A VALID PERSON: ', person_info)'''
+
+        if get_sentence:
+            sentence = getSentence(data)
+            detail['sentence'] = sentence
+            '''print('SENTENCE:')
+            for i in sentence:
+                print(i)'''
+
+        # under develpoment
+        if get_species_info:
+            species_info = getSpeciesInfo(full_text)
+            print(species_info)
+
+        pprint(detail)
 
 
 if __name__ == '__main__':
