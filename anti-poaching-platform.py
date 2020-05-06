@@ -191,10 +191,12 @@ def getSpeciesInfo(text):
 
     appeared_species = {}
 
-    from ast import literal_eval
+    import json
+    #from ast import literal_eval
 
-    with open('./lexicon.txt', 'r') as file:
-        data = literal_eval(file.read())
+    with open('./lexicon.json', 'r') as file:
+        #data = literal_eval(file.read())
+        data = json.load(file)
 
     for species in data.keys():
         if species in text:
