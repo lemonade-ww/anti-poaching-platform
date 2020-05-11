@@ -214,14 +214,17 @@ def fromOpenLaw(file):
     sheet = book.active
 
     max_row = sheet.max_row
+    
     for i in range(2, max_row + 1):
-    # for i in range(2, 5):
+    # for i in range(15, 16):
         '''
         G:  location
         J:  defendant
         R:  defendant info
         AD: sentence
         V:  details
+        A:  title
+        B:  number
         '''
 
         print('\rNOW PROCESSING: ' + str(i - 1) + '/' + str(max_row), end='')
@@ -231,6 +234,7 @@ def fromOpenLaw(file):
         if not defendant:
             data[i-1] = {}
             continue
+
         defendant = defendant.split('、')
         for j in defendant:
             if len(j) > 4:
@@ -243,8 +247,8 @@ def fromOpenLaw(file):
 
         defendant_info = []
         for name in defendant:
-            tmp = []
-            tmp.append(sheet['R' + str(i)].value.split('。、')[1])
+            #tmp = []
+            tmp = sheet['R' + str(i)].value.replace('。、', '。\n').split()
             defendant_info.append(getInfo(tmp, name))
         detail['defendant_info'] = defendant_info
 
@@ -255,8 +259,15 @@ def fromOpenLaw(file):
         species_info = getSpeciesInfo(sheet['V' + str(i)].value)
         detail['species_info'] = species_info
 
+        title = sheet['A' + str(i)].value
+        detail['title'] = title
+
+        number = sheet['B' + str(i)].value
+        detail['number'] = number
+
         data[i-1] = detail
 
+    print('\nTOTAL ' + str(len(data)) + ' VALID RESULT(S)')
     return data
 
 
@@ -300,7 +311,7 @@ def main(file, optFile):
     if file[-5:] == '.xlsx':
         print('DETECTED: OpenLaw data')
         result = fromOpenLaw(file)
-        pprint(result)
+        #pprint(result)
         if optFile:
             with open(optFile, 'w') as opt:
                 json.dump(result, opt, ensure_ascii=False)
@@ -321,7 +332,7 @@ if __name__ == '__main__':
 
     starttime = time.time()
 
-    main('./data/openlaw_full.xlsx', 'opt.json')
+    main('./data/openlaw_full.xlsx', 'opt2.json')
 
     endtime = time.time()
 
