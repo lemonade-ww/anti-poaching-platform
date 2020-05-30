@@ -332,7 +332,7 @@ if __name__ == '__main__':
 
     starttime = time.time()
 
-    main('./data/openlaw_full.xlsx', 'opt2.json')
+    main('./data/openlaw_full.xlsx', 'opt.json')
 
     endtime = time.time()
 
