@@ -10,6 +10,8 @@ cursor = db.cursor()
 # cursor.execute("SHOW TABLES;")
 # data = cursor.fetchone()
 
+cursor.execute("DROP table IF EXISTS DATA")
+
 sql = '''CREATE TABLE DATA (
     NUMBER VARCHAR(50),
     LOCATION VARCHAR(50),
@@ -25,7 +27,7 @@ cursor.execute(sql)
 with open('./opt.json', 'r') as file:
     data = json.load(file)
 
-# i = 0
+i = 0
 for item in data:
     info = data[item]
     if not info:
@@ -47,10 +49,11 @@ for item in data:
         cursor.execute(sql)
         db.commit()
     except:
+        print('ERROR')
         db.rollback()
 
-    # i += 1
+    i += 1
 
-# print(i)
+print('VALID DATA: ' + str(i))
 
 db.close()

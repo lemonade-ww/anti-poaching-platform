@@ -54,6 +54,7 @@ def fromFile(filename):
         species = ''
 
         for line in file.readlines():
+            print(line)
             data = line.split(';')
             species = data[0]
             info = data[1].strip()
@@ -66,9 +67,5 @@ def fromFile(filename):
     
     return opt
 
-
-
-
-
 if __name__ == '__main__':
-    print(fromFile('data.txt'))
+    print(fromFile('/Users/henry3510/OneDrive/Project/lex.txt'))

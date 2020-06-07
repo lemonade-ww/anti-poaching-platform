@@ -267,7 +267,6 @@ def fromOpenLaw(file):
 
         data[i-1] = detail
 
-    print('\nTOTAL ' + str(len(data)) + ' VALID RESULT(S)')
     return data
 
 
@@ -336,4 +335,4 @@ if __name__ == '__main__':
 
     endtime = time.time()
 
-    print('USED: ' + str(endtime - starttime) + 's')
+    print('\nUSED: ' + str(endtime - starttime) + 's')
