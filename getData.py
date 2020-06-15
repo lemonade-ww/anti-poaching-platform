@@ -31,7 +31,8 @@ def main():
     for i in range(1, 1330):
         # print(i)
         url = 'http://www.cnbird.org.cn/shouce/b' + str(i) + '.htm'
-        print('\rNOW PROCESSING: ' + str(i) + '/' + str(1329) + ' {:.2%}'.format(i/1329), end='')
+        print('\rNOW PROCESSING: ' + str(i) + '/' +
+              str(1329) + ' {:.2%}'.format(i/1329), end='')
         data = downloadInfo(url)
         result[data[0]] = data[1] + ' ' + data[2] + ' ' + data[3]
 
@@ -42,6 +43,7 @@ def main():
 
     with open(filename, 'w') as file:
         json.dump(result, file, ensure_ascii=False)
+
 
 def fromFile(filename):
     opt = {}
@@ -64,8 +66,45 @@ def fromFile(filename):
     import json
 
     json.dump(opt, open('tmp.json', 'w'), ensure_ascii=False)
-    
+
     return opt
 
+
+def fromExcel(filename):
+    import openpyxl
+    import re
+
+    data = {}
+    book = openpyxl.load_workbook(filename)
+
+    sheet = book.active
+
+    max_row = sheet.max_row
+
+    data = []
+
+    for i in range(3, max_row + 1):
+        # for i in range(15, 16):
+        print('\rNOW PROCESSING: ' + str(i - 2) +
+              '/' + str(max_row - 2), end='')
+
+        class_name = '哺乳纲'
+        order = sheet['C' + str(i)].value
+        family = sheet['E' + str(i)].value
+        genus = str(sheet['J' + str(i)].value).replace('\ufeff', '')
+        species = sheet['G' + str(i)].value
+
+        text = str(species + ';' + class_name + ' ' +
+                   order + ' ' + family + ' ' + genus)
+        text = re.sub(r'\d', '', text).replace('（', '').replace('）', '')
+
+        data.append(text)
+
+    with open('tmp.txt', 'w') as file:
+        for i in data:
+            file.write(i + '\n')
+
+
 if __name__ == '__main__':
-    print(fromFile('/Users/henry3510/OneDrive/Project/lex.txt'))
+    fromExcel('/Users/henry3510/OneDrive/Project/mammal.xlsx')
+    print(fromFile('/Users/henry3510/OneDrive/Project/tmp.txt'))
