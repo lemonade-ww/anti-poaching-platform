@@ -275,7 +275,7 @@ def fromFile(file):
 
     detail = {}
 
-    with open(file, 'r') as doc:
+    with open(file, 'r', encoding='utf-8') as doc:
         for line in doc.readlines():
             if line.strip():
                 full_text += line
@@ -310,7 +310,7 @@ def main(file, optFile):
         result = fromOpenLaw(file)
         #pprint(result)
         if optFile:
-            with open(optFile, 'w') as opt:
+            with open(optFile, 'w', encoding='utf-8') as opt:
                 json.dump(result, opt, ensure_ascii=False)
 
     else:
