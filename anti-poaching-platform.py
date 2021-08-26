@@ -1,3 +1,9 @@
+import re
+import time
+import json
+import urllib
+
+import openpyxl
 from stanfordcorenlp import StanfordCoreNLP
 from pprint import pprint
 
@@ -10,7 +16,6 @@ def initStanfordCoreNLP(port):
     global nlp
 
     try:
-        import urllib.request
         urllib.request.urlopen('http://127.0.0.1:' + str(port))
 
     except urllib.error.URLError:
@@ -47,7 +52,7 @@ def getName(data):
             # print(checkRange[len(pattern):len(name)+len(pattern)])
             if checkRange[len(pattern):len(possibleName)+len(pattern)] == possibleName:
                 return'''
-
+  
         nerResult = nlp.ner(checkRange)
         if nerResult[1][1] == 'PERSON':  # nerResult[0] is keyword
 
@@ -63,8 +68,6 @@ def getName(data):
 
 
 def getInfo(data, name):
-    import re
-
     info = {'name': name, 'gender': None, 'birth': None, 'race': None,
             'education_level': None, 'is_valid_person': True, 'all_found': False}
 
@@ -191,10 +194,9 @@ def getSpeciesInfo(text):
 
     appeared_species = {}
 
-    import json
     #from ast import literal_eval
 
-    with open('./lexicon.json', 'r') as file:
+    with open('./lexicon.json', 'r', encoding='utf-8') as file:
         #data = literal_eval(file.read())
         data = json.load(file)
 
@@ -206,8 +208,6 @@ def getSpeciesInfo(text):
 
 
 def fromOpenLaw(file):
-    import openpyxl
-
     data = {}
     book = openpyxl.load_workbook(file)
 
@@ -305,8 +305,6 @@ def fromFile(file):
 
 
 def main(file, optFile):
-    import json
-
     if file[-5:] == '.xlsx':
         print('DETECTED: OpenLaw data')
         result = fromOpenLaw(file)
@@ -326,8 +324,6 @@ def main(file, optFile):
 
 if __name__ == '__main__':
     initStanfordCoreNLP(9000)
-
-    import time
 
     starttime = time.time()
 
