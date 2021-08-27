@@ -6,7 +6,7 @@ result = {}
 filename = 'lexicon.json'
 
 
-def downloadInfo(URL):
+def download_info(URL):
     req = requests.get(URL)
     req.encoding = 'gb18030'
     soup = BeautifulSoup(req.text, 'lxml')
@@ -33,7 +33,7 @@ def main():
         url = 'http://www.cnbird.org.cn/shouce/b' + str(i) + '.htm'
         print('\rNOW PROCESSING: ' + str(i) + '/' +
               str(1329) + ' {:.2%}'.format(i/1329), end='')
-        data = downloadInfo(url)
+        data = download_info(url)
         result[data[0]] = data[1] + ' ' + data[2] + ' ' + data[3]
 
     print('DONE!')
@@ -45,7 +45,7 @@ def main():
         json.dump(result, file, ensure_ascii=False)
 
 
-def fromFile(filename):
+def from_file(filename):
     opt = {}
 
     with open(filename, 'r') as file:
@@ -70,7 +70,7 @@ def fromFile(filename):
     return opt
 
 
-def fromExcel(filename):
+def from_excel(filename):
     import openpyxl
     import re
 
@@ -106,5 +106,5 @@ def fromExcel(filename):
 
 
 if __name__ == '__main__':
-    fromExcel('/Users/henry3510/OneDrive/Project/mammal.xlsx')
-    print(fromFile('/Users/henry3510/OneDrive/Project/tmp.txt'))
+    from_excel('/Users/henry3510/OneDrive/Project/mammal.xlsx')
+    print(from_file('/Users/henry3510/OneDrive/Project/tmp.txt'))

@@ -20,7 +20,7 @@ class Source(Enum):
     TRANSPORT = '运输'
 
 
-def initStanfordCoreNLP(port):
+def init_nlp_server(port):
     global nlp
 
     try:
@@ -42,40 +42,40 @@ def initStanfordCoreNLP(port):
     nlp = StanfordCoreNLP('http://localhost', lang='zh', port=port)
 
 
-def getName(data):
+def get_name(data):
     keyword = '被告人'
     name = None
-    nameDict = {}
+    name_dict = {}
 
     for line in data:
         keyword_location = line.find(keyword)
         if keyword_location == -1:
             continue
 
-        checkRange = line[keyword_location:len(
+        check_range = line[keyword_location:len(
             line)].replace('）', '')  # just in case
 
         # try to match names from previous results
-        '''for possibleName in nameList:
-            # print(checkRange[len(pattern):len(name)+len(pattern)])
-            if checkRange[len(pattern):len(possibleName)+len(pattern)] == possibleName:
+        '''for possible_name in name_list:
+            # print(check_range[len(pattern):len(name)+len(pattern)])
+            if check_range[len(pattern):len(possible_name)+len(pattern)] == possible_name:
                 return'''
   
-        nerResult = nlp.ner(checkRange)
-        if nerResult[1][1] == 'PERSON':  # nerResult[0] is keyword
+        ner_result = nlp.ner(check_range)
+        if ner_result[1][1] == 'PERSON':  # ner_result[0] is keyword
 
-            name = nerResult[1][0]
+            name = ner_result[1][0]
 
-            if not nameDict.__contains__(name):
-                nameDict[name] = 1
+            if not name_dict.__contains__(name):
+                name_dict[name] = 1
 
             else:
-                nameDict[name] += 1
+                name_dict[name] += 1
 
-    return nameDict
+    return name_dict
 
 
-def getInfo(data, name):
+def get_info(data, name):
     info = {'name': name, 'gender': None, 'birth': None, 'race': None,
             'education_level': None, 'is_valid_person': True, 'all_found': False}
 
@@ -87,11 +87,11 @@ def getInfo(data, name):
         if name not in line:
             continue
 
-        nerResult = nlp.ner(line)
+        ner_result = nlp.ner(line)
 
-        if 'DATE' in str(nerResult):
+        if 'DATE' in str(ner_result):
 
-            for i in nerResult:
+            for i in ner_result:
                 if i[1] == 'DEMONYM' or i[1] == 'NATIONALITY':  # find race info
                     if '族' in i[0]:
                         info['race'] = i[0]
@@ -111,9 +111,9 @@ def getInfo(data, name):
                     gender_found = True
 
                 if '生' in i and not birth_found:
-                    nerResult = nlp.ner(i)
+                    ner_result = nlp.ner(i)
                     birth = ''
-                    for j in nerResult:
+                    for j in ner_result:
                         if j[1] == 'DATE':
                             birth += j[0]
 
@@ -138,7 +138,7 @@ def getInfo(data, name):
     return info
 
 
-def getNameAllOccurrences(text, names):
+def get_all_name_occurrences(text, names):
     name_list = list(names.keys())
     name_occurrences = {}
     for name in name_list:
@@ -147,23 +147,23 @@ def getNameAllOccurrences(text, names):
     return name_occurrences
 
 
-def getLocation(data):
+def get_location(data):
     place = '公诉机关'
-    isDetected = True
+    is_detected = True
 
     for line in data:
         if place not in line:
             continue
 
-        nerResult = nlp.ner(line)
+        ner_result = nlp.ner(line)
         location = ''
 
-        for item in nerResult:
+        for item in ner_result:
             if item[1] == 'ORGANIZATION':
                 location += item[0]
 
         if not location:
-            isDetected = False
+            is_detected = False
 
             from string import punctuation
             punc = '，。、【 】 “”：；（）《》‘’「」？！()、%^>℃：.”“^-——=&#@￥' + punctuation
@@ -171,12 +171,12 @@ def getLocation(data):
             location = line[line.find(
                 place) + len(place):len(line)].strip(punc)
 
-        return (location, line, isDetected)
+        return (location, line, is_detected)
 
-    return (None, None, isDetected)
+    return (None, None, is_detected)
 
 
-def getSentence(data):
+def get_sentence(data):
     sentence = []
     data_reversed = list(reversed(data))
     number = 0
@@ -190,15 +190,15 @@ def getSentence(data):
             break
 
         '''text = data_reversed[i]
-        nerResult = nlp.ner(text)
-        if nerResult[0][1] != 'NUMBER' and text[0] != '（' and text[0:2] != '被告人':
+        ner_result = nlp.ner(text)
+        if ner_result[0][1] != 'NUMBER' and text[0] != '（' and text[0:2] != '被告人':
             break'''
         sentence.append(data_reversed[i])
 
     return sentence
 
 
-def getSpeciesInfo(text):
+def get_species_info(text):
 
     appeared_species = {}
 
@@ -406,13 +406,13 @@ class Node:
         """Trace upwards to a parent of the current node.
         When level=0, return the node itself"""
         assert level >= 0
-        curNode = self
+        cur_node = self
         while level > 0:
-            if not curNode.parent:
-                return curNode
-            curNode = curNode.parent
+            if not cur_node.parent:
+                return cur_node
+            cur_node = cur_node.parent
             level -= 1
-        return curNode
+        return cur_node
 
     def dfs_one(self, *, text: Optional[str] = None, annotation: Optional[str] = None, before: Optional["Node"] = None, after: Optional["Node"] = None) -> Optional["Node"]:
         """A helper function to look up only one node"""
@@ -487,7 +487,7 @@ def get_output_sources(text):
     return result
 
 
-def fromOpenLaw(file):
+def from_open_law(file):
     data = {}
     book = openpyxl.load_workbook(file)
 
@@ -529,14 +529,14 @@ def fromOpenLaw(file):
         for name in defendant:
             #tmp = []
             tmp = sheet['R' + str(i)].value.replace('。、', '。\n').split()
-            defendant_info.append(getInfo(tmp, name))
+            defendant_info.append(get_info(tmp, name))
         detail['defendant_info'] = defendant_info
 
         sentence = sheet['AD' + str(i)].value.replace(':、',
                                                       '：\n').replace('：、', '：\n').replace('。、', '。\n').split()
         detail['sentence'] = sentence
 
-        species_info = getSpeciesInfo(sheet['V' + str(i)].value)
+        species_info = get_species_info(sheet['V' + str(i)].value)
         detail['species_info'] = species_info
 
         title = sheet['A' + str(i)].value
@@ -553,7 +553,7 @@ def fromOpenLaw(file):
     return data
 
 
-def fromFile(file):
+def from_file(file):
     global full_text
 
     detail = {}
@@ -564,49 +564,49 @@ def fromFile(file):
                 full_text += line
                 data.append(line.strip())
 
-        defendant = getName(data)
+        defendant = get_name(data)
         detail['defendant'] = defendant
 
-        location = getLocation(data)
+        location = get_location(data)
 
         detail['location'] = location
 
         defendant_info = []
         for name in defendant:
-            person_info = getInfo(data, name)
+            person_info = get_info(data, name)
             defendant_info.append(person_info)
 
         detail['defendant_info'] = defendant_info
 
-        sentence = getSentence(data)
+        sentence = get_sentence(data)
         detail['sentence'] = sentence
 
-        species_info = getSpeciesInfo(full_text)
+        species_info = get_species_info(full_text)
         detail['species_info '] = species_info
 
     return detail
 
 
-def main(file, optFile):
+def main(file, opt_file):
     if file[-5:] == '.xlsx':
         print('DETECTED: OpenLaw data')
-        result = fromOpenLaw(file)
+        result = from_open_law(file)
         #pprint(result)
-        if optFile:
-            with open(optFile, 'w', encoding='utf-8') as opt:
+        if opt_file:
+            with open(opt_file, 'w', encoding='utf-8') as opt:
                 json.dump(result, opt, ensure_ascii=False)
 
     else:
         print('DETECTED: file')
-        result = fromFile(file)
+        result = from_file(file)
         pprint(result)
-        if optFile:
-            with open(optFile, 'w') as opt:
+        if opt_file:
+            with open(opt_file, 'w') as opt:
                 json.dump(result, opt, ensure_ascii=False)
 
 
 if __name__ == '__main__':
-    initStanfordCoreNLP(9000)
+    init_nlp_server(9000)
 
     starttime = time.time()
 
