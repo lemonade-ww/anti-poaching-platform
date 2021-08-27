@@ -2,6 +2,8 @@ import re
 import time
 import json
 import urllib
+import argparse
+from sys import exit
 from enum import Enum
 from typing import Container, Dict, List, Optional, Set, Tuple, Union
 
@@ -20,26 +22,34 @@ class Source(Enum):
     TRANSPORT = '运输'
 
 
-def init_nlp_server(port):
+def init_nlp_server(host: str, port: int, server_path: Optional[str] = None):
     global nlp
+    if not host.startswith(("http://", "https://")):
+        host = f"http://{host}"
+    url = f"{host}:{port}"
 
     try:
-        urllib.request.urlopen('http://127.0.0.1:' + str(port))
+        urllib.request.urlopen(url)
 
     except urllib.error.URLError:
-        print('INITIALIZING STANFORD CORENLP...')
+        print(f'Cannot connect to the server via {url}...')
 
-        try:
-            from psutil import AccessDenied
-            from sys import exit
-            nlp = StanfordCoreNLP('../../stanford-corenlp-full-2020-04-20/',
-                                  lang='zh', port=port)
-        except AccessDenied:
-            print('ACCESS DENIED, PLEASE RUN AS ROOT')
-            exit()
+        if server_path:
+            print(f"Trying to lanuch the server located at {server_path}")
+            try:
+                from psutil import AccessDenied
+                nlp = StanfordCoreNLP(server_path,
+                                    lang='zh', port=port)
+            except AccessDenied:
+                print('ACCESS DENIED, PLEASE RUN AS ROOT')
+            except OSError as err:
+                print(err)
 
-    print('USING EXISTING SERVER ON http://127.0.0.1:' + str(port))
-    nlp = StanfordCoreNLP('http://localhost', lang='zh', port=port)
+        print("Exiting now...")
+        exit(1)
+
+    print(f'USING EXISTING SERVER ON {url}')
+    nlp = StanfordCoreNLP(host, lang='zh', port=port)
 
 
 def get_name(data):
@@ -606,11 +616,22 @@ def main(file, opt_file):
 
 
 if __name__ == '__main__':
-    init_nlp_server(9000)
+    parser = argparse.ArgumentParser(description="Analyze the given data")
+
+    parser.add_argument("target", nargs="+", help="The files to be analyzed")
+    parser.add_argument("--host", "-x", default="127.0.0.1", help="The host of the nlp server (default: 127.0.0.1)")
+    parser.add_argument("--port", "-p", default=9000, type=int, help="The port number of the nlp server (default: 9000)")
+    parser.add_argument("--out", "-o", help="The destination of the generated file (optional)")
+    parser.add_argument("--server", "-s", help="The path to the Stanford CoreNLP Server (optional)")
+
+    args = parser.parse_args()
+
+    init_nlp_server(args.host, args.port, args.server)
 
     starttime = time.time()
 
-    main('./data/openlaw_full.xlsx', 'opt.json')
+    for file in args.target:
+        main(file, args.out)
 
     endtime = time.time()
 
