@@ -324,12 +324,12 @@ def get_sources_info(data: str, title: str, sentence: str, names: str):
     return sources_info
 
 
-def fetch_sources_from_text(names_, lines):
+def fetch_sources_from_text(names, lines):
     result = []
-    names = names_.copy()
+    _names = names.copy()
 
-    for name in names_:
-        info = {'name': name, 'input': [], 'output': []}
+    for name in _names:
+        info = {'name': name}
         for line in lines:
             if name in line:
                 input_ = get_input_sources(line)
@@ -343,9 +343,9 @@ def fetch_sources_from_text(names_, lines):
 
         if len(info['input']) > 0 or len(info['output']) > 0:
             result.append(info)
-            names.remove(name)
+            _names.remove(name)
 
-    return (result, names)
+    return (result, _names)
 
 
 class Node:
@@ -609,7 +609,6 @@ def main(file, opt_file):
     if file[-5:] == '.xlsx':
         print('DETECTED: OpenLaw data')
         result = from_open_law(file)
-        #pprint(result)
         if opt_file:
             with open(opt_file, 'w', encoding='utf-8') as opt:
                 json.dump(result, opt, ensure_ascii=False)
@@ -617,7 +616,6 @@ def main(file, opt_file):
     else:
         print('DETECTED: file')
         result = from_file(file)
-        pprint(result)
         if opt_file:
             with open(opt_file, 'w') as opt:
                 json.dump(result, opt, ensure_ascii=False)
