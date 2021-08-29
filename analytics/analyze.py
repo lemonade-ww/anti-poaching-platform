@@ -24,6 +24,9 @@ class Source(Enum):
 with open('src_keywords.json', 'r', encoding='utf8') as f:
     SOURCES = json.load(f)
 
+with open("lexicon.json", "r", encoding="utf8") as f:
+    LEXICON = json.load(f)
+
 SOURCE_KEY_MAP = {
     Source.BUY: "buy",
     Source.HUNT: "hunt",
@@ -223,13 +226,9 @@ def get_species_info(text):
 
     #from ast import literal_eval
 
-    with open('./lexicon.json', 'r', encoding='utf-8') as file:
-        #data = literal_eval(file.read())
-        data = json.load(file)
-
-    for species in data.keys():
+    for species in LEXICON.keys():
         if species in text:
-            appeared_species[species] = data[species]
+            appeared_species[species] = LEXICON[species]
 
     return appeared_species
 
