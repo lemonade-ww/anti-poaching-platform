@@ -14,6 +14,7 @@ from pprint import pprint
 full_text = ''
 data = []
 nlp = None
+QueryT = Optional[Union[str, Container[str]]]
 
 class Source(Enum):
     BUY = '收购'
@@ -378,7 +379,7 @@ class Node:
                 prepared_text.append(child.text)
             self.text = "".join(prepared_text)
 
-    def match(self, text: Optional[Union[str, Container[str]]] = None, annotation: Optional[Union[str, Container[str]]] = None) -> bool:
+    def match(self, text: QueryT = None, annotation: QueryT = None) -> bool:
         """A helper funtion to see if the current node match the given conditionals
         When both text and annotation are None, this function always returns True"""
         target_text = {text} if isinstance(text, str) else text
@@ -424,12 +425,12 @@ class Node:
             level -= 1
         return cur_node
 
-    def dfs_one(self, *, text: Optional[str] = None, annotation: Optional[str] = None, before: Optional["Node"] = None, after: Optional["Node"] = None) -> Optional["Node"]:
+    def dfs_one(self, *, text: QueryT = None, annotation: QueryT = None, before: Optional["Node"] = None, after: Optional["Node"] = None) -> Optional["Node"]:
         """A helper function to look up only one node"""
         result = self.dfs(text=text, annotation=annotation, before=before, after=after)
         return result[0] if len(result) > 0 else None
 
-    def dfs(self, *, text: Optional[str] = None, annotation: Optional[str] = None, count: int = 1, before: Optional["Node"] = None, after: Optional["Node"] = None) -> List["Node"]:
+    def dfs(self, *, text: QueryT = None, annotation: QueryT = None, count: int = 1, before: Optional["Node"] = None, after: Optional["Node"] = None) -> List["Node"]:
         """Conduct a depth first search for the first nth children matching the given conditionals"""
         stack: List[Node] = [self]
         result: List[Node] = []
