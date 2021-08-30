@@ -1,9 +1,20 @@
 import re
-from typing import Optional, Union, Container, Dict, List, Set
+from typing import Generator, Iterable, Mapping, Optional, Union, Container, Dict, List, Set
 
 QueryT = Optional[Union[str, Container[str]]]
 
 class NlpNode:
+    @classmethod
+    def traverser(cls, tree_dict: Mapping[str, List["NlpNode"]], keywords: Iterable[str], repeat: bool = False) -> Generator["NlpNode", None, None]:
+        visited: Set[NlpNode] = set()
+        for keyword in keywords:
+            for node in tree_dict.get(keyword, []):
+                if repeat:
+                    yield node
+                elif not visited:
+                    visited.add(node)
+                    yield node
+
     def __init__(self, parent: Optional["NlpNode"], text: str, tree_dict: Optional[Dict[str, List["NlpNode"]]] = None):
         self.parent: Optional[NlpNode] = parent
         self.children: List[NlpNode] = []

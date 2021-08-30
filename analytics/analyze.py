@@ -220,89 +220,85 @@ def get_species_info(text) -> MutableMapping[str, str]:
 def get_buy_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
     sources = []
     # Find sources details for type '收购'
-    for keyword in SOURCES[Source.BUY.value]:
-        for node in tree_dict.get(keyword, []):
-            # For the token (keywords like '收购') located, we go up in the tree by 4 levels to search
-            # within a context of interest
-            context_node = node.up(4)
-            # "PP" generally corresponds to locations, dates, and etc.
-            pp_nodes = context_node.dfs(annotation="PP", count=2, before=node)
-            highlights = set()
-            for pp_node in pp_nodes:
-                highlights.add(pp_node)
-                np_node = pp_node.dfs_one(annotation="NP")
-                if np_node:
-                    highlights.add(np_node)
-                    sources.append(SourceInfo(type=Source.BUY, occasion=np_node.text))
+    for node in Node.traverser(tree_dict, SOURCES[Source.BUY.value]):
+        # For the token (keywords like '收购') located, we go up in the tree by 4 levels to search
+        # within a context of interest
+        context_node = node.up(4)
+        # "PP" generally corresponds to locations, dates, and etc.
+        pp_nodes = context_node.dfs(annotation="PP", count=2, before=node)
+        highlights = set()
+        for pp_node in pp_nodes:
+            highlights.add(pp_node)
+            np_node = pp_node.dfs_one(annotation="NP")
+            if np_node:
+                highlights.add(np_node)
+                sources.append(SourceInfo(type=Source.BUY, occasion=np_node.text))
     return sources    
 
 
 def get_sell_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
     sources = []
-    for keyword in SOURCES[Source.SELL.value]:
-        for node in tree_dict.get(keyword, []):
-            if node.annotation != "VV":
-                continue
-            context_node = node.up(3)
-            sell_source = SourceInfo(Source.SELL)
+    for node in Node.traverser(tree_dict, SOURCES[Source.SELL.value]):
+        if node.annotation != "VV":
+            continue
+        context_node = node.up(3)
+        sell_source = SourceInfo(Source.SELL)
 
-            np_node = context_node.dfs_one(annotation="NP")
+        np_node = context_node.dfs_one(annotation="NP")
+        if np_node:
+            prep_node = context_node.dfs_one(text="给", after=node)
+            if prep_node:
+                sell_source.buyer = np_node.text
+
+        pre_pp_node = context_node.dfs_one(annotation="PP", before=node)
+        if pre_pp_node:
+            np_node = pre_pp_node.dfs_one(annotation="NP")
             if np_node:
-                prep_node = context_node.dfs_one(text="给", after=node)
-                if prep_node:
-                    sell_source.buyer = np_node.text
-
-            pre_pp_node = context_node.dfs_one(annotation="PP", before=node)
-            if pre_pp_node:
-                np_node = pre_pp_node.dfs_one(annotation="NP")
-                if np_node:
-                    sell_source.occasion = np_node.text
-            sources.append(sell_source)
+                sell_source.occasion = np_node.text
+        sources.append(sell_source)
     return sources
 
 
 def get_transport_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
     sources = []
-    for keyword in SOURCES[Source.TRANSPORT.value]:
-        for node in tree_dict.get(keyword, []):
-            context_node = node.up(3)
-            transport_source = SourceInfo(Source.TRANSPORT)
-            from_symbol = context_node.dfs_one(text=("从", "自"))
-            dest_symbol = context_node.dfs_one(text=("到", "至"))
+    for node in Node.traverser(tree_dict, SOURCES[Source.TRANSPORT.value]):
+        context_node = node.up(3)
+        transport_source = SourceInfo(Source.TRANSPORT)
+        from_symbol = context_node.dfs_one(text=("从", "自"))
+        dest_symbol = context_node.dfs_one(text=("到", "至"))
 
-            if from_symbol:
-                from_node = context_node.dfs_one(annotation="NP", after=from_symbol, before=dest_symbol)
-                if from_node:
-                    transport_source.occasion = from_node.text
-            if dest_symbol:
-                dest_node = context_node.dfs_one(annotation="NP", after=dest_symbol)
-                if dest_node:
-                    transport_source.destination = dest_node.text
+        if from_symbol:
+            from_node = context_node.dfs_one(annotation="NP", after=from_symbol, before=dest_symbol)
+            if from_node:
+                transport_source.occasion = from_node.text
+        if dest_symbol:
+            dest_node = context_node.dfs_one(annotation="NP", after=dest_symbol)
+            if dest_node:
+                transport_source.destination = dest_node.text
 
-            sources.append(transport_source)
+        sources.append(transport_source)
     return sources
 
 
 def get_hunt_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
     sources = []
-    for keyword in SOURCES[Source.HUNT.value]:
-        for node in tree_dict.get(keyword, []):
-            context_node = node.up(5)
-            hunt_source = SourceInfo(Source.HUNT)
+    for node in Node.traverser(tree_dict, SOURCES[Source.HUNT.value]):
+        context_node = node.up(5)
+        hunt_source = SourceInfo(Source.HUNT)
 
-            occasion_symbol = context_node.dfs_one(annotation="P", text="在", before=node)
-            if occasion_symbol:
-                occasion_node = occasion_symbol.up(1).dfs_one(annotation={"NP", "VP"})
-                if occasion_node:
-                    hunt_source.occasion = occasion_node.text
+        occasion_symbol = context_node.dfs_one(annotation="P", text="在", before=node)
+        if occasion_symbol:
+            occasion_node = occasion_symbol.up(1).dfs_one(annotation={"NP", "VP"})
+            if occasion_node:
+                hunt_source.occasion = occasion_node.text
 
-            method_symbol = context_node.dfs_one(text="方式", before=node)
-            if method_symbol:
-                method_nodes = context_node.dfs(annotation="VV", before=method_symbol)
-                for node in method_nodes:
-                    print(f"method:{node.text}")
+        method_symbol = context_node.dfs_one(text="方式", before=node)
+        if method_symbol:
+            method_nodes = context_node.dfs(annotation="VV", before=method_symbol)
+            for node in method_nodes:
+                print(f"method:{node.text}")
 
-            sources.append(hunt_source)
+        sources.append(hunt_source)
     return sources
 
 
