@@ -1,38 +1,22 @@
+from dataclasses import asdict
 import re
 import time
 import json
 import urllib
 import argparse
 from sys import exit
-from enum import Enum
-from typing import Dict, List, Optional, Tuple
-from analytics.lib.tree import NlpNode as Node
+from typing import Dict, Iterable, List, MutableMapping, Optional, Sequence, Tuple
 
 import openpyxl
 from stanfordcorenlp import StanfordCoreNLP
+
+from analytics.lib.tree import NlpNode as Node
+from analytics.lib.data_types import PoachingData, Source, SOURCES, LEXICON, SourceData, SourceInfo
 
 full_text = ''
 data = []
 nlp = None
 
-class Source(Enum):
-    BUY = '收购'
-    HUNT = '猎捕'
-    SELL = '出售'
-    TRANSPORT = '运输'
-
-with open('src_keywords.json', 'r', encoding='utf8') as f:
-    SOURCES = json.load(f)
-
-with open("lexicon.json", "r", encoding="utf8") as f:
-    LEXICON = json.load(f)
-
-SOURCE_KEY_MAP = {
-    Source.BUY: "buy",
-    Source.HUNT: "hunt",
-    Source.SELL: "sell",
-    Source.TRANSPORT: "transport",
-}
 
 def init_nlp_server(host: str, port: int, server_path: Optional[str] = None):
     global nlp
@@ -169,7 +153,7 @@ def get_all_name_occurrences(text, names):
     return name_occurrences
 
 
-def get_location(data):
+def get_location(data) -> Tuple[Optional[str], str, bool]:
     place = '公诉机关'
     is_detected = True
 
@@ -198,7 +182,7 @@ def get_location(data):
     return (None, None, is_detected)
 
 
-def get_sentence(data):
+def get_sentence(data) -> List[str]:
     sentence = []
     data_reversed = list(reversed(data))
     number = 0
@@ -220,7 +204,7 @@ def get_sentence(data):
     return sentence
 
 
-def get_species_info(text):
+def get_species_info(text) -> MutableMapping[str, str]:
 
     appeared_species = {}
 
@@ -233,28 +217,33 @@ def get_species_info(text):
     return appeared_species
 
 
-def get_sources_info(data: str, title: str, sentence: str, names: str):
+def get_sources_info(data: Sequence[str], title: Optional[str], sentence: Sequence[str], names: List[str]) -> List[SourceData]:
     # preprocess the title
+    defendant_sources_info = {name: SourceData(name=name) for name in names}
     name_exp = str(names)[1:len(str(names)) - 1].replace(', ', '|').replace('\'','')
-    title_list = re.sub(r'(((被告人)?(' + name_exp + ')(、)?)+)', r'\n\1', title).split()
+    # title_list = re.sub(r'(((被告人)?(' + name_exp + ')(、)?)+)', r'\n\1', title if title is not None else "").split()
 
-    (sources_info, missings) = fetch_sources_from_text(names, title_list)
+    # (sources_info, missings) = fetch_sources_from_text(names, title_list)
 
-    if(len(missings) > 0):
-        (result, __) = fetch_sources_from_text(missings, sentence)
-        for info in result:
-            sources_info.append(info)
+    # if(len(missings) > 0):
+    #     (result, _) = fetch_sources_from_text(missings, sentence)
+    #     sources_info += result
+    
+    def update_defendant_source_info(names: Iterable[str], data: Iterable[SourceInfo]) -> None:
+        for source in data:
+            if source.is_empty():
+                continue
+            for name in names:
+                if source.type in (Source.BUY, Source.HUNT):
+                    defendant_sources_info[name].input.append(source)
+                else:
+                    defendant_sources_info[name].output.append(source)
 
     # Lookup lines in which the subject's name appears
     for line in data:
-        found = False
+        names_mentioned = [name for name in names if name in line]
 
-        for name in names:
-            if name in line:
-                found = True
-                break
-
-        if found:
+        if len(names_mentioned) > 0:
             _, tree_dict = nlp_parse(line)
 
             # Find sources details for type '收购'
@@ -267,37 +256,36 @@ def get_sources_info(data: str, title: str, sentence: str, names: str):
                     # "PP" generally corresponds to locations, dates, and etc.
                     pp_nodes = context_node.dfs(annotation="PP", count=2, before=node)
                     highlights = set()
-                    result = []
+                    buy_sources: list[SourceInfo] = []
                     for pp_node in pp_nodes:
                         highlights.add(pp_node)
                         np_node = pp_node.dfs_one(annotation="NP")
                         if np_node:
                             highlights.add(np_node)
-                            result.append(np_node.text)
-                    if result:
-                        print(result)
+                            buy_sources.append(SourceInfo(type=Source.BUY, occasion=np_node.text))
+
+                    update_defendant_source_info(names_mentioned, buy_sources)
 
             for keyword in SOURCES[Source.SELL.value]:
                 for node in tree_dict.get(keyword, []):
                     if node.annotation != "VV":
                         continue
                     context_node = node.up(3)
-                    result = {"occasion": [], "buyer": []}
+                    sell_source = SourceInfo(Source.SELL)
 
                     np_node = context_node.dfs_one(annotation="NP")
                     if np_node:
                         prep_node = context_node.dfs_one(text="给", after=node)
                         if prep_node:
-                            result["buyer"].append(np_node.text)
+                            sell_source.buyer = np_node.text
 
-                    pp_node = context_node.dfs_one(annotation="PP", before=node)
-                    if pp_node:
-                        np_node = pp_node.dfs_one(annotation="NP")
+                    pre_pp_node = context_node.dfs_one(annotation="PP", before=node)
+                    if pre_pp_node:
+                        np_node = pre_pp_node.dfs_one(annotation="NP")
                         if np_node:
-                            result["occasion"].append(np_node.text)
+                            sell_source.occasion = np_node.text
 
-                    if result["occasion"] or result["buyer"]:
-                        print(result)
+                    update_defendant_source_info(names_mentioned, [sell_source])
 
             for keyword in SOURCES[Source.TRANSPORT.value]:
                 for node in tree_dict.get(keyword, []):
@@ -308,38 +296,38 @@ def get_sources_info(data: str, title: str, sentence: str, names: str):
 
             for keyword in SOURCES[Source.HUNT.value]:
                 for node in tree_dict.get(keyword, []):
-                    context_node = node.up(4)
-                    result = []
+                    context_node = node.up(5)
+                    hunt_source = SourceInfo(Source.HUNT)
 
                     pp_node = context_node.dfs_one(annotation="P", text="在", before=node)
                     if pp_node:
                         np_node = pp_node.up(1).dfs_one(annotation={"NP", "VP"})
                         if np_node:
-                            result.append(np_node.text)
-                    if result:
-                        print(result)
+                            hunt_source.occasion = np_node.text
 
-    return sources_info
+                    update_defendant_source_info(names_mentioned, [hunt_source])
+
+    return list(defendant_sources_info.values())
 
 
-def fetch_sources_from_text(names, lines):
+def fetch_sources_from_text(names: List[str], lines: Iterable[str]) -> Tuple[List[SourceData], List[str]]:
     result = []
     _names = names.copy()
 
     for name in _names:
-        info = {'name': name}
+        info = SourceData(name=name)
         for line in lines:
             if name in line:
                 input_ = get_input_sources(line)
                 output = get_output_sources(line)
 
                 if len(input_) > 0:
-                    info['input'] = input_
+                    info.input = input_
 
                 if len(output) > 0:
-                    info['output'] = output
+                    info.output = output
 
-        if len(info['input']) > 0 or len(info['output']) > 0:
+        if len(info.input) > 0 or len(info.output) > 0:
             result.append(info)
             _names.remove(name)
 
@@ -354,42 +342,41 @@ def nlp_parse(text) -> Tuple[Node, Dict[str, List[Node]]]:
     return (node, node.tree_dict)
 
 
-def get_input_sources(text):
+def get_input_sources(text) -> List[SourceInfo]:
     result = []
 
     # Determine the input method according to the charges
     if Source.BUY.value in text:
-        result.append({'type': Source.BUY.value, 'details': {'occasion': None, 'seller': None}})
+        result.append(SourceInfo(type=Source.BUY))
 
     if Source.HUNT.value in text:
-        result.append({'type': Source.HUNT.value, 'details': {'method': None}})
+        result.append(SourceInfo(type=Source.HUNT))
 
     return result
 
 
-def get_output_sources(text):
+def get_output_sources(text: str) -> List[SourceInfo]:
     result = []
 
     # Determine the output method according to the charges
     if Source.SELL.value in text:
-        result.append({'type': Source.SELL.value, 'details': {'occasion': None, 'buyer': None}})
+        SourceInfo(type=Source.SELL)
 
     if Source.TRANSPORT.value in text:
-        result.append({'type': Source.TRANSPORT.value, 'details': {'vehicle': None}})
+        SourceInfo(type=Source.TRANSPORT)
 
     return result
 
 
-def from_open_law(file):
-    data = {}
+def from_open_law(file) -> List[PoachingData]:
+    result: List[PoachingData] = []
     book = openpyxl.load_workbook(file)
 
     sheet = book.active
 
     max_row = sheet.max_row
     
-    for i in range(2, max_row + 1):
-    # for i in range(15, 16):
+    for i in range(2, 3):# max_row + 1):
         '''
         G:  location
         J:  defendant
@@ -401,83 +388,61 @@ def from_open_law(file):
         '''
 
         print('\rNOW PROCESSING: ' + str(i - 1) + '/' + str(max_row), end='')
-        detail = {}
+        poaching_data = PoachingData(data_id=f"OpenLaw #{i - 1}")
+        result.append(poaching_data)
 
-        defendant = sheet['J' + str(i)].value
+        defendant: str = sheet['J' + str(i)].value
         if not defendant:
-            data[i-1] = {}
             continue
 
-        defendant = defendant.split('、')
-        for j in defendant:
-            if len(j) > 4:
-                defendant.remove(j)
-        detail['defendant'] = defendant
+        poaching_data.defendants = [name for name in defendant.split('、') if len(name) <= 4]
 
         # print(sheet['G' + str(i)])
-        location = sheet['G' + str(i)].value
-        detail['location'] = location
+        poaching_data.location = sheet['G' + str(i)].value
 
-        defendant_info = []
-        for name in defendant:
-            #tmp = []
-            tmp = sheet['R' + str(i)].value.replace('。、', '。\n').split()
-            defendant_info.append(get_info(tmp, name))
-        detail['defendant_info'] = defendant_info
+        for name in poaching_data.defendants:
+            raw_info = sheet['R' + str(i)].value.replace('。、', '。\n').split()
+            poaching_data.defendant_info.append(get_info(raw_info, name))
 
-        sentence = sheet['AD' + str(i)].value.replace(':、',
-                                                      '：\n').replace('：、', '：\n').replace('。、', '。\n').split()
-        detail['sentence'] = sentence
+        poaching_data.sentence = sheet['AD' + str(i)].value.replace(':、', '：\n').replace('：、', '：\n').replace('。、', '。\n').split()
 
-        species_info = get_species_info(sheet['V' + str(i)].value)
-        detail['species_info'] = species_info
+        poaching_data.species_info = get_species_info(sheet['V' + str(i)].value)
 
-        title = sheet['A' + str(i)].value
-        detail['title'] = title
+        poaching_data.title = sheet['A' + str(i)].value
 
-        number = sheet['B' + str(i)].value
-        detail['number'] = number
+        poaching_data.number = sheet['B' + str(i)].value
 
-        sources_info = get_sources_info(sheet['V' + str(i)].value.split('。、'), title, sentence, defendant)
-        detail['sources_info'] = sources_info
+        poaching_data.sources_info = get_sources_info(sheet['V' + str(i)].value.split('。、'), poaching_data.title, poaching_data.sentence, poaching_data.defendants)
 
-        data[i-1] = detail
-
-    return data
+    return result
 
 
 def from_file(file):
     global full_text
 
-    detail = {}
+    result = []
 
     with open(file, 'r', encoding='utf-8') as doc:
-        for line in doc.readlines():
-            if line.strip():
-                full_text += line
-                data.append(line.strip())
+        data = [line for line in [line.strip() for line in doc.readlines()] if line]
+        full_text = "".join(data)
 
-        defendant = get_name(data)
-        detail['defendant'] = defendant
+        poaching_data = PoachingData(data_id=doc.name)
 
-        location = get_location(data)
+        poaching_data.defendants = get_name(data)
 
-        detail['location'] = location
+        poaching_data.location, _, _ = get_location(data)
 
-        defendant_info = []
-        for name in defendant:
+        for name in poaching_data.defendants:
             person_info = get_info(data, name)
-            defendant_info.append(person_info)
+            poaching_data.defendant_info.append(person_info)
 
-        detail['defendant_info'] = defendant_info
+        poaching_data.sentence = get_sentence(data)
 
-        sentence = get_sentence(data)
-        detail['sentence'] = sentence
+        poaching_data.species_info = get_species_info(full_text)
 
-        species_info = get_species_info(full_text)
-        detail['species_info '] = species_info
+        result.append(poaching_data)
 
-    return detail
+    return result
 
 
 def main(file, opt_file):
@@ -486,14 +451,14 @@ def main(file, opt_file):
         result = from_open_law(file)
         if opt_file:
             with open(opt_file, 'w', encoding='utf-8') as opt:
-                json.dump(result, opt, ensure_ascii=False)
+                json.dump([asdict(data) for data in result], opt, ensure_ascii=False)
 
     else:
         print('DETECTED: file')
         result = from_file(file)
         if opt_file:
             with open(opt_file, 'w') as opt:
-                json.dump(result, opt, ensure_ascii=False)
+                json.dump([asdict(data) for data in result], opt, ensure_ascii=False)
 
 
 if __name__ == '__main__':
