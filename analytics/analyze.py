@@ -398,15 +398,17 @@ def get_output_sources(text: str) -> List[SourceInfo]:
     return result
 
 
-def from_open_law(file) -> List[PoachingData]:
+def from_open_law(file: str, limit: Optional[int] = None) -> List[PoachingData]:
     result: List[PoachingData] = []
     book = openpyxl.load_workbook(file)
 
     sheet = book.active
 
     max_row = sheet.max_row
+    if limit and limit < max_row:
+        max_row = limit + 1
     
-    for i in range(2, 3):# max_row + 1):
+    for i in range(2, max_row + 1):
         '''
         G:  location
         J:  defendant
@@ -417,7 +419,7 @@ def from_open_law(file) -> List[PoachingData]:
         B:  number
         '''
 
-        print('\rNOW PROCESSING: ' + str(i - 1) + '/' + str(max_row), end='')
+        print('\rNOW PROCESSING: ' + str(i - 1) + '/' + str(max_row - 1), end='')
         poaching_data = PoachingData(data_id=f"OpenLaw #{i - 1}")
         result.append(poaching_data)
 
@@ -447,7 +449,7 @@ def from_open_law(file) -> List[PoachingData]:
     return result
 
 
-def from_file(file):
+def from_file(file: str):
     global full_text
 
     result = []
@@ -475,10 +477,10 @@ def from_file(file):
     return result
 
 
-def main(file, opt_file):
+def main(file: str, opt_file: str, limit: Optional[int] = None):
     if file[-5:] == '.xlsx':
         print('DETECTED: OpenLaw data')
-        result = from_open_law(file)
+        result = from_open_law(file, limit)
         if opt_file:
             with open(opt_file, 'w', encoding='utf-8') as opt:
                 json.dump([asdict(data) for data in result], opt, ensure_ascii=False)
@@ -499,6 +501,7 @@ if __name__ == '__main__':
     parser.add_argument("--port", "-p", default=9000, type=int, help="The port number of the nlp server (default: 9000)")
     parser.add_argument("--out", "-o", help="The destination of the generated file (optional)")
     parser.add_argument("--server", "-s", help="The path to the Stanford CoreNLP Server (optional)")
+    parser.add_argument("--limit", "-l", type=int, help="The maximum number of entries to be processed in each file (optional)")
 
     args = parser.parse_args()
 
@@ -507,7 +510,7 @@ if __name__ == '__main__':
     starttime = time.time()
 
     for file in args.target:
-        main(file, args.out)
+        main(file, args.out, args.limit)
 
     endtime = time.time()
 
