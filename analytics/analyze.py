@@ -217,6 +217,95 @@ def get_species_info(text) -> MutableMapping[str, str]:
     return appeared_species
 
 
+def get_buy_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
+    sources = []
+    # Find sources details for type '收购'
+    for keyword in SOURCES[Source.BUY.value]:
+        for node in tree_dict.get(keyword, []):
+            # For the token (keywords like '收购') located, we go up in the tree by 4 levels to search
+            # within a context of interest
+            context_node = node.up(4)
+            # "PP" generally corresponds to locations, dates, and etc.
+            pp_nodes = context_node.dfs(annotation="PP", count=2, before=node)
+            highlights = set()
+            for pp_node in pp_nodes:
+                highlights.add(pp_node)
+                np_node = pp_node.dfs_one(annotation="NP")
+                if np_node:
+                    highlights.add(np_node)
+                    sources.append(SourceInfo(type=Source.BUY, occasion=np_node.text))
+    return sources    
+
+
+def get_sell_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
+    sources = []
+    for keyword in SOURCES[Source.SELL.value]:
+        for node in tree_dict.get(keyword, []):
+            if node.annotation != "VV":
+                continue
+            context_node = node.up(3)
+            sell_source = SourceInfo(Source.SELL)
+
+            np_node = context_node.dfs_one(annotation="NP")
+            if np_node:
+                prep_node = context_node.dfs_one(text="给", after=node)
+                if prep_node:
+                    sell_source.buyer = np_node.text
+
+            pre_pp_node = context_node.dfs_one(annotation="PP", before=node)
+            if pre_pp_node:
+                np_node = pre_pp_node.dfs_one(annotation="NP")
+                if np_node:
+                    sell_source.occasion = np_node.text
+            sources.append(sell_source)
+    return sources
+
+
+def get_transport_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
+    sources = []
+    for keyword in SOURCES[Source.TRANSPORT.value]:
+        for node in tree_dict.get(keyword, []):
+            context_node = node.up(3)
+            transport_source = SourceInfo(Source.TRANSPORT)
+            from_symbol = context_node.dfs_one(text=("从", "自"))
+            dest_symbol = context_node.dfs_one(text=("到", "至"))
+
+            if from_symbol:
+                from_node = context_node.dfs_one(annotation="NP", after=from_symbol, before=dest_symbol)
+                if from_node:
+                    transport_source.occasion = from_node.text
+            if dest_symbol:
+                dest_node = context_node.dfs_one(annotation="NP", after=dest_symbol)
+                if dest_node:
+                    transport_source.destination = dest_node.text
+
+            sources.append(transport_source)
+    return sources
+
+
+def get_hunt_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
+    sources = []
+    for keyword in SOURCES[Source.HUNT.value]:
+        for node in tree_dict.get(keyword, []):
+            context_node = node.up(5)
+            hunt_source = SourceInfo(Source.HUNT)
+
+            occasion_symbol = context_node.dfs_one(annotation="P", text="在", before=node)
+            if occasion_symbol:
+                occasion_node = occasion_symbol.up(1).dfs_one(annotation={"NP", "VP"})
+                if occasion_node:
+                    hunt_source.occasion = occasion_node.text
+
+            method_symbol = context_node.dfs_one(text="方式", before=node)
+            if method_symbol:
+                method_nodes = context_node.dfs(annotation="VV", before=method_symbol)
+                for node in method_nodes:
+                    print(f"method:{node.text}")
+
+            sources.append(hunt_source)
+    return sources
+
+
 def get_sources_info(data: Sequence[str], title: Optional[str], sentence: Sequence[str], names: List[str]) -> List[SourceData]:
     # preprocess the title
     defendant_sources_info = {name: SourceData(name=name) for name in names}
@@ -245,67 +334,8 @@ def get_sources_info(data: Sequence[str], title: Optional[str], sentence: Sequen
 
         if len(names_mentioned) > 0:
             _, tree_dict = nlp_parse(line)
-
-            # Find sources details for type '收购'
-            for keyword in SOURCES[Source.BUY.value]:
-                for node in tree_dict.get(keyword, []):
-                    # For the token (keywords like '收购') located, we go up in the tree by 4 levels to search
-                    # within a context of interest
-                    context_node = node.up(4)
-
-                    # "PP" generally corresponds to locations, dates, and etc.
-                    pp_nodes = context_node.dfs(annotation="PP", count=2, before=node)
-                    highlights = set()
-                    buy_sources: list[SourceInfo] = []
-                    for pp_node in pp_nodes:
-                        highlights.add(pp_node)
-                        np_node = pp_node.dfs_one(annotation="NP")
-                        if np_node:
-                            highlights.add(np_node)
-                            buy_sources.append(SourceInfo(type=Source.BUY, occasion=np_node.text))
-
-                    update_defendant_source_info(names_mentioned, buy_sources)
-
-            for keyword in SOURCES[Source.SELL.value]:
-                for node in tree_dict.get(keyword, []):
-                    if node.annotation != "VV":
-                        continue
-                    context_node = node.up(3)
-                    sell_source = SourceInfo(Source.SELL)
-
-                    np_node = context_node.dfs_one(annotation="NP")
-                    if np_node:
-                        prep_node = context_node.dfs_one(text="给", after=node)
-                        if prep_node:
-                            sell_source.buyer = np_node.text
-
-                    pre_pp_node = context_node.dfs_one(annotation="PP", before=node)
-                    if pre_pp_node:
-                        np_node = pre_pp_node.dfs_one(annotation="NP")
-                        if np_node:
-                            sell_source.occasion = np_node.text
-
-                    update_defendant_source_info(names_mentioned, [sell_source])
-
-            for keyword in SOURCES[Source.TRANSPORT.value]:
-                for node in tree_dict.get(keyword, []):
-                    context_node = node.up(3)
-                    result = []
-
-                    #print(context_node.text)
-
-            for keyword in SOURCES[Source.HUNT.value]:
-                for node in tree_dict.get(keyword, []):
-                    context_node = node.up(5)
-                    hunt_source = SourceInfo(Source.HUNT)
-
-                    pp_node = context_node.dfs_one(annotation="P", text="在", before=node)
-                    if pp_node:
-                        np_node = pp_node.up(1).dfs_one(annotation={"NP", "VP"})
-                        if np_node:
-                            hunt_source.occasion = np_node.text
-
-                    update_defendant_source_info(names_mentioned, [hunt_source])
+            sources = get_buy_sources(tree_dict) + get_sell_sources(tree_dict) + get_transport_sources(tree_dict) + get_hunt_sources(tree_dict)
+            update_defendant_source_info(names_mentioned, sources)
 
     return list(defendant_sources_info.values())
 

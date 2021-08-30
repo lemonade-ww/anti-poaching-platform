@@ -34,6 +34,7 @@ class SourceInfo:
     seller: Optional[str] = None
     buyer: Optional[str] = None
     method: Optional[str] = None
+    destination: Optional[str] = None
 
     def is_empty(self) -> bool:
         return not self.occasion and not self.seller and not self.buyer and not self.method
