@@ -1,7 +1,11 @@
 import re
-from typing import Generator, Iterable, Mapping, Optional, Union, Container, Dict, List, Set
+from typing import Generator, Iterable, Mapping, Optional, TypedDict, Union, Container, Dict, List, Set
 
 QueryT = Optional[Union[str, Container[str]]]
+class Length(TypedDict):
+    min_length: int
+    max_length: int
+
 
 class NlpNode:
     @classmethod
@@ -52,9 +56,12 @@ class NlpNode:
                 prepared_text.append(child.text)
             self.text = "".join(prepared_text)
 
-    def match(self, text: QueryT = None, annotation: QueryT = None) -> bool:
+    def match(self, text: QueryT = None, annotation: QueryT = None, min_length: Optional[int] = None, max_length: Optional[int] = None) -> bool:
         """A helper funtion to see if the current NlpNode match the given conditionals
         When both text and annotation are None, this function always returns True"""
+        length = len(self.text)
+        if (min_length is not None and length < min_length) or (max_length is not None and length > max_length):
+            return False
         target_text = {text} if isinstance(text, str) else text
         target_annotation = {annotation} if isinstance(annotation, str) else annotation
         return (target_text is None or self.text in target_text) and (target_annotation is None or self.annotation in target_annotation)
@@ -98,12 +105,12 @@ class NlpNode:
             level -= 1
         return cur_node
 
-    def dfs_one(self, *, text: QueryT = None, annotation: QueryT = None, before: Optional["NlpNode"] = None, after: Optional["NlpNode"] = None) -> Optional["NlpNode"]:
+    def dfs_one(self, *, text: QueryT = None, annotation: QueryT = None, before: Optional["NlpNode"] = None, after: Optional["NlpNode"] = None, min_length: Optional[int] = None, max_length: Optional[int] = None) -> Optional["NlpNode"]:
         """A helper function to look up only one NlpNode"""
-        result = self.dfs(text=text, annotation=annotation, before=before, after=after)
+        result = self.dfs(text=text, annotation=annotation, before=before, after=after, min_length=min_length, max_length=max_length)
         return result[0] if len(result) > 0 else None
 
-    def dfs(self, *, text: QueryT = None, annotation: QueryT = None, count: int = 1, before: Optional["NlpNode"] = None, after: Optional["NlpNode"] = None) -> List["NlpNode"]:
+    def dfs(self, *, text: QueryT = None, annotation: QueryT = None, count: int = 1, before: Optional["NlpNode"] = None, after: Optional["NlpNode"] = None, min_length: Optional[int] = None, max_length: Optional[int] = None) -> List["NlpNode"]:
         """Conduct a depth first search for the first nth children matching the given conditionals"""
         stack: List["NlpNode"] = [self]
         result: List["NlpNode"] = []
@@ -112,7 +119,7 @@ class NlpNode:
         def loop(cur_node: "NlpNode") -> bool:
             """A helper function to help us conveniently break the outer while loop"""
             for NlpNode in cur_node.children:
-                if NlpNode.match(text, annotation):
+                if NlpNode.match(text, annotation, min_length, max_length):
                     result.append(NlpNode)
                     return False
                 if len(result) >= count:

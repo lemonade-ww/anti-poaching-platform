@@ -10,7 +10,7 @@ from typing import Dict, Iterable, List, MutableMapping, Optional, Sequence, Tup
 import openpyxl
 from stanfordcorenlp import StanfordCoreNLP
 
-from analytics.lib.tree import NlpNode as Node
+from analytics.lib.tree import Length, NlpNode as Node
 from analytics.lib.data_types import PoachingData, Source, SOURCES, LEXICON, SourceData, SourceInfo
 
 full_text = ''
@@ -217,6 +217,13 @@ def get_species_info(text) -> MutableMapping[str, str]:
     return appeared_species
 
 
+SHORT = 2
+MEDIUM = 6
+LONG_LONG = 20
+NAME_LENGTH = Length(min_length=SHORT, max_length=MEDIUM)
+PLACE_LENGTH = Length(min_length=SHORT, max_length=LONG_LONG)
+
+
 def get_buy_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
     sources = []
     # Find sources details for type '收购'
@@ -252,7 +259,7 @@ def get_sell_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
 
         pre_pp_node = context_node.dfs_one(annotation="PP", before=node)
         if pre_pp_node:
-            np_node = pre_pp_node.dfs_one(annotation="NP")
+            np_node = pre_pp_node.dfs_one(annotation="NP", **PLACE_LENGTH)
             if np_node:
                 sell_source.occasion = np_node.text
         sources.append(sell_source)
@@ -268,11 +275,11 @@ def get_transport_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
         dest_symbol = context_node.dfs_one(text=("到", "至"))
 
         if from_symbol:
-            from_node = context_node.dfs_one(annotation="NP", after=from_symbol, before=dest_symbol)
+            from_node = context_node.dfs_one(annotation="NP", after=from_symbol, before=dest_symbol, **PLACE_LENGTH)
             if from_node:
                 transport_source.occasion = from_node.text
         if dest_symbol:
-            dest_node = context_node.dfs_one(annotation="NP", after=dest_symbol)
+            dest_node = context_node.dfs_one(annotation="NP", after=dest_symbol, **PLACE_LENGTH)
             if dest_node:
                 transport_source.destination = dest_node.text
 
@@ -288,7 +295,7 @@ def get_hunt_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
 
         occasion_symbol = context_node.dfs_one(annotation="P", text="在", before=node)
         if occasion_symbol:
-            occasion_node = occasion_symbol.up(1).dfs_one(annotation={"NP", "VP"})
+            occasion_node = occasion_symbol.up(1).dfs_one(annotation={"NP", "VP"}, **PLACE_LENGTH)
             if occasion_node:
                 hunt_source.occasion = occasion_node.text
 
