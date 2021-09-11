@@ -227,7 +227,7 @@ PLACE_LENGTH = Length(min_length=SHORT, max_length=LONG_LONG)
 def get_buy_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
     sources = []
     # Find sources details for type '收购'
-    for node in Node.traverser(tree_dict, SOURCES[Source.BUY.value]):
+    for node in Node.text_traverser(tree_dict, SOURCES[Source.BUY.value]):
         # For the token (keywords like '收购') located, we go up in the tree by 4 levels to search
         # within a context of interest
         context_node = node.up(4)
@@ -245,7 +245,7 @@ def get_buy_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
 
 def get_sell_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
     sources = []
-    for node in Node.traverser(tree_dict, SOURCES[Source.SELL.value]):
+    for node in Node.text_traverser(tree_dict, SOURCES[Source.SELL.value]):
         if node.annotation != "VV":
             continue
         context_node = node.up(3)
@@ -268,7 +268,7 @@ def get_sell_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
 
 def get_transport_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
     sources = []
-    for node in Node.traverser(tree_dict, SOURCES[Source.TRANSPORT.value]):
+    for node in Node.text_traverser(tree_dict, SOURCES[Source.TRANSPORT.value]):
         context_node = node.up(3)
         transport_source = SourceInfo(Source.TRANSPORT)
         from_symbol = context_node.dfs_one(text=("从", "自"))
@@ -289,7 +289,7 @@ def get_transport_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
 
 def get_hunt_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
     sources = []
-    for node in Node.traverser(tree_dict, SOURCES[Source.HUNT.value]):
+    for node in Node.text_traverser(tree_dict, SOURCES[Source.HUNT.value]):
         context_node = node.up(5)
         hunt_source = SourceInfo(Source.HUNT)
 

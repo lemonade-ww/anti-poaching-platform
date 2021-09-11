@@ -1,7 +1,10 @@
 import re
-from typing import Generator, Iterable, Mapping, Optional, TypedDict, Union, Container, Dict, List, Set
+from typing import Callable, Generator, Iterable, Mapping, Optional, TypeVar, TypedDict, Union, Container, Dict, List, Set
 
 QueryT = Optional[Union[str, Container[str]]]
+_T = TypeVar("_T")
+
+
 class Length(TypedDict):
     min_length: int
     max_length: int
@@ -9,15 +12,25 @@ class Length(TypedDict):
 
 class NlpNode:
     @classmethod
-    def traverser(cls, tree_dict: Mapping[str, List["NlpNode"]], keywords: Iterable[str], repeat: bool = False) -> Generator["NlpNode", None, None]:
-        visited: Set[NlpNode] = set()
+    def _traverser(cls, tree_dict: Mapping[str, List["NlpNode"]], keywords: Iterable[str], get_identifier: Callable[["NlpNode"], _T], repeat: bool = False):
+        visited: Set[_T] = set()
         for keyword in keywords:
             for node in tree_dict.get(keyword, []):
                 if repeat:
                     yield node
-                elif not visited:
-                    visited.add(node)
-                    yield node
+                else:
+                    identifier = get_identifier(node)
+                    if identifier not in visited:
+                        visited.add(identifier)
+                        yield node
+
+    @classmethod
+    def traverser(cls, tree_dict: Mapping[str, List["NlpNode"]], keywords: Iterable[str], repeat: bool = False) -> Generator["NlpNode", None, None]:
+        return cls._traverser(tree_dict, keywords, lambda n: n, repeat)
+
+    @classmethod
+    def text_traverser(cls, tree_dict: Mapping[str, List["NlpNode"]], keywords: Iterable[str], repeat: bool = False) -> Generator["NlpNode", None, None]:
+        return cls._traverser(tree_dict, keywords, lambda n: n.text, repeat)
 
     def __init__(self, parent: Optional["NlpNode"], text: str, tree_dict: Optional[Dict[str, List["NlpNode"]]] = None):
         self.parent: Optional[NlpNode] = parent
