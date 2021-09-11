@@ -305,8 +305,16 @@ def get_hunt_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
             for node in method_nodes:
                 print(f"method:{node.text}")
 
-        sources.append(hunt_source)
+        hunt_source.usage = get_context_usage(context_node)
+
+        if hunt_source:
+            sources.append(hunt_source)
     return sources
+
+
+def get_context_usage(context_node: Node) -> Optional[str]:
+    usage_node = context_node.dfs_one(text=("剥皮", "泡酒"))
+    return usage_node.text if usage_node else None
 
 
 def get_sources_info(data: Sequence[str], title: Optional[str], sentence: Sequence[str], names: List[str]) -> List[SourceData]:
