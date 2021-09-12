@@ -5,7 +5,7 @@ import json
 import urllib
 import argparse
 from sys import exit
-from typing import Dict, Iterable, List, MutableMapping, Optional, Sequence, Tuple
+from typing import Container, Dict, Iterable, List, MutableMapping, Optional, Sequence, Tuple
 
 import openpyxl
 from stanfordcorenlp import StanfordCoreNLP
@@ -224,22 +224,35 @@ NAME_LENGTH = Length(min_length=SHORT, max_length=MEDIUM)
 PLACE_LENGTH = Length(min_length=SHORT, max_length=LONG_LONG)
 
 
-def get_buy_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
+def get_buy_sources(tree_dict: Dict[str, List[Node]], names: Optional[Container[str]] = None) -> List[SourceInfo]:
     sources = []
     # Find sources details for type '收购'
     for node in Node.text_traverser(tree_dict, SOURCES[Source.BUY.value]):
         # For the token (keywords like '收购') located, we go up in the tree by 4 levels to search
         # within a context of interest
         context_node = node.up(4)
+        buy_source = SourceInfo(Source.BUY)
         # "PP" generally corresponds to locations, dates, and etc.
-        pp_nodes = context_node.dfs(annotation="PP", count=2, before=node)
-        highlights = set()
-        for pp_node in pp_nodes:
-            highlights.add(pp_node)
-            np_node = pp_node.dfs_one(annotation="NP")
-            if np_node:
-                highlights.add(np_node)
-                sources.append(SourceInfo(type=Source.BUY, occasion=np_node.text))
+        occasion_keyword_node = context_node.dfs_one(text="在", before=node)
+        if occasion_keyword_node:
+            occasion_node = context_node.dfs_one(annotation=("NP", "PP"), before=node, after=occasion_keyword_node, **PLACE_LENGTH)
+            if occasion_node:
+                buy_source.occasion = occasion_node.text
+
+        seller_keyword_node = context_node.dfs_one(text=("向", "从", "经"), before=node)
+        if seller_keyword_node:
+            if names:
+                buyer_nodes = context_node.dfs(text=names, before=seller_keyword_node)
+                if buyer_nodes:
+                    buy_source.buyer = ",".join([buyer_node.text for buyer_node in buyer_nodes])
+
+            seller_node = context_node.dfs_one(annotation="NP", before=node, after=seller_keyword_node, **NAME_LENGTH)
+            if seller_node:
+                buy_source.seller = seller_node.text
+
+        buy_source.usage = get_context_usage(context_node)
+
+        sources.append(buy_source)
     return sources    
 
 
@@ -337,7 +350,7 @@ def get_sources_info(data: Sequence[str], title: Optional[str], sentence: Sequen
 
         if len(names_mentioned) > 0:
             _, tree_dict = nlp_parse(line)
-            sources = get_buy_sources(tree_dict) + get_sell_sources(tree_dict) + get_transport_sources(tree_dict) + get_hunt_sources(tree_dict)
+            sources = get_buy_sources(tree_dict, names_mentioned) + get_sell_sources(tree_dict) + get_transport_sources(tree_dict) + get_hunt_sources(tree_dict)
             update_defendant_source_info(names_mentioned, sources)
 
     return list(defendant_sources_info.values())
