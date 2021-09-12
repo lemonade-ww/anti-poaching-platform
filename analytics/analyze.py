@@ -320,14 +320,6 @@ def get_context_usage(context_node: Node) -> Optional[str]:
 def get_sources_info(data: Sequence[str], title: Optional[str], sentence: Sequence[str], names: List[str]) -> List[SourceData]:
     # preprocess the title
     defendant_sources_info = {name: SourceData(name=name) for name in names}
-    name_exp = str(names)[1:len(str(names)) - 1].replace(', ', '|').replace('\'','')
-    # title_list = re.sub(r'(((被告人)?(' + name_exp + ')(、)?)+)', r'\n\1', title if title is not None else "").split()
-
-    # (sources_info, missings) = fetch_sources_from_text(names, title_list)
-
-    # if(len(missings) > 0):
-    #     (result, _) = fetch_sources_from_text(missings, sentence)
-    #     sources_info += result
     
     def update_defendant_source_info(names: Iterable[str], data: Iterable[SourceInfo]) -> None:
         for source in data:
@@ -351,62 +343,12 @@ def get_sources_info(data: Sequence[str], title: Optional[str], sentence: Sequen
     return list(defendant_sources_info.values())
 
 
-def fetch_sources_from_text(names: List[str], lines: Iterable[str]) -> Tuple[List[SourceData], List[str]]:
-    result = []
-    _names = names.copy()
-
-    for name in _names:
-        info = SourceData(name=name)
-        for line in lines:
-            if name in line:
-                input_ = get_input_sources(line)
-                output = get_output_sources(line)
-
-                if len(input_) > 0:
-                    info.input = input_
-
-                if len(output) > 0:
-                    info.output = output
-
-        if len(info.input) > 0 or len(info.output) > 0:
-            result.append(info)
-            _names.remove(name)
-
-    return (result, _names)
-
-
 def nlp_parse(text) -> Tuple[Node, Dict[str, List[Node]]]:
     assert nlp is not None
     parse_res = nlp.parse(text)
 
     node = Node(None, parse_res)
     return (node, node.tree_dict)
-
-
-def get_input_sources(text) -> List[SourceInfo]:
-    result = []
-
-    # Determine the input method according to the charges
-    if Source.BUY.value in text:
-        result.append(SourceInfo(type=Source.BUY))
-
-    if Source.HUNT.value in text:
-        result.append(SourceInfo(type=Source.HUNT))
-
-    return result
-
-
-def get_output_sources(text: str) -> List[SourceInfo]:
-    result = []
-
-    # Determine the output method according to the charges
-    if Source.SELL.value in text:
-        SourceInfo(type=Source.SELL)
-
-    if Source.TRANSPORT.value in text:
-        SourceInfo(type=Source.TRANSPORT)
-
-    return result
 
 
 def from_open_law(file: str, limit: Optional[int] = None) -> List[PoachingData]:
