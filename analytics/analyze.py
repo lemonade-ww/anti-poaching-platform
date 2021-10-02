@@ -264,11 +264,11 @@ def get_sell_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
         context_node = node.up(3)
         sell_source = SourceInfo(Source.SELL)
 
-        np_node = context_node.dfs_one(annotation="NP")
-        if np_node:
-            prep_node = context_node.dfs_one(text="给", after=node)
-            if prep_node:
-                sell_source.buyer = np_node.text
+        seller_keyword_node = context_node.dfs_one(text="给", after=node)
+        if seller_keyword_node:
+            seller_node = context_node.dfs_one(annotation="NP", after=seller_keyword_node, **NAME_LENGTH)
+            if seller_node:
+                sell_source.buyer = seller_node.text
 
         pre_pp_node = context_node.dfs_one(annotation="PP", before=node)
         if pre_pp_node:
@@ -315,8 +315,6 @@ def get_hunt_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
         method_symbol = context_node.dfs_one(text="方式", before=node)
         if method_symbol:
             method_nodes = context_node.dfs(annotation="VV", before=method_symbol)
-            for node in method_nodes:
-                print(f"method:{node.text}")
 
         hunt_source.usage = get_context_usage(context_node)
 
@@ -326,14 +324,14 @@ def get_hunt_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
 
 
 def get_context_usage(context_node: Node) -> Optional[str]:
-    usage_node = context_node.dfs_one(text=("剥皮", "泡酒"))
+    usage_node = context_node.dfs_one(text={"剥皮", "泡酒", "食用", "烹饪"})
     return usage_node.text if usage_node else None
 
 
 def get_sources_info(data: Sequence[str], title: Optional[str], sentence: Sequence[str], names: List[str]) -> List[SourceData]:
     # preprocess the title
     defendant_sources_info = {name: SourceData(name=name) for name in names}
-    
+
     def update_defendant_source_info(names: Iterable[str], data: Iterable[SourceInfo]) -> None:
         for source in data:
             if source.is_empty():
