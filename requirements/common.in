@@ -1,0 +1,10 @@
+# Data analysis
+openpyxl
+stanfordcorenlp==3.9.1.1
+psutil
+
+# Database access
+pymysql
+
+# The backend framework
+django

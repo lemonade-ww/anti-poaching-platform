@@ -1,0 +1,15 @@
+-r common.txt
+
+# Scraper utilities
+beautifulsoup4
+
+# Code linting, tooling
+black
+isort
+mypy
+pip-tools
+
+# Typing
+django-stubs
+types-pymysql
+types-requests
