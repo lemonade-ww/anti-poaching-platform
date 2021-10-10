@@ -1,21 +1,38 @@
-from dataclasses import asdict
+import argparse
+import json
 import re
 import time
-import json
 import urllib
-from urllib.error import URLError
-
-import argparse
+from dataclasses import asdict
 from sys import exit
-from typing import Container, Dict, Iterable, List, MutableMapping, Optional, Sequence, Tuple, Union
+from typing import (
+    Container,
+    Dict,
+    Iterable,
+    List,
+    MutableMapping,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+)
+from urllib.error import URLError
 
 import openpyxl
 from stanfordcorenlp import StanfordCoreNLP
 
-from analytics.lib.tree import Length, NlpNode as Node
-from analytics.lib.data_types import PoachingData, Source, SOURCES, LEXICON, SourceData, SourceInfo
+from analytics.lib.data_types import (
+    LEXICON,
+    SOURCES,
+    PoachingData,
+    Source,
+    SourceData,
+    SourceInfo,
+)
+from analytics.lib.tree import Length
+from analytics.lib.tree import NlpNode as Node
 
-full_text = ''
+full_text = ""
 nlp: StanfordCoreNLP = None
 
 
@@ -29,28 +46,28 @@ def init_nlp_server(host: str, port: int, server_path: Optional[str] = None):
         urllib.request.urlopen(url)
 
     except URLError:
-        print(f'Cannot connect to the server via {url}...')
+        print(f"Cannot connect to the server via {url}...")
 
         if server_path:
             print(f"Trying to lanuch the server located at {server_path}")
             try:
                 from psutil import AccessDenied
-                nlp = StanfordCoreNLP(server_path,
-                                    lang='zh', port=port)
+
+                nlp = StanfordCoreNLP(server_path, lang="zh", port=port)
             except AccessDenied:
-                print('ACCESS DENIED, PLEASE RUN AS ROOT')
+                print("ACCESS DENIED, PLEASE RUN AS ROOT")
             except OSError as err:
                 print(err)
 
         print("Exiting now...")
         exit(1)
 
-    print(f'USING EXISTING SERVER ON {url}')
-    nlp = StanfordCoreNLP(host, lang='zh', port=port)
+    print(f"USING EXISTING SERVER ON {url}")
+    nlp = StanfordCoreNLP(host, lang="zh", port=port)
 
 
 def get_name(data):
-    keyword = '被告人'
+    keyword = "被告人"
     name = None
     name_dict = {}
 
@@ -59,17 +76,18 @@ def get_name(data):
         if keyword_location == -1:
             continue
 
-        check_range = line[keyword_location:len(
-            line)].replace('）', '')  # just in case
+        check_range = line[keyword_location : len(line)].replace(
+            "）", ""
+        )  # just in case
 
         # try to match names from previous results
-        '''for possible_name in name_list:
+        """for possible_name in name_list:
             # print(check_range[len(pattern):len(name)+len(pattern)])
             if check_range[len(pattern):len(possible_name)+len(pattern)] == possible_name:
-                return'''
-  
+                return"""
+
         ner_result = nlp.ner(check_range)
-        if ner_result[1][1] == 'PERSON':  # ner_result[0] is keyword
+        if ner_result[1][1] == "PERSON":  # ner_result[0] is keyword
 
             name = ner_result[1][0]
 
@@ -83,10 +101,17 @@ def get_name(data):
 
 
 def get_info(data, name):
-    info = {'name': name, 'gender': None, 'birth': None, 'race': None,
-            'education_level': None, 'is_valid_person': True, 'all_found': False}
+    info = {
+        "name": name,
+        "gender": None,
+        "birth": None,
+        "race": None,
+        "education_level": None,
+        "is_valid_person": True,
+        "all_found": False,
+    }
 
-    gender = {'男': '男', '女': '女', '男性': '男', '女性': '女'}
+    gender = {"男": "男", "女": "女", "男性": "男", "女性": "女"}
     splited_text = []
     # print(data)
 
@@ -96,15 +121,15 @@ def get_info(data, name):
 
         ner_result = nlp.ner(line)
 
-        if 'DATE' in str(ner_result):
+        if "DATE" in str(ner_result):
 
             for i in ner_result:
-                if i[1] == 'DEMONYM' or i[1] == 'NATIONALITY':  # find race info
-                    if '族' in i[0]:
-                        info['race'] = i[0]
+                if i[1] == "DEMONYM" or i[1] == "NATIONALITY":  # find race info
+                    if "族" in i[0]:
+                        info["race"] = i[0]
                         break
 
-            splited_text = line.split('。')[0].split('，')
+            splited_text = line.split("。")[0].split("，")
 
             gender_found = False
             birth_found = False
@@ -114,22 +139,22 @@ def get_info(data, name):
                     break
 
                 if i in gender:
-                    info['gender'] = gender[i]
+                    info["gender"] = gender[i]
                     gender_found = True
 
-                if '生' in i and not birth_found:
+                if "生" in i and not birth_found:
                     ner_result = nlp.ner(i)
-                    birth = ''
+                    birth = ""
                     for j in ner_result:
-                        if j[1] == 'DATE':
+                        if j[1] == "DATE":
                             birth += j[0]
 
-                    if birth and re.compile('[0-9]+').findall(birth):
-                        info['birth'] = birth
+                    if birth and re.compile("[0-9]+").findall(birth):
+                        info["birth"] = birth
                         birth_found = True
 
-                if '文化' in i or '文盲' in i and not education_level_found:
-                    info['education_level'] = i
+                if "文化" in i or "文盲" in i and not education_level_found:
+                    info["education_level"] = i
                     education_level_found = True
 
             break
@@ -137,10 +162,10 @@ def get_info(data, name):
     from collections import Counter
 
     if Counter(info.values())[None] == len(info) - 2:
-        info['is_valid_person'] = False
+        info["is_valid_person"] = False
 
     if not Counter(info.values())[None]:
-        info['all_found'] = True
+        info["all_found"] = True
 
     return info
 
@@ -155,7 +180,7 @@ def get_all_name_occurrences(text, names):
 
 
 def get_location(data) -> Union[Tuple[str, str, bool], Tuple[str, None, bool]]:
-    place = '公诉机关'
+    place = "公诉机关"
     is_detected = True
 
     for line in data:
@@ -163,20 +188,20 @@ def get_location(data) -> Union[Tuple[str, str, bool], Tuple[str, None, bool]]:
             continue
 
         ner_result = nlp.ner(line)
-        location = ''
+        location = ""
 
         for item in ner_result:
-            if item[1] == 'ORGANIZATION':
+            if item[1] == "ORGANIZATION":
                 location += item[0]
 
         if not location:
             is_detected = False
 
             from string import punctuation
-            punc = '，。、【 】 “”：；（）《》‘’「」？！()、%^>℃：.”“^-——=&#@￥' + punctuation
 
-            location = line[line.find(
-                place) + len(place):len(line)].strip(punc)
+            punc = "，。、【 】 “”：；（）《》‘’「」？！()、%^>℃：.”“^-——=&#@￥" + punctuation
+
+            location = line[line.find(place) + len(place) : len(line)].strip(punc)
 
         return (location, line, is_detected)
 
@@ -189,17 +214,17 @@ def get_sentence(data) -> List[str]:
     number = 0
 
     for number in range(0, len(data_reversed)):
-        if data_reversed[number][len(data_reversed[number])-5:] == '判决如下：':
+        if data_reversed[number][len(data_reversed[number]) - 5 :] == "判决如下：":
             break
 
-    for i in range(number, 0-1, -1):
+    for i in range(number, 0 - 1, -1):
         if not data_reversed[i].strip():
             break
 
-        '''text = data_reversed[i]
+        """text = data_reversed[i]
         ner_result = nlp.ner(text)
         if ner_result[0][1] != 'NUMBER' and text[0] != '（' and text[0:2] != '被告人':
-            break'''
+            break"""
         sentence.append(data_reversed[i])
 
     return sentence
@@ -209,7 +234,7 @@ def get_species_info(text) -> MutableMapping[str, str]:
 
     appeared_species = {}
 
-    #from ast import literal_eval
+    # from ast import literal_eval
 
     for species in LEXICON.keys():
         if species in text:
@@ -225,7 +250,9 @@ NAME_LENGTH = Length(min_length=SHORT, max_length=MEDIUM)
 PLACE_LENGTH = Length(min_length=SHORT, max_length=LONG_LONG)
 
 
-def get_buy_sources(tree_dict: Dict[str, List[Node]], names: Optional[Container[str]] = None) -> List[SourceInfo]:
+def get_buy_sources(
+    tree_dict: Dict[str, List[Node]], names: Optional[Container[str]] = None
+) -> List[SourceInfo]:
     sources = []
     # Find sources details for type '收购'
     for node in Node.text_traverser(tree_dict, SOURCES[Source.BUY.value]):
@@ -236,7 +263,12 @@ def get_buy_sources(tree_dict: Dict[str, List[Node]], names: Optional[Container[
         # "PP" generally corresponds to locations, dates, and etc.
         occasion_keyword_node = context_node.dfs_one(text="在", before=node)
         if occasion_keyword_node:
-            occasion_node = context_node.dfs_one(annotation=("NP", "PP"), before=node, after=occasion_keyword_node, **PLACE_LENGTH)
+            occasion_node = context_node.dfs_one(
+                annotation=("NP", "PP"),
+                before=node,
+                after=occasion_keyword_node,
+                **PLACE_LENGTH,
+            )
             if occasion_node:
                 buy_source.occasion = occasion_node.text
 
@@ -245,16 +277,20 @@ def get_buy_sources(tree_dict: Dict[str, List[Node]], names: Optional[Container[
             if names:
                 buyer_nodes = context_node.dfs(text=names, before=seller_keyword_node)
                 if buyer_nodes:
-                    buy_source.buyer = ",".join([buyer_node.text for buyer_node in buyer_nodes])
+                    buy_source.buyer = ",".join(
+                        [buyer_node.text for buyer_node in buyer_nodes]
+                    )
 
-            seller_node = context_node.dfs_one(annotation="NP", before=node, after=seller_keyword_node, **NAME_LENGTH)
+            seller_node = context_node.dfs_one(
+                annotation="NP", before=node, after=seller_keyword_node, **NAME_LENGTH
+            )
             if seller_node:
                 buy_source.seller = seller_node.text
 
         buy_source.usage = get_context_usage(context_node)
 
         sources.append(buy_source)
-    return sources    
+    return sources
 
 
 def get_sell_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
@@ -267,7 +303,9 @@ def get_sell_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
 
         seller_keyword_node = context_node.dfs_one(text="给", after=node)
         if seller_keyword_node:
-            seller_node = context_node.dfs_one(annotation="NP", after=seller_keyword_node, **NAME_LENGTH)
+            seller_node = context_node.dfs_one(
+                annotation="NP", after=seller_keyword_node, **NAME_LENGTH
+            )
             if seller_node:
                 sell_source.buyer = seller_node.text
 
@@ -289,11 +327,15 @@ def get_transport_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
         dest_symbol = context_node.dfs_one(text=("到", "至"))
 
         if from_symbol:
-            from_node = context_node.dfs_one(annotation="NP", after=from_symbol, before=dest_symbol, **PLACE_LENGTH)
+            from_node = context_node.dfs_one(
+                annotation="NP", after=from_symbol, before=dest_symbol, **PLACE_LENGTH
+            )
             if from_node:
                 transport_source.occasion = from_node.text
         if dest_symbol:
-            dest_node = context_node.dfs_one(annotation="NP", after=dest_symbol, **PLACE_LENGTH)
+            dest_node = context_node.dfs_one(
+                annotation="NP", after=dest_symbol, **PLACE_LENGTH
+            )
             if dest_node:
                 transport_source.destination = dest_node.text
 
@@ -309,7 +351,9 @@ def get_hunt_sources(tree_dict: Dict[str, List[Node]]) -> List[SourceInfo]:
 
         occasion_symbol = context_node.dfs_one(annotation="P", text="在", before=node)
         if occasion_symbol:
-            occasion_node = occasion_symbol.up(1).dfs_one(annotation={"NP", "VP"}, **PLACE_LENGTH)
+            occasion_node = occasion_symbol.up(1).dfs_one(
+                annotation={"NP", "VP"}, **PLACE_LENGTH
+            )
             if occasion_node:
                 hunt_source.occasion = occasion_node.text
 
@@ -329,11 +373,15 @@ def get_context_usage(context_node: Node) -> Optional[str]:
     return usage_node.text if usage_node else None
 
 
-def get_sources_info(data: Sequence[str], title: Optional[str], sentence: Sequence[str], names: List[str]) -> List[SourceData]:
+def get_sources_info(
+    data: Sequence[str], title: Optional[str], sentence: Sequence[str], names: List[str]
+) -> List[SourceData]:
     # preprocess the title
     defendant_sources_info = {name: SourceData(name=name) for name in names}
 
-    def update_defendant_source_info(names: Iterable[str], data: Iterable[SourceInfo]) -> None:
+    def update_defendant_source_info(
+        names: Iterable[str], data: Iterable[SourceInfo]
+    ) -> None:
         for source in data:
             if source.is_empty():
                 continue
@@ -349,7 +397,12 @@ def get_sources_info(data: Sequence[str], title: Optional[str], sentence: Sequen
 
         if len(names_mentioned) > 0:
             _, tree_dict = nlp_parse(line)
-            sources = get_buy_sources(tree_dict, names_mentioned) + get_sell_sources(tree_dict) + get_transport_sources(tree_dict) + get_hunt_sources(tree_dict)
+            sources = (
+                get_buy_sources(tree_dict, names_mentioned)
+                + get_sell_sources(tree_dict)
+                + get_transport_sources(tree_dict)
+                + get_hunt_sources(tree_dict)
+            )
             update_defendant_source_info(names_mentioned, sources)
 
     return list(defendant_sources_info.values())
@@ -372,9 +425,9 @@ def from_open_law(file: str, limit: Optional[int] = None) -> List[PoachingData]:
     max_row = sheet.max_row
     if limit and limit < max_row:
         max_row = limit + 1
-    
+
     for i in range(2, max_row + 1):
-        '''
+        """
         G:  location
         J:  defendant
         R:  defendant info
@@ -382,34 +435,47 @@ def from_open_law(file: str, limit: Optional[int] = None) -> List[PoachingData]:
         V:  details
         A:  title
         B:  number
-        '''
+        """
 
-        print('\rNOW PROCESSING: ' + str(i - 1) + '/' + str(max_row - 1), end='')
+        print("\rNOW PROCESSING: " + str(i - 1) + "/" + str(max_row - 1), end="")
         poaching_data = PoachingData(data_id=f"OpenLaw #{i - 1}")
         result.append(poaching_data)
 
-        defendant: str = sheet['J' + str(i)].value
+        defendant: str = sheet["J" + str(i)].value
         if not defendant:
             continue
 
-        poaching_data.defendants = [name for name in defendant.split('、') if len(name) <= 4]
+        poaching_data.defendants = [
+            name for name in defendant.split("、") if len(name) <= 4
+        ]
 
         # print(sheet['G' + str(i)])
-        poaching_data.location = sheet['G' + str(i)].value
+        poaching_data.location = sheet["G" + str(i)].value
 
         for name in poaching_data.defendants:
-            raw_info = sheet['R' + str(i)].value.replace('。、', '。\n').split()
+            raw_info = sheet["R" + str(i)].value.replace("。、", "。\n").split()
             poaching_data.defendant_info.append(get_info(raw_info, name))
 
-        poaching_data.sentence = sheet['AD' + str(i)].value.replace(':、', '：\n').replace('：、', '：\n').replace('。、', '。\n').split()
+        poaching_data.sentence = (
+            sheet["AD" + str(i)]
+            .value.replace(":、", "：\n")
+            .replace("：、", "：\n")
+            .replace("。、", "。\n")
+            .split()
+        )
 
-        poaching_data.species_info = get_species_info(sheet['V' + str(i)].value)
+        poaching_data.species_info = get_species_info(sheet["V" + str(i)].value)
 
-        poaching_data.title = sheet['A' + str(i)].value
+        poaching_data.title = sheet["A" + str(i)].value
 
-        poaching_data.number = sheet['B' + str(i)].value
+        poaching_data.number = sheet["B" + str(i)].value
 
-        poaching_data.sources_info = get_sources_info(sheet['V' + str(i)].value.split('。、'), poaching_data.title, poaching_data.sentence, poaching_data.defendants)
+        poaching_data.sources_info = get_sources_info(
+            sheet["V" + str(i)].value.split("。、"),
+            poaching_data.title,
+            poaching_data.sentence,
+            poaching_data.defendants,
+        )
 
     return result
 
@@ -419,7 +485,7 @@ def from_file(file: str):
 
     result = []
 
-    with open(file, 'r', encoding='utf-8') as doc:
+    with open(file, "r", encoding="utf-8") as doc:
         data = [line for line in [line.strip() for line in doc.readlines()] if line]
         full_text = "".join(data)
 
@@ -443,30 +509,50 @@ def from_file(file: str):
 
 
 def main(file: str, opt_file: str, limit: Optional[int] = None):
-    if file[-5:] == '.xlsx':
-        print('DETECTED: OpenLaw data')
+    if file[-5:] == ".xlsx":
+        print("DETECTED: OpenLaw data")
         result = from_open_law(file, limit)
         if opt_file:
-            with open(opt_file, 'w', encoding='utf-8') as opt:
+            with open(opt_file, "w", encoding="utf-8") as opt:
                 json.dump([asdict(data) for data in result], opt, ensure_ascii=False)
 
     else:
-        print('DETECTED: file')
+        print("DETECTED: file")
         result = from_file(file)
         if opt_file:
-            with open(opt_file, 'w') as opt:
+            with open(opt_file, "w") as opt:
                 json.dump([asdict(data) for data in result], opt, ensure_ascii=False)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Analyze the given data")
 
     parser.add_argument("target", nargs="+", help="The files to be analyzed")
-    parser.add_argument("--host", "-x", default="127.0.0.1", help="The host of the nlp server (default: 127.0.0.1)")
-    parser.add_argument("--port", "-p", default=9000, type=int, help="The port number of the nlp server (default: 9000)")
-    parser.add_argument("--out", "-o", help="The destination of the generated file (optional)")
-    parser.add_argument("--server", "-s", help="The path to the Stanford CoreNLP Server (optional)")
-    parser.add_argument("--limit", "-l", type=int, help="The maximum number of entries to be processed in each file (optional)")
+    parser.add_argument(
+        "--host",
+        "-x",
+        default="127.0.0.1",
+        help="The host of the nlp server (default: 127.0.0.1)",
+    )
+    parser.add_argument(
+        "--port",
+        "-p",
+        default=9000,
+        type=int,
+        help="The port number of the nlp server (default: 9000)",
+    )
+    parser.add_argument(
+        "--out", "-o", help="The destination of the generated file (optional)"
+    )
+    parser.add_argument(
+        "--server", "-s", help="The path to the Stanford CoreNLP Server (optional)"
+    )
+    parser.add_argument(
+        "--limit",
+        "-l",
+        type=int,
+        help="The maximum number of entries to be processed in each file (optional)",
+    )
 
     args = parser.parse_args()
 
@@ -479,4 +565,4 @@ if __name__ == '__main__':
 
     endtime = time.time()
 
-    print('\nUSED: ' + str(endtime - starttime) + 's')
+    print("\nUSED: " + str(endtime - starttime) + "s")

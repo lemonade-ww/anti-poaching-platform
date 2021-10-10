@@ -3,7 +3,6 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Mapping, MutableSequence, Optional, Sequence, TypedDict
 
-
 with open("src_keywords.json", "r", encoding="utf8") as f:
     SOURCES = json.load(f)
 
@@ -38,7 +37,9 @@ class SourceInfo:
     usage: Optional[str] = None
 
     def is_empty(self) -> bool:
-        return not self.occasion and not self.seller and not self.buyer and not self.method
+        return (
+            not self.occasion and not self.seller and not self.buyer and not self.method
+        )
 
 
 @dataclass
