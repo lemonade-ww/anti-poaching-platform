@@ -1,0 +1,12 @@
+[tool.mypy]
+scripts_are_modules = true
+show_traceback = true
+
+[[tool.mypy.overrides]]
+module = [
+    "openpyxl.*",
+    "stanfordcorenlp.*",
+    "psutil.*",
+    "bs4.*",
+]
+ignore_missing_imports = true

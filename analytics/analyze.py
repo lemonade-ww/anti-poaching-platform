@@ -3,9 +3,11 @@ import re
 import time
 import json
 import urllib
+from urllib.error import URLError
+
 import argparse
 from sys import exit
-from typing import Container, Dict, Iterable, List, MutableMapping, Optional, Sequence, Tuple
+from typing import Container, Dict, Iterable, List, MutableMapping, Optional, Sequence, Tuple, Union
 
 import openpyxl
 from stanfordcorenlp import StanfordCoreNLP
@@ -14,8 +16,7 @@ from analytics.lib.tree import Length, NlpNode as Node
 from analytics.lib.data_types import PoachingData, Source, SOURCES, LEXICON, SourceData, SourceInfo
 
 full_text = ''
-data = []
-nlp = None
+nlp: StanfordCoreNLP = None
 
 
 def init_nlp_server(host: str, port: int, server_path: Optional[str] = None):
@@ -27,7 +28,7 @@ def init_nlp_server(host: str, port: int, server_path: Optional[str] = None):
     try:
         urllib.request.urlopen(url)
 
-    except urllib.error.URLError:
+    except URLError:
         print(f'Cannot connect to the server via {url}...')
 
         if server_path:
@@ -153,7 +154,7 @@ def get_all_name_occurrences(text, names):
     return name_occurrences
 
 
-def get_location(data) -> Tuple[Optional[str], str, bool]:
+def get_location(data) -> Union[Tuple[str, str, bool], Tuple[str, None, bool]]:
     place = '公诉机关'
     is_detected = True
 
@@ -179,7 +180,7 @@ def get_location(data) -> Tuple[Optional[str], str, bool]:
 
         return (location, line, is_detected)
 
-    return (None, None, is_detected)
+    return ("", None, is_detected)
 
 
 def get_sentence(data) -> List[str]:

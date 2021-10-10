@@ -2,8 +2,8 @@ import json
 import pymysql
 
 
-db = pymysql.connect("localhost", "root",
-                     "ANTIPOACHINGplatform", "anti_poaching_platform")
+db = pymysql.connect(host="localhost", user="root",
+                     password="ANTIPOACHINGplatform", database="anti_poaching_platform")
 
 cursor = db.cursor()
 
