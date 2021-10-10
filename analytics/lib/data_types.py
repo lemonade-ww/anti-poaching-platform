@@ -1,13 +1,16 @@
 import json
+import os
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Mapping, MutableSequence, Optional, Sequence, TypedDict
+from typing import Mapping, MutableSequence, Optional
 
-with open("src_keywords.json", "r", encoding="utf8") as f:
+from analytics import ROOT_PATH
+
+with open(os.path.join(ROOT_PATH, "src_keywords.json"), "r", encoding="utf8") as f:
     SOURCES = json.load(f)
 
 
-with open("lexicon.json", "r", encoding="utf8") as f:
+with open(os.path.join(ROOT_PATH, "lexicon.json"), "r", encoding="utf8") as f:
     LEXICON = json.load(f)
 
 
