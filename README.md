@@ -1,4 +1,4 @@
-# anti-poaching-platform 中国盗猎大数据统计平台
+# Anti Poaching Platform 中国盗猎大数据统计平台 (暂定名)
 
 通过分析裁判文书网上的判决书, 通过可视化大数据的形式, 呈现出中国盗猎的最新动向和历史信息
 
