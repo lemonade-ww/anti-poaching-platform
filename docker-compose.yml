@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres:14-bullseye
+    restart: always
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      POSTGRES_DB: antipoaching
+      POSTGRES_USER: passerine
+      POSTGRES_PASSWORD: development_password
+
+  server:
+    build: .
+    volumes:
+      - ./server:/app/server
+    ports:
+      - 8000:8000
+    environment:
+      DJANGO_DEBUG: "true"
+      DJANGO_SETTINGS_MODULE: server.config.settings
+    depends_on:
+      - db
+
+volumes:
+    data:

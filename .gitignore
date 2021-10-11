@@ -1,4 +1,7 @@
+# General dot files to ignore
 .venv
-__pycache__
 .vscode
 .mypy_cache
+
+# Python specific generated folders
+__pycache__
