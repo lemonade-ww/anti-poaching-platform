@@ -1,12 +1,74 @@
-# anti-poaching-platform
+# anti-poaching-platform 中国盗猎大数据统计平台
 
-* lexicon.txt：物种名称词库，目前包括：
-    - 鸟纲
-    - 爬行纲
-    - 鱼纲
-    - 文昌鱼纲
-* data/：包含十份判决书与两份从[OpenLaw](http://openlaw.cn/)上批量下载的判决书数据
-    - openlaw.xlsx：批量下载的数据（前50份）
-    - openlaw_full.xlsx：批量下载的全部数据（1000份）
-* db/：数据库文件
-* opt.json：openlaw_full.xlsx清洗过后的数据
+通过分析裁判文书网上的判决书, 通过可视化大数据的形式, 呈现出中国盗猎的最新动向和历史信息
+
+项目使用Python构建, 通过Docker进行部署, 后端使用Django开发
+
+## 开发环境
+
+推荐使用 Linux. Windows下开发可使用 [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
+
+### 依赖
+
+- [Docker](https://docs.docker.com/engine/install/), [Docker Compose](https://docs.docker.com/compose/install/), [Python 3.10](https://www.python.org/downloads/release/python-3100/)
+
+
+部署项目 (开发环境):
+
+    docker-compose up
+
+
+## 结构概览
+
+    ├── Dockerfile
+    ├── Makefile
+    ├── README.md
+    ├── docker-compose.yml
+    ├── manage.py
+    ├── pyproject.toml
+    |   # 数据清洗/处理
+    ├── analytics
+    │   ├── analyze.py
+    |   |   # 现有的数据集, 包含十份判决书与两份从[OpenLaw](http://openlaw.cn/)上批量下载的判决书数据
+    │   ├── data
+    │   │   ├── *.txt
+    │   │   ├── lexicon.json  # 物种名称词库，目前包括：
+    |   |   |                 # - 鸟纲
+    |   |   |                 # - 爬行纲
+    |   |   |                 # - 鱼纲
+    |   |   |                 # - 文昌鱼纲
+    │   │   ├── openlaw.xlsx  # 批量下载的数据（前50份）
+    │   │   ├── openlaw_full.xlsx  # 批量下载的全部数据（1000份）
+    │   │   ├── opt.json  # openlaw_full.xlsx清洗过后的数据
+    │   │   └── src_keywords.json  # 盗猎来源关键词
+    │   ├── get_data.py  # 物种词库爬虫
+    |   |
+    │   └── lib
+    │       ├── data_types.py  # 数据分析的数据结构
+    │       ├── debug.py  # 来源分析debug工具
+    │       └── tree.py  # 构建来源分析树
+    |   # 项目Python依赖
+    ├── requirements
+    │   ├── common.in
+    │   ├── common.txt
+    │   ├── dev.in
+    │   └── dev.txt
+    |   # Django 项目
+    └── server
+        ├── asgi.py
+        ├── config
+        │   ├── common.py
+        │   ├── development.py
+        │   └── settings.py
+        ├── views
+        │   └── home.py
+        ├── models.py
+        ├── urls.py
+        └── wsgi.py
+
+## 待办事项
+
+- [ ] GraphGL支持
+- [ ] 数据库表结构及迁移
+- [ ] 配置生产环境
+- [ ] 集成测试
