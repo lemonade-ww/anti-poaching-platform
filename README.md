@@ -2,6 +2,9 @@
 
 通过分析裁判文书网上的判决书, 通过可视化大数据的形式, 呈现出中国盗猎的最新动向和历史信息
 
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://https://docker.com/)
+
 项目使用Python构建, 通过Docker进行部署, 后端使用Django开发
 
 ## 开发环境
