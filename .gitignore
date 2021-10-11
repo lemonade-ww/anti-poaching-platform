@@ -5,3 +5,6 @@
 
 # Python specific generated folders
 __pycache__
+
+# Mac generated files
+.DS_Store
