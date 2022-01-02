@@ -1,6 +1,6 @@
 VENV_DIR := .venv
 PYTHON_VENV := $(VENV_DIR)/bin/python
-TARGETS := analytics server manage.py
+TARGETS := lib $$(find ./ -maxdepth 1 -type f -name '*.py')
 
 .venv:
 	python3 -m venv $(VENV_DIR)
