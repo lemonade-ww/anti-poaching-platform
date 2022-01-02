@@ -4,10 +4,6 @@
 #
 #    pip-compile --allow-unsafe requirements/dev.in
 #
-asgiref==3.4.1
-    # via
-    #   -r requirements/common.txt
-    #   django
 beautifulsoup4==4.10.0
     # via -r requirements/dev.in
 black==21.9b0
@@ -24,14 +20,6 @@ click==8.0.2
     # via
     #   black
     #   pip-tools
-django==3.2.8
-    # via
-    #   -r requirements/common.txt
-    #   django-stubs
-django-stubs==1.9.0
-    # via -r requirements/dev.in
-django-stubs-ext==0.3.1
-    # via django-stubs
 et-xmlfile==1.1.0
     # via
     #   -r requirements/common.txt
@@ -43,9 +31,7 @@ idna==3.2
 isort==5.9.3
     # via -r requirements/dev.in
 mypy==0.910
-    # via
-    #   -r requirements/dev.in
-    #   django-stubs
+    # via -r requirements/dev.in
 mypy-extensions==0.4.3
     # via
     #   black
@@ -66,10 +52,6 @@ psutil==5.8.0
     #   stanfordcorenlp
 psycopg2-binary==2.9.1
     # via -r requirements/common.txt
-pytz==2021.3
-    # via
-    #   -r requirements/common.txt
-    #   django
 regex==2021.10.8
     # via black
 requests==2.26.0
@@ -78,30 +60,19 @@ requests==2.26.0
     #   stanfordcorenlp
 soupsieve==2.2.1
     # via beautifulsoup4
-sqlparse==0.4.2
-    # via
-    #   -r requirements/common.txt
-    #   django
 stanfordcorenlp==3.9.1.1
     # via -r requirements/common.txt
 toml==0.10.2
-    # via
-    #   django-stubs
-    #   mypy
+    # via mypy
 tomli==1.2.1
     # via black
 types-pymysql==1.0.2
     # via -r requirements/dev.in
-types-pytz==2021.1.2
-    # via django-stubs
-types-pyyaml==5.4.10
-    # via django-stubs
 types-requests==2.25.9
     # via -r requirements/dev.in
 typing-extensions==3.10.0.2
     # via
     #   black
-    #   django-stubs
     #   mypy
 urllib3==1.26.7
     # via

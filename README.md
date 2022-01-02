@@ -5,7 +5,7 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://https://docker.com/)
 
-项目使用Python构建, 通过Docker进行部署, 后端使用Django开发
+项目使用Python构建, 通过Docker进行部署
 
 ## 开发环境
 
@@ -27,7 +27,6 @@
     ├── Makefile
     ├── README.md
     ├── docker-compose.yml
-    ├── manage.py
     ├── pyproject.toml
     |   # 数据清洗/处理
     ├── analytics
@@ -56,18 +55,6 @@
     │   ├── common.txt
     │   ├── dev.in
     │   └── dev.txt
-    |   # Django 项目
-    └── server
-        ├── asgi.py
-        ├── config
-        │   ├── common.py
-        │   ├── development.py
-        │   └── settings.py
-        ├── views
-        │   └── home.py
-        ├── models.py
-        ├── urls.py
-        └── wsgi.py
 
 ## 待办事项
 

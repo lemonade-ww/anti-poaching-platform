@@ -11,8 +11,5 @@ module = [
 ]
 ignore_missing_imports = true
 
-[tool.django-stubs]
-django_settings_module = "server.config.settings"
-
 [tool.isort]
 profile = "black"

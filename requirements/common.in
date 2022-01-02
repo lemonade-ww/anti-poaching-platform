@@ -4,6 +4,3 @@ stanfordcorenlp==3.9.1.1
 
 # Database access
 psycopg2-binary
-
-# The backend framework
-django
