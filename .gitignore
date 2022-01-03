@@ -1,10 +1,13 @@
-# General dot files to ignore
-.venv
+# IDE configuration
 .vscode
-.mypy_cache
 
-# Python specific generated folders
+# Python virtual environment
+.venv
+
+# Python generated
 __pycache__
+**/*.pyc
+.mypy_cache
 
 # Mac generated files
 .DS_Store

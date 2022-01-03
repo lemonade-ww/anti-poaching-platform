@@ -6,11 +6,11 @@ from typing import Mapping, MutableSequence, Optional
 
 from analytics import ROOT_PATH
 
-with open(os.path.join(ROOT_PATH, "src_keywords.json"), "r", encoding="utf8") as f:
+with open(os.path.join(ROOT_PATH, "data", "src_keywords.json"), "r", encoding="utf8") as f:
     SOURCES = json.load(f)
 
 
-with open(os.path.join(ROOT_PATH, "lexicon.json"), "r", encoding="utf8") as f:
+with open(os.path.join(ROOT_PATH, "data", "lexicon.json"), "r", encoding="utf8") as f:
     LEXICON = json.load(f)
 
 

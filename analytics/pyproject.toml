@@ -13,3 +13,33 @@ ignore_missing_imports = true
 
 [tool.isort]
 profile = "black"
+
+[tool.poetry]
+name = "analytics"
+version = "0.1.0"
+description = ""
+authors = ["PIG208 <359101898@qq.com>", "Henry3510 <henrywang3510@gmail.com>"]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+openpyxl = ""
+stanfordcorenlp = "3.9.1.1"
+# Database access
+psycopg2-binary = ""
+
+[tool.poetry.dev-dependencies]
+# Scraper utilities
+beautifulsoup4 = ""
+# Code linting, tooling
+black = ""
+isort = ""
+mypy = ""
+pip-tools = ""
+# Typing
+types-pymysql = ""
+types-requests = ""
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
