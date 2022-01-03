@@ -13,9 +13,9 @@ ENV POETRY_VERSION=1.1.12 \
     POETRY_HOME="/opt/poetry" \
     POETRY_VIRTUALENVS_IN_PROJECT=true \
     POETRY_NO_INTERACTION=1 \
-    PYSETUP_PATH="/opt/pysetup" \
-    VENV_PATH="${PYSETUP_PATH}/.venv"
-ENV PATH="${POETRY_HOME}/bin:${VENV_PATH}/bin:${PATH}"
+    PYSETUP_PATH="/opt/pysetup"
+ENV VENV_PATH="${PYSETUP_PATH}/.venv" \
+    PATH="${POETRY_HOME}/bin:${VENV_PATH}/bin:${PATH}"
 
 # =================================
 # ||| ****** BUILD PHASE ****** |||
