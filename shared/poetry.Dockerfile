@@ -1,3 +1,6 @@
+# Use this dockerfile for different context
+# Adapted from https://github.com/michaeloliverx/python-poetry-docker-example/blob/master/docker/Dockerfile
+
 # Collect all the dependencies with poetry
 FROM python:3.10-slim-bullseye as base
 ENV POETRY_VERSION=1.1.12 \
@@ -12,13 +15,20 @@ ENV POETRY_VERSION=1.1.12 \
     POETRY_NO_INTERACTION=1 \
     PYSETUP_PATH="/opt/pysetup" \
     VENV_PATH="${PYSETUP_PATH}/.venv"
+ENV PATH="${POETRY_HOME}/bin:${VENV_PATH}/bin:${PATH}"
 
-# /// ****** BUILD PHASE ****** ///
+# =================================
+# ||| ****** BUILD PHASE ****** |||
+# =================================
 # Minimal dependencies
 FROM base as min-builder
-RUN pip install poetry==${POETRY_VERSION} \
-    && poetry config virtualenvs.create false
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+        curl \
+        build-essential
 
+# Install poetry with version POETRY_VERSION to POETRY_HOME
+RUN curl -sSL https://install.python-poetry.org | python3 -
 # Install the python requirements with poetry
 # This is cached unless the dependencies change
 WORKDIR ${PYSETUP_PATH}
@@ -30,8 +40,16 @@ FROM min-builder as dev-builder
 WORKDIR ${PYSETUP_PATH}
 RUN poetry install
 
-# /// ****** TARGET PHASE ****** ///
-FROM base as development
+# ==================================
+# ||| ****** TARGET PHASE ****** |||
+# ==================================
+FROM base as production-base
+COPY --from=min-builder ${VENV_PATH} ${VENV_PATH}
+
+WORKDIR ${APP_DIR}
+COPY . .
+
+FROM base as development-base
 COPY --from=dev-builder ${PYSETUP_PATH} ${PYSETUP_PATH}
 COPY --from=dev-builder ${POETRY_HOME} ${POETRY_HOME}
 
