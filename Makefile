@@ -77,6 +77,11 @@ push-latest:
 	@$(MAKE) -f $(THIS_FILE) push
 	@REVISION=latest $(MAKE) -f $(THIS_FILE) push
 
+.PHONY: bump-image
+bump-image: push-latest
+	git add $(THIS_FILE)
+	git commit -m "docker: Bump image revision"
+
 .PHONY: run-dev
 run-dev: $(DEV_SECRETS)
 	docker compose $(DEV_COMPOSE_ARGS) up -d --force-recreate
@@ -88,6 +93,12 @@ run-prod: $(PROD_SECRETS)
 .PHONY: run-lint
 run-lint:
 	docker compose $(LINT_COMPOSE_ARGS) up --remove-orphans
+
+.PHONY: clean-containers
+clean-containers:
+	docker compose $(DEV_COMPOSE_ARGS) rm
+	docker compose $(PROD_COMPOSE_ARGS) rm
+	docker compose $(LINT_COMPOSE_ARGS) rm
 
 .PHONY: clean-db
 clean-db:
