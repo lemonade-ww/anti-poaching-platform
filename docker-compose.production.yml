@@ -9,6 +9,11 @@ services:
       target: production
       args: 
         SERVICE_ROOT: analytics
+    secrets:
+      - pg_password
 
-volumes:
-    data:
+secrets:
+    pg_password:
+      file: secrets/prod/pg_password
+    pg_user:
+      file: secrets/prod/pg_user

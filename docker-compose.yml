@@ -4,12 +4,15 @@ services:
   db:
     image: postgres:14-bullseye
     restart: always
-    volumes:
-      - data:/var/lib/mysql
     environment:
       POSTGRES_DB: antipoaching
-      POSTGRES_USER: passerine
-      POSTGRES_PASSWORD: development_password
+      POSTGRES_USER_FILE: /run/secrets/pg_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    secrets:
+      - pg_password
+      - pg_user
 
   analytics:
     image: pig208/anti-poaching-analytics-dev:${REVISION:-latest}
@@ -21,4 +24,10 @@ services:
         SERVICE_ROOT: analytics
 
 volumes:
-    data:
+    pgdata:
+
+secrets:
+    pg_password:
+      file: secrets/dev/pg_password
+    pg_user:
+      file: secrets/dev/pg_user
