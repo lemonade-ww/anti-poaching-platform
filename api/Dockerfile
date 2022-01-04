@@ -3,8 +3,8 @@ INCLUDE+ shared/poetry.Dockerfile
 
 FROM production-base as production
 WORKDIR ${APP_DIR}
-CMD uvicorn api.main:app
+CMD ["uvicorn", "api.main:app", "--reload"]
 
 FROM development-base as development
 WORKDIR ${APP_DIR}
-CMD uvicorn api.main:app --reload
+CMD ["uvicorn", "api.main:app"]
