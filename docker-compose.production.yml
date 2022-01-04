@@ -2,12 +2,13 @@ version: '3.8'
 
 services:
   analytics:
-    image: pig208/anti-poaching-analytics-prod:latest
+    image: pig208/anti-poaching-analytics-prod:${REVISION:-latest}
     build:
-      context: analytics
-      target: production-base
-      dockerfile: ../shared/poetry.Dockerfile
-    command: ["echo", "running"]
+      context: .
+      dockerfile: analytics/Dockerfile
+      target: production
+      args: 
+        SERVICE_ROOT: analytics
 
 volumes:
     data:
