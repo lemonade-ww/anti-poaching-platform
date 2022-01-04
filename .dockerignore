@@ -1,2 +1,4 @@
 # Python specific generated files/directories
 __pycache__
+.venv
+.mypy_cache

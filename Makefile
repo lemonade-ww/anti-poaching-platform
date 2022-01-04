@@ -51,6 +51,11 @@ build-prod:
 	REVISION=${REVISION} docker compose $(PROD_COMPOSE_ARGS) \
 		build --parallel
 
+.PHONY: build-lint
+build-lint:
+	REVISION=${REVISION} docker compose $(LINT_COMPOSE_ARGS) \
+		build --parallel
+
 .PHONY: update-revision
 update-revision:
 	@set -e; \
