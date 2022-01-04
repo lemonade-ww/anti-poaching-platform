@@ -5,6 +5,8 @@ PROD_COMPOSE_ARGS := -f docker-compose.yml \
 DEV_COMPOSE_ARGS := -f docker-compose.yml \
 		-f docker-compose.development.yml \
 
+LINT_COMPOSE_ARGS := -f docker-compose.lint.yml
+
 export DOCKER_BUILDKIT = 1
 export COMPOSE_DOCKER_CLI_BUILD = 1
 
@@ -38,13 +40,13 @@ $(PROD_SECRETS): $(SECRETS_DIR)/prod
 	export TMP=$@; echo test$${TMP##*/} > $@
 
 .PHONY: build-dev
-build-dev: update-revision
+build-dev:
 	@echo "Building dev revision ${REVISION}"
 	REVISION=${REVISION} docker compose \
 		build --parallel
 
 .PHONY: build-prod
-build-prod: update-revision
+build-prod:
 	@echo "Building prod revision ${REVISION}"
 	REVISION=${REVISION} docker compose $(PROD_COMPOSE_ARGS) \
 		build --parallel
@@ -57,7 +59,7 @@ update-revision:
 		test $${NEW_REVISION} = $(REVISION) && echo "revision unchanged" || echo "$(REVISION) => $${NEW_REVISION}"
 
 .PHONY: push
-push:
+push: update-revision
 	@echo pushing $(REVISION)
 	REVISION=$(REVISION) docker compose push
 	REVISION=$(REVISION) docker compose \
@@ -77,6 +79,10 @@ run-dev: $(DEV_SECRETS)
 .PHONY: run-prod
 run-prod: $(PROD_SECRETS)
 	docker compose $(PROD_COMPOSE_ARGS) up -d
+
+.PHONY: run-lint
+run-lint:
+	docker compose $(LINT_COMPOSE_ARGS) up --remove-orphans
 
 .PHONY: clean-db
 clean-db:

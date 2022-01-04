@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  lint-analytics:
+    build:
+      context: .
+      dockerfile: analytics/Dockerfile
+      target: lint
+      args:
+        SERVICE_ROOT: analytics
+    volumes:
+      - ./analytics/analytics:/opt/app/analytics
