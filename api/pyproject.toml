@@ -1,0 +1,27 @@
+[tool.mypy]
+files = ["api/api"]
+
+[tool.isort]
+profile = "black"
+
+[tool.poetry]
+name = "api"
+version = "0.1.0"
+description = ""
+authors = ["PIG208 <359101898@qq.com>"]
+license = "Apache-2.0"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.70.1"
+uvicorn = "^0.16.0"
+pydantic = "^1.9.0"
+
+[tool.poetry.dev-dependencies]
+black = "^21.12b0"
+isort = "^5.10.1"
+mypy = "^0.930"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

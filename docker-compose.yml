@@ -20,8 +20,19 @@ services:
       context: .
       dockerfile: analytics/Dockerfile
       target: development
-      args: 
+      args:
         SERVICE_ROOT: analytics
+        SOURCE_DIRNAME: analytics
+
+  api:
+    image: pig208/anti-poaching-api-dev:${REVISION:-latest}
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+      target: development
+      args:
+        SERVICE_ROOT: api
+        SOURCE_DIRNAME: api
 
 volumes:
     pgdata:

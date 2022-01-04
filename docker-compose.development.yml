@@ -3,4 +3,8 @@ version: '3.8'
 services:
   analytics:
     volumes:
-      - ./analytics:/opt/app
+      - ./analytics/analytics:/opt/app/analytics
+
+  api:
+    volumes:
+      - ./api/api:/opt/app/api

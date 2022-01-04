@@ -7,9 +7,18 @@ services:
       context: .
       dockerfile: analytics/Dockerfile
       target: production
-      args: 
-        SERVICE_ROOT: analytics
     secrets:
+      - pg_user
+      - pg_password
+
+  api:
+    image: pig208/anti-poaching-api-dev:${REVISION:-latest}
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+      target: production
+    secrets:
+      - pg_user
       - pg_password
 
 secrets:

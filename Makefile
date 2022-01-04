@@ -79,7 +79,7 @@ push-latest:
 
 .PHONY: run-dev
 run-dev: $(DEV_SECRETS)
-	docker compose $(DEV_COMPOSE_ARGS) up -d
+	docker compose $(DEV_COMPOSE_ARGS) up -d --force-recreate
 
 .PHONY: run-prod
 run-prod: $(PROD_SECRETS)
