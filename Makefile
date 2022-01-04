@@ -10,7 +10,7 @@ LINT_COMPOSE_ARGS := -f docker-compose.lint.yml
 export DOCKER_BUILDKIT = 1
 export COMPOSE_DOCKER_CLI_BUILD = 1
 
-REVISION ?= 0f5e944
+REVISION ?= aa0f04c
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
