@@ -1,10 +1,24 @@
 version: '3.8'
 
 services:
-  lint-analytics:
+  analytics:
     build:
       context: .
       dockerfile: shared/lint.Dockerfile
       target: lint
+      args:
+        SERVICE_ROOT: analytics
+        SOURCE_DIRNAME: analytics
     volumes:
       - ./analytics/analytics:/opt/app/analytics
+
+  api:
+    build:
+      context: .
+      dockerfile: shared/lint.Dockerfile
+      target: lint
+      args:
+        SERVICE_ROOT: api
+        SOURCE_DIRNAME: api
+    volumes:
+      - ./api/api:/opt/app/api
