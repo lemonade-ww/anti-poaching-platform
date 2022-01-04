@@ -8,4 +8,4 @@ ARG SOURCE_DIRNAME=.
 ENV SOURCE_DIRNAME=${SOURCE_DIRNAME}
 WORKDIR ${APP_DIR}
 COPY ./shared/lint.sh /opt/tools/lint.sh
-CMD "/opt/tools/lint.sh" ${APP_DIR}/${SOURCE_DIRNAME}
+ENTRYPOINT [ "/opt/tools/lint.sh" ]

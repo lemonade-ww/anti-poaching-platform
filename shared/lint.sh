@@ -2,10 +2,10 @@
 
 set -e
 
-TARGETS=$(find $1 -type f -name '*.py')
+TARGETS=$(find ${APP_DIR}/${SOURCE_DIRNAME} -type f -name '*.py')
 
 set -x
 
-poetry run black $TARGETS
-poetry run isort $TARGETS
-poetry run mypy $TARGETS
+exec poetry run black $TARGETS && \
+    poetry run isort $TARGETS && \
+    poetry run mypy $TARGETS
