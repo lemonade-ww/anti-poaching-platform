@@ -6,7 +6,9 @@ from typing import Mapping, MutableSequence, Optional
 
 from analytics import ROOT_PATH
 
-with open(os.path.join(ROOT_PATH, "data", "src_keywords.json"), "r", encoding="utf8") as f:
+with open(
+    os.path.join(ROOT_PATH, "data", "src_keywords.json"), "r", encoding="utf8"
+) as f:
     SOURCES = json.load(f)
 
 
