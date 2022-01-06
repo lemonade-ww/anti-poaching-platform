@@ -95,7 +95,7 @@ run-prod: $(PROD_SECRETS)
 
 .PHONY: run-lint
 run-lint:
-	docker compose $(LINT_COMPOSE_ARGS) up --remove-orphans
+	docker compose $(LINT_COMPOSE_ARGS) up
 
 .PHONY: clean-containers
 clean-containers:

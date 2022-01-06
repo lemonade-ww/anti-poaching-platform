@@ -1,9 +1,9 @@
 from typing import List
 
+from sqlalchemy import Enum, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import Column, ForeignKey
-from sqlalchemy import Enum, Integer, String
 
 from api.utils.enums import ConservationStatus, ProtectionClass
 
@@ -63,4 +63,3 @@ class TaxonSpecies(Base):
     conservation_status = Column(Enum(ConservationStatus))
 
     genus = relationship(TaxonGenus, backref="species", uselist=False)
-
