@@ -12,7 +12,7 @@ SERVICES := api analytics
 export DOCKER_BUILDKIT = 1
 export COMPOSE_DOCKER_CLI_BUILD = 1
 
-REVISION ?= 85756a6
+REVISION ?= 81b78a2
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
