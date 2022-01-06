@@ -8,3 +8,5 @@ services:
   api:
     volumes:
       - ./api/api:/opt/app/api
+      - ./api/alembic:/opt/app/alembic
+      - ./api/alembic.ini:/opt/app/alembic.ini

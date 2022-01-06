@@ -13,7 +13,7 @@ Base = declarative_base()
 class TaxonClass(Base):
     __tablename__ = "taxon_class"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(12), nullable=False, unique=True)
 
     orders: List["TaxonOrder"] = relationship("TaxonOrder", backref="class_")
@@ -22,7 +22,7 @@ class TaxonClass(Base):
 class TaxonOrder(Base):
     __tablename__ = "taxon_order"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(12), nullable=False, unique=True)
     class_id = Column(Integer, ForeignKey(TaxonClass.id), nullable=False)
 
@@ -33,7 +33,7 @@ class TaxonOrder(Base):
 class TaxonFamily(Base):
     __tablename__ = "taxon_family"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(12), nullable=False, unique=True)
     order_id = Column(Integer, ForeignKey(TaxonOrder.id), nullable=False)
 
@@ -44,7 +44,7 @@ class TaxonFamily(Base):
 class TaxonGenus(Base):
     __tablename__ = "taxon_genus"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(12), nullable=False, unique=True)
     family_id = Column(Integer, ForeignKey(TaxonFamily.id), nullable=False)
 
@@ -55,7 +55,7 @@ class TaxonGenus(Base):
 class TaxonSpecies(Base):
     __tablename__ = "taxon_species"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(12), nullable=False, unique=True)
     genus_id = Column(Integer, ForeignKey(TaxonGenus.id))
 

@@ -22,3 +22,4 @@ services:
         SOURCE_DIRNAME: api
     volumes:
       - ./api/api:/opt/app/api
+      - ./api/alembic:/opt/app/api/alembic

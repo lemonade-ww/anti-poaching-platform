@@ -33,6 +33,9 @@ services:
         SERVICE_ROOT: api
     ports:
       - 8000:8000
+    restart: on-failure
+    depends_on: 
+      - db
     environment:
       - PG_HOST=db
       - PG_DBNAME=antipoaching

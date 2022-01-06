@@ -12,7 +12,7 @@ SERVICES := api analytics
 export DOCKER_BUILDKIT = 1
 export COMPOSE_DOCKER_CLI_BUILD = 1
 
-REVISION ?= 81b78a2
+REVISION ?= 25af745
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
@@ -87,15 +87,15 @@ bump-image: push-latest
 
 .PHONY: run-dev
 run-dev: $(DEV_SECRETS)
-	docker compose $(DEV_COMPOSE_ARGS) up -d --force-recreate
+	REVISION=$(REVISION) docker compose $(DEV_COMPOSE_ARGS) up -d --force-recreate $(SERVICES)
 
 .PHONY: run-prod
 run-prod: $(PROD_SECRETS)
-	docker compose $(PROD_COMPOSE_ARGS) up -d
+	REVISION=$(REVISION) docker compose $(PROD_COMPOSE_ARGS) up -d $(SERVICES)
 
 .PHONY: run-lint
 run-lint:
-	docker compose $(LINT_COMPOSE_ARGS) up
+	REVISION=$(REVISION) docker compose $(LINT_COMPOSE_ARGS) up
 
 .PHONY: clean-containers
 clean-containers:
