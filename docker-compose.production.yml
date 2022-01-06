@@ -1,6 +1,19 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:14-bullseye
+    restart: on-failure
+    environment:
+      POSTGRES_DB: antipoaching
+      POSTGRES_USER_FILE: /run/secrets/pg_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password
+    volumes:
+      - pgdataprod:/var/lib/postgresql/data
+    secrets:
+      - pg_password
+      - pg_user
+
   analytics:
     image: pig208/anti-poaching-analytics-prod:${REVISION:-latest}
     build:
@@ -12,7 +25,7 @@ services:
       - pg_password
 
   api:
-    image: pig208/anti-poaching-api-dev:${REVISION:-latest}
+    image: pig208/anti-poaching-api-prod:${REVISION:-latest}
     build:
       context: .
       dockerfile: api/Dockerfile
@@ -20,6 +33,9 @@ services:
     secrets:
       - pg_user
       - pg_password
+
+volumes:
+    pgdataprod:
 
 secrets:
     pg_password:

@@ -10,7 +10,7 @@ LINT_COMPOSE_ARGS := -f docker-compose.lint.yml
 export DOCKER_BUILDKIT = 1
 export COMPOSE_DOCKER_CLI_BUILD = 1
 
-REVISION ?= aa0f04c
+REVISION ?= 85756a6
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
@@ -43,18 +43,18 @@ $(PROD_SECRETS): $(SECRETS_DIR)/prod
 build-dev:
 	@echo "Building dev revision ${REVISION}"
 	REVISION=${REVISION} docker compose $(DEV_COMPOSE_ARGS) \
-		build --parallel
+		build api analytics --parallel
 
 .PHONY: build-prod
 build-prod:
 	@echo "Building prod revision ${REVISION}"
 	REVISION=${REVISION} docker compose $(PROD_COMPOSE_ARGS) \
-		build --parallel
+		build api analytics --parallel
 
 .PHONY: build-lint
 build-lint:
 	REVISION=${REVISION} docker compose $(LINT_COMPOSE_ARGS) \
-		build --parallel
+		build api analytics --parallel
 
 .PHONY: update-revision
 update-revision:
@@ -66,14 +66,12 @@ update-revision:
 .PHONY: push
 push: update-revision
 	@echo pushing $(REVISION)
-	REVISION=$(REVISION) docker compose push
-	REVISION=$(REVISION) docker compose \
-		-f docker-compose.yml \
-		-f docker-compose.production.yml \
-		push
+	REVISION=$(REVISION) docker compose $(DEV_COMPOSE_ARGS) push
+	REVISION=$(REVISION) docker compose $(PROD_COMPOSE_ARGS) push
 
 .PHONY: push-latest
 push-latest:
+	@REVISION=latest $(MAKE) -f $(THIS_FILE) build
 	@$(MAKE) -f $(THIS_FILE) push
 	@REVISION=latest $(MAKE) -f $(THIS_FILE) push
 
