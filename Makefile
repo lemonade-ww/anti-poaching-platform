@@ -42,7 +42,7 @@ $(PROD_SECRETS): $(SECRETS_DIR)/prod
 .PHONY: build-dev
 build-dev:
 	@echo "Building dev revision ${REVISION}"
-	REVISION=${REVISION} docker compose \
+	REVISION=${REVISION} docker compose $(DEV_COMPOSE_ARGS) \
 		build --parallel
 
 .PHONY: build-prod
