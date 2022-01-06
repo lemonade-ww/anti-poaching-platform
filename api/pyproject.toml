@@ -1,5 +1,8 @@
 [tool.mypy]
-files = ["api/api"]
+plugins = ["sqlalchemy.ext.mypy.plugin"]
+
+[tool.black]
+target_version = ["py310"]
 
 [tool.isort]
 profile = "black"
@@ -16,6 +19,9 @@ python = "^3.10"
 fastapi = "^0.70.1"
 uvicorn = "^0.16.0"
 pydantic = "^1.9.0"
+SQLAlchemy = "^1.4.29"
+sqlalchemy2-stubs = "^0.0.2-alpha.19"
+psycopg2-binary = "^2.9.3"
 
 [tool.poetry.dev-dependencies]
 black = "^21.12b0"

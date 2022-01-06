@@ -31,6 +31,14 @@ services:
       target: development
       args:
         SERVICE_ROOT: api
+    ports:
+      - 8000:8000
+    environment:
+      - PG_HOST=db
+      - PG_DBNAME=antipoaching
+    secrets:
+      - pg_password
+      - pg_user
 
 volumes:
     pgdata:
