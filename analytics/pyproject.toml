@@ -13,6 +13,7 @@ ignore_missing_imports = true
 
 [tool.isort]
 profile = "black"
+overwrite_in_place = true
 
 [tool.poetry]
 name = "analytics"

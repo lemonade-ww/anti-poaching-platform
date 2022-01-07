@@ -6,6 +6,7 @@ target_version = ["py310"]
 
 [tool.isort]
 profile = "black"
+overwrite_in_place = true
 
 [tool.poetry]
 name = "api"
