@@ -1,6 +1,3 @@
-# syntax = edrevo/dockerfile-plus
-INCLUDE+ shared/poetry.Dockerfile
+FROM pig208/poetry:3.10-onbuild as production
 
-FROM production-base as production
-
-FROM development-base as development
+FROM pig208/poetry:3.10-onbuild as development

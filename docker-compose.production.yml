@@ -17,9 +17,10 @@ services:
   analytics:
     image: pig208/anti-poaching-analytics-prod:${REVISION:-latest}
     build:
-      context: .
-      dockerfile: analytics/Dockerfile
+      context: analytics
       target: production
+      args:
+        REQUIREMENTS_TXT: requirements/min.txt
     secrets:
       - pg_user
       - pg_password
@@ -27,9 +28,10 @@ services:
   api:
     image: pig208/anti-poaching-api-prod:${REVISION:-latest}
     build:
-      context: .
-      dockerfile: api/Dockerfile
+      context: api
       target: production
+      args:
+        REQUIREMENTS_TXT: requirements/min.txt
     secrets:
       - pg_user
       - pg_password

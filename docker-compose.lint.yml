@@ -5,10 +5,11 @@ services:
     build:
       context: .
       dockerfile: shared/lint.Dockerfile
-      target: lint
       args:
-        SERVICE_ROOT: analytics
-        SOURCE_DIRNAME: analytics
+        SOURCE_DIR: analytics
+        REQUIREMENTS_TXT: analytics/requirements/dev.txt
+    environment:
+      TARGET_DIR: /opt/app/analytics
     volumes:
       - ./analytics/analytics:/opt/app/analytics
 
@@ -16,10 +17,11 @@ services:
     build:
       context: .
       dockerfile: shared/lint.Dockerfile
-      target: lint
       args:
-        SERVICE_ROOT: api
-        SOURCE_DIRNAME: api
+        SOURCE_DIR: api
+        REQUIREMENTS_TXT: api/requirements/dev.txt
+    environment:
+      TARGET_DIR: /opt/app/api
     volumes:
       - ./api/api:/opt/app/api
       - ./api/alembic:/opt/app/api/alembic

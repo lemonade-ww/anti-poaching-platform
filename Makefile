@@ -12,7 +12,7 @@ SERVICES := api analytics
 export DOCKER_BUILDKIT = 1
 export COMPOSE_DOCKER_CLI_BUILD = 1
 
-REVISION ?= 25af745
+REVISION ?= 8d81487
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
@@ -56,7 +56,7 @@ build-prod:
 .PHONY: build-lint
 build-lint:
 	REVISION=${REVISION} docker compose $(LINT_COMPOSE_ARGS) \
-		build $(SERVICES) --parallel
+		build --parallel
 
 .PHONY: update-revision
 update-revision:

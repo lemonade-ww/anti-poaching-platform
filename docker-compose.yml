@@ -17,20 +17,18 @@ services:
   analytics:
     image: pig208/anti-poaching-analytics-dev:${REVISION:-latest}
     build:
-      context: .
-      dockerfile: analytics/Dockerfile
+      context: analytics
       target: development
       args:
-        SERVICE_ROOT: analytics
+        REQUIREMENTS_TXT: requirements/dev.txt
 
   api:
     image: pig208/anti-poaching-api-dev:${REVISION:-latest}
     build:
-      context: .
-      dockerfile: api/Dockerfile
+      context: api
       target: development
       args:
-        SERVICE_ROOT: api
+        REQUIREMENTS_TXT: requirements/dev.txt
     ports:
       - 8000:8000
     restart: on-failure
