@@ -1,7 +1,4 @@
-FROM pig208/poetry:3.10-onbuild as production
+FROM pig208/poetry:3.10-onbuild
 WORKDIR /opt/app
-CMD ["uvicorn", "--host", "0.0.0.0", "api.main:app"]
-
-FROM pig208/poetry:3.10-onbuild as development
-WORKDIR /opt/app
-CMD ["uvicorn", "--reload", "--host", "0.0.0.0", "api.main:app"]
+COPY ./docker-entrypoint.sh .
+CMD ["./docker-entrypoint.sh"]

@@ -26,7 +26,6 @@ services:
     image: pig208/anti-poaching-api-dev:${REVISION:-latest}
     build:
       context: api
-      target: development
       args:
         REQUIREMENTS_TXT: requirements/dev.txt
     ports:
@@ -35,8 +34,8 @@ services:
     depends_on: 
       - db
     environment:
-      - PG_HOST=db
-      - PG_DBNAME=antipoaching
+      PG_HOST: db
+      PG_DBNAME: antipoaching
     secrets:
       - pg_password
       - pg_user

@@ -12,7 +12,7 @@ SERVICES := api analytics
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
 LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 
-IMAGE_REVISION ?= 77c45fc
+IMAGE_REVISION ?= a1a3ef7
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
@@ -73,7 +73,7 @@ push:
 	docker compose $(PROD_COMPOSE_ARGS) push $(SERVICES)
 
 $(LATEST_IMAGES):
-	echo $@ | docker tag $$(sed "s/latest/$(REVISION)/") $@
+	@echo $@ | docker tag $$(sed "s/latest/$(REVISION)/") $@
 
 tag-latest: $(LATEST_IMAGES)  # Tag latest images assuming images of the current revision all exist
 
@@ -114,3 +114,4 @@ clean-containers:
 clean-db:
 	docker compose down db
 	docker volume rm anti-poaching-platform_pgdata
+	docker volume rm anti-poaching-platform_pgdataprod

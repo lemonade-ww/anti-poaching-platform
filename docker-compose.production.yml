@@ -29,9 +29,10 @@ services:
     image: pig208/anti-poaching-api-prod:${REVISION:-latest}
     build:
       context: api
-      target: production
       args:
         REQUIREMENTS_TXT: requirements/min.txt
+    environment:
+      PRODUCTION: 1
     secrets:
       - pg_user
       - pg_password
