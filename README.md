@@ -16,9 +16,19 @@
   - 取消 `Switch`，改用 `Routes`
   - 取消 `component={组件名}`，改用 `element={<组件名/>}`
   - 取消 `Redirect to`，改用`Navigate to` ： 
-  ```js
-  <Routes>
+   ```js
+   <Routes>
     <Route path='/home' element={<Home/>}></Route>
-    <Route path="/home" render={() => <Navigate to="/home" />} />
-  </Routes>
-  ```
+   </Routes>
+   ```
+
+### 2022年1月7日
+
+主要内容
+1. react-router v6的重定向问题：
+   ```js
+   <Route path="*" element={<Navigate to="/" />} />
+   ```
+
+2. 自定义link组件
+3. 添加Header组件文本
