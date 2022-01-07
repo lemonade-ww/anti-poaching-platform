@@ -7,17 +7,21 @@ DEV_COMPOSE_ARGS := -f docker-compose.yml \
 
 LINT_COMPOSE_ARGS := -f docker-compose.lint.yml
 
+# The services that will be built and pushed all the time
 SERVICES := api analytics
+IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
+LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 
-export DOCKER_BUILDKIT = 1
-export COMPOSE_DOCKER_CLI_BUILD = 1
-
-REVISION ?= 8d81487
+IMAGE_REVISION ?= 77c45fc
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
 DEV_SECRETS := $(addprefix $(SECRETS_DIR)/dev/,$(SECRET_NAMES))
 PROD_SECRETS := $(addprefix $(SECRETS_DIR)/prod/,$(SECRET_NAMES))
+
+export DOCKER_BUILDKIT = 1
+export COMPOSE_DOCKER_CLI_BUILD = 1
+export REVISION = $(IMAGE_REVISION)
 
 help:
 	@echo "make build - Build all dependencies"
@@ -44,41 +48,43 @@ $(PROD_SECRETS): $(SECRETS_DIR)/prod
 .PHONY: build-dev
 build-dev:
 	@echo "Building dev revision ${REVISION}"
-	REVISION=${REVISION} docker compose $(DEV_COMPOSE_ARGS) \
-		build $(SERVICES) --parallel
+	docker compose $(DEV_COMPOSE_ARGS) build $(SERVICES) --parallel
 
 .PHONY: build-prod
 build-prod:
 	@echo "Building prod revision ${REVISION}"
-	REVISION=${REVISION} docker compose $(PROD_COMPOSE_ARGS) \
-		build $(SERVICES) --parallel
+	docker compose $(PROD_COMPOSE_ARGS) build $(SERVICES) --parallel
 
 .PHONY: build-lint
 build-lint:
-	REVISION=${REVISION} docker compose $(LINT_COMPOSE_ARGS) \
-		build --parallel
+	docker compose $(LINT_COMPOSE_ARGS) build $(SERVICES) --parallel
 
 .PHONY: update-revision
 update-revision:
 	@set -e; \
 		NEW_REVISION=$$(git rev-parse --short HEAD); \
-		sed -i "0,/REVISION ?= */{s/REVISION ?= .*/REVISION ?= $${NEW_REVISION}/}" $(THIS_FILE); \
-		test $${NEW_REVISION} = $(REVISION) && echo "revision unchanged" || echo "$(REVISION) => $${NEW_REVISION}"
+		sed -i "0,/IMAGE_REVISION ?= */{s/IMAGE_REVISION ?= .*/IMAGE_REVISION ?= $${NEW_REVISION}/}" $(THIS_FILE); \
+		test $${NEW_REVISION} = $(IMAGE_REVISION) && echo "revision unchanged" || echo "$(IMAGE_REVISION) => $${NEW_REVISION}"
 
 .PHONY: push
 push:
 	@echo pushing $(REVISION)
-	REVISION=$(REVISION) docker compose $(DEV_COMPOSE_ARGS) push $(SERVICES)
-	REVISION=$(REVISION) docker compose $(PROD_COMPOSE_ARGS) push $(SERVICES)
+	docker compose $(DEV_COMPOSE_ARGS) push $(SERVICES)
+	docker compose $(PROD_COMPOSE_ARGS) push $(SERVICES)
+
+$(LATEST_IMAGES):
+	echo $@ | docker tag $$(sed "s/latest/$(REVISION)/") $@
+
+tag-latest: $(LATEST_IMAGES)  # Tag latest images assuming images of the current revision all exist
 
 .PHONY: push-latest
 push-latest:
 	@$(MAKE) -f $(THIS_FILE) update-revision
 
 	@$(MAKE) -f $(THIS_FILE) build
-	@REVISION=latest $(MAKE) -f $(THIS_FILE) build
+	@$(MAKE) -f $(THIS_FILE) tag-latest
 	@$(MAKE) -f $(THIS_FILE) push
-	@REVISION=latest $(MAKE) -f $(THIS_FILE) push
+	@IMAGE_REVISION=latest $(MAKE) -f $(THIS_FILE) push
 
 .PHONY: bump-image
 bump-image: push-latest
@@ -87,18 +93,19 @@ bump-image: push-latest
 
 .PHONY: run-dev
 run-dev: $(DEV_SECRETS)
-	REVISION=$(REVISION) docker compose $(DEV_COMPOSE_ARGS) up -d --force-recreate $(SERVICES)
+	docker compose $(DEV_COMPOSE_ARGS) up -d --force-recreate $(SERVICES)
 
 .PHONY: run-prod
 run-prod: $(PROD_SECRETS)
-	REVISION=$(REVISION) docker compose $(PROD_COMPOSE_ARGS) up -d $(SERVICES)
+	docker compose $(PROD_COMPOSE_ARGS) up -d $(SERVICES)
 
 .PHONY: run-lint
 run-lint:
-	REVISION=$(REVISION) docker compose $(LINT_COMPOSE_ARGS) up
+	docker compose $(LINT_COMPOSE_ARGS) up $(SERVICES)
 
 .PHONY: clean-containers
 clean-containers:
+	docker compose down
 	docker compose $(DEV_COMPOSE_ARGS) rm
 	docker compose $(PROD_COMPOSE_ARGS) rm
 	docker compose $(LINT_COMPOSE_ARGS) rm
