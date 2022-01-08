@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Type, TypeVar
 
 from sqlalchemy import Enum, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
@@ -8,6 +8,8 @@ from sqlalchemy.sql.schema import Column, ForeignKey
 from api.utils.enums import ConservationStatus, ProtectionClass
 
 Base = declarative_base()
+BaseT = TypeVar("BaseT", bound=Base)
+ModelT = Type[BaseT]
 
 
 class TaxonClass(Base):
@@ -26,7 +28,6 @@ class TaxonOrder(Base):
     name = Column(String(12), nullable=False, unique=True)
     class_id = Column(Integer, ForeignKey(TaxonClass.id), nullable=False)
 
-    class_: TaxonClass = relationship(TaxonClass, backref="orders", uselist=False)
     families: List["TaxonFamily"] = relationship("TaxonFamily", backref="order")
 
 
@@ -37,7 +38,6 @@ class TaxonFamily(Base):
     name = Column(String(12), nullable=False, unique=True)
     order_id = Column(Integer, ForeignKey(TaxonOrder.id), nullable=False)
 
-    order: TaxonOrder = relationship(TaxonOrder, backref="families")
     genuses: List["TaxonGenus"] = relationship("TaxonGenus", backref="family")
 
 
@@ -48,7 +48,6 @@ class TaxonGenus(Base):
     name = Column(String(12), nullable=False, unique=True)
     family_id = Column(Integer, ForeignKey(TaxonFamily.id), nullable=False)
 
-    family = relationship(TaxonFamily, backref="genuses", uselist=False)
     species: List["TaxonSpecies"] = relationship("TaxonSpecies", backref="genus")
 
 
@@ -57,9 +56,7 @@ class TaxonSpecies(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(12), nullable=False, unique=True)
-    genus_id = Column(Integer, ForeignKey(TaxonGenus.id))
+    genus_id = Column(Integer, ForeignKey(TaxonGenus.id), nullable=False)
 
     protection_class = Column(Enum(ProtectionClass))
     conservation_status = Column(Enum(ConservationStatus))
-
-    genus = relationship(TaxonGenus, backref="species", uselist=False)
