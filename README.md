@@ -32,3 +32,16 @@
 
 2. 自定义link组件
 3. 添加Header组件文本
+
+### 2022年1月8日
+
+主要内容
+
+1. 写Header组件样式
+
+注意点：
+
+1. React组件内的方法，需要用箭头函数，否则this会丢失，无法获取this.state
+2. svg标签，更改颜色需要操纵内部的path标签的fill属性，无法用color直接改变颜色
+3. transition属性有transition-property和transition-duration
+4. input框如果想要手动获取焦点，使用element.focus()操作DOM，但是一旦获取焦点，相关的trasition就会被打断，因此可以给transition一个定时器

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
+import './index.css'
+
 export default class MyLink extends Component {
   render() {
     const {name} = this.props
