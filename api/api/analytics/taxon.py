@@ -69,61 +69,58 @@ def bulk_put_species(species: list[Species], db: Session = Depends(get_db)):
     taxon_name_id_dict: dict[str, Any] = {}
     upserted_objects = {key: list[str]() for key in taxon_unique_dict.keys()}
 
-    try:
-        for table, taxon, (taxon_names, taxon_ref) in zip(
-            tables, taxon_unique_dict.keys(), taxon_unique_dict.values()
-        ):
-            # We have a different naming format for the "class_" taxon
-            previous_taxon_id_key = f"{previous_taxon.replace('_', '')}_id"
+    for table, taxon, (taxon_names, taxon_ref) in zip(
+        tables, taxon_unique_dict.keys(), taxon_unique_dict.values()
+    ):
+        # We have a different naming format for the "class_" taxon
+        previous_taxon_id_key = f"{previous_taxon.replace('_', '')}_id"
 
-            # On conflicts, we update the foreign key reference
-            # (plus protection_class and conservation_status for species
-            # or name for the top-level taxon)
-            update_keys = ["name"]
+        # On conflicts, we update the foreign key reference
+        # (plus protection_class and conservation_status for species
+        # or name for the top-level taxon)
+        update_keys = ["name"]
+        if has_previous_taxon:
+            update_keys = [previous_taxon_id_key]
+            if taxon == "species":
+                update_keys += ["protection_class", "conservation_status"]
+
+        # Preare the values to be inserted
+        values = []
+        for name in taxon_names:
+            # Top-level taxon only requires the name
+            taxon_value = {"name": name}
             if has_previous_taxon:
-                update_keys = [previous_taxon_id_key]
+                # lower-level taxons # retrieve the name of its parent taxon
+                # from the referenced Species object, and query with the name
+                # in taxon_name_id_dict to find the parent id
+                taxon_value[previous_taxon_id_key] = taxon_name_id_dict[
+                    getattr(taxon_ref[name], previous_taxon)
+                ]
                 if taxon == "species":
-                    update_keys += ["protection_class", "conservation_status"]
+                    taxon_value["protection_class"] = getattr(
+                        taxon_ref[name], "protection_class"
+                    )
+                    taxon_value["conservation_status"] = getattr(
+                        taxon_ref[name], "conservation_status"
+                    )
+            values.append(taxon_value)
 
-            # Preare the values to be inserted
-            values = []
-            for name in taxon_names:
-                # Top-level taxon only requires the name
-                taxon_value = {"name": name}
-                if has_previous_taxon:
-                    # lower-level taxons # retrieve the name of its parent taxon
-                    # from the referenced Species object, and query with the name
-                    # in taxon_name_id_dict to find the parent id
-                    taxon_value[previous_taxon_id_key] = taxon_name_id_dict[
-                        getattr(taxon_ref[name], previous_taxon)
-                    ]
-                    if taxon == "species":
-                        taxon_value["protection_class"] = getattr(
-                            taxon_ref[name], "protection_class"
-                        )
-                        taxon_value["conservation_status"] = getattr(
-                            taxon_ref[name], "conservation_status"
-                        )
-                values.append(taxon_value)
+        # Perform a bulk upsert operation on the current taxon table
+        # while returning the upserted id and name
+        upsert_results = bulk_upsert(
+            db,
+            table,
+            table.id,
+            table.name,
+            values=values,
+            update_keys=update_keys,
+            index_elements=[table.name],
+        ).all()
+        previous_taxon = taxon
+        has_previous_taxon = True
+        taxon_name_id_dict = map_attribute(upsert_results, "name", "id")
+        upserted_objects[taxon] = [name for name in taxon_name_id_dict.keys()]
 
-            # Perform a bulk upsert operation on the current taxon table
-            # while returning the upserted id and name
-            upsert_results = bulk_upsert(
-                db,
-                table,
-                table.id,
-                table.name,
-                values=values,
-                update_keys=update_keys,
-                index_elements=[table.name],
-            ).all()
-            previous_taxon = taxon
-            has_previous_taxon = True
-            taxon_name_id_dict = map_attribute(upsert_results, "name", "id")
-            upserted_objects[taxon] = [name for name in taxon_name_id_dict.keys()]
-    except:
-        db.rollback()
-    finally:
-        db.commit()
+    db.commit()
 
-    return {"res": upserted_objects}
+    return upserted_objects

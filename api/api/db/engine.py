@@ -14,6 +14,6 @@ def bind_session(session: scoped_session) -> Engine:
         is_test (bool, optional): Whether to use the test configuration or not. Defaults to False.
     """
     conn = get_connection_string()
-    engine = create_engine(url=conn, echo=True)
+    engine = create_engine(url=conn)
     session.configure(bind=engine)
     return engine

@@ -46,4 +46,4 @@ def get_connection_string():
     if dbname is None or host is None:
         raise ValueError("Host or database name is not configured")
 
-    return f"postgresql://{settings.pg_user}:{settings.pg_password}@{settings.pg_host}/{dbname}"
+    return f"postgresql://{settings.pg_user}:{settings.pg_password}@{host}/{dbname}"
