@@ -3,17 +3,21 @@ from typing import Optional
 
 from fastapi import FastAPI
 
+from api.analytics.taxon import router
 from api.db.engine import init_engine
-from api.db.models import Base
+from api.db.session import SessionLocal
 
 app = FastAPI()
+app.include_router(router)
 engine = init_engine()
 
-
-@app.get("/init")
-def init_db():
-    return Base.metadata.create_all(bind=engine)
-
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @app.get("/")
 async def read_root():
