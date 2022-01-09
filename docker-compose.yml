@@ -14,6 +14,17 @@ services:
       - pg_password
       - pg_user
 
+  db-test:
+    image: postgres:14-bullseye
+    restart: on-failure
+    environment:
+      POSTGRES_DB: pytest
+      POSTGRES_USER_FILE: /run/secrets/pg_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password
+    secrets:
+      - pg_password
+      - pg_user
+
   analytics:
     image: pig208/anti-poaching-analytics-dev:${REVISION:-latest}
     build:
@@ -31,12 +42,14 @@ services:
     ports:
       - 8000:8000
     restart: on-failure
-    depends_on: 
+    depends_on:
       - db
     environment:
       PG_HOST: db
       PG_DBNAME: antipoaching
+      PG_TESTHOST: db-test
       PG_TESTDBNAME: pytest
+      ENVIRONMENT: development
     secrets:
       - pg_password
       - pg_user

@@ -6,13 +6,14 @@ from api.config import get_connection_string
 
 # SessionLocal = scoped_session(sessionmaker(autocommit=False, autoflush=False))
 
-def bind_session(session: scoped_session, is_test: bool = False) -> Engine:
+
+def bind_session(session: scoped_session) -> Engine:
     """Initialize the engine and configure the SessionLocal factory
 
     Args:
         is_test (bool, optional): Whether to use the test configuration or not. Defaults to False.
     """
-    conn = get_connection_string(is_test)
+    conn = get_connection_string()
     engine = create_engine(url=conn, echo=True)
     session.configure(bind=engine)
     return engine

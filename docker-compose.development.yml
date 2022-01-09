@@ -6,7 +6,10 @@ services:
       - ./analytics/analytics:/opt/app/analytics
 
   api:
+    depends_on:
+      - db-test
     volumes:
       - ./api/api:/opt/app/api
+      - ./api/tests:/opt/app/tests
       - ./api/alembic:/opt/app/alembic
       - ./api/alembic.ini:/opt/app/alembic.ini

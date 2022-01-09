@@ -32,7 +32,7 @@ services:
       args:
         REQUIREMENTS_TXT: requirements/min.txt
     environment:
-      PRODUCTION: 1
+      ENVIRONMENT: production
     secrets:
       - pg_user
       - pg_password
