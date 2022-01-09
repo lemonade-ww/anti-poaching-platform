@@ -14,7 +14,7 @@ from api.db.models import (
     TaxonSpecies,
 )
 from api.db.utils import bulk_upsert
-from api.main import get_db
+from api.dependencies import get_db
 from api.utils import get_unique_attributes, map_attribute
 from api.utils.enums import ConservationStatus, ProtectionClass
 

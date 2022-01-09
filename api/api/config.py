@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     pg_user: str
     pg_host: str
     pg_dbname: str
+    pg_testdbname: str | None
 
     class Config:
         # Database credentials should be retrieved
@@ -22,6 +23,9 @@ def get_settings():
 
 
 @lru_cache()
-def get_connection_string():
+def get_connection_string(is_test: bool = False):
     settings = get_settings()
-    return f"postgresql://{settings.pg_user}:{settings.pg_password}@{settings.pg_host}/{settings.pg_dbname}"
+    dbname = settings.pg_testdbname if is_test else settings.pg_dbname
+    if dbname is None:
+        raise ValueError("Database name is not configured")
+    return f"postgresql://{settings.pg_user}:{settings.pg_password}@{settings.pg_host}/{dbname}"

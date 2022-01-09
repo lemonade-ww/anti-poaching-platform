@@ -36,6 +36,7 @@ services:
     environment:
       PG_HOST: db
       PG_DBNAME: antipoaching
+      PG_TESTDBNAME: pytest
     secrets:
       - pg_password
       - pg_user
