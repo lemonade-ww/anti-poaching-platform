@@ -34,7 +34,6 @@ def get_settings():
     return Settings()
 
 
-@lru_cache()
 def get_connection_string():
     settings = get_settings()
     if settings.environment is Environment.Testing:

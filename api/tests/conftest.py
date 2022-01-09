@@ -21,7 +21,6 @@ def settings():
         )
     os.environ["ENVIRONMENT"] = Environment.Testing
     get_settings.cache_clear()
-    get_connection_string.cache_clear()
     return get_settings()
 
 
