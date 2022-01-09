@@ -79,8 +79,6 @@ tag-latest: $(LATEST_IMAGES)  # Tag latest images assuming images of the current
 
 .PHONY: push-latest
 push-latest:
-	@$(MAKE) -f $(THIS_FILE) update-revision
-
 	@$(MAKE) -f $(THIS_FILE) build
 	@$(MAKE) -f $(THIS_FILE) tag-latest
 	@$(MAKE) -f $(THIS_FILE) push
