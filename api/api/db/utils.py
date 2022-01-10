@@ -1,7 +1,8 @@
-from typing import Any, Iterable
+from typing import Any, Iterable, Literal
 
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.engine.result import Result
+from sqlalchemy.orm.query import Query
 from sqlalchemy.orm.session import Session
 from sqlalchemy.sql.schema import Column
 
@@ -35,3 +36,28 @@ def bulk_upsert(
     result = db.execute(upsert_stmt)
     db.flush()
     return result
+
+
+def optional_filters(
+    query: Query, *filters: tuple[Column, Literal["=", "~"], str | int | Column | None]
+) -> Query:
+    """Generate a series of optional filters to the query
+
+    Args:
+        query (Query): The query to be modified
+        filters: A dict with the columns to be filtered as the key,
+        a tuple of (filter operation, the value to be matched).
+        Possible operations are exact match (=) and contains (~)
+
+    Returns:
+        Query: [description]
+    """
+    for key, operation, value in filters:
+        if value is not None:
+            if operation == "=":
+                query = query.filter(key == value)
+            elif operation == "~":
+                if isinstance(value, Column):
+                    raise NotImplementedError("ilike between columns is not supported")
+                query = query.filter(key.ilike(f"%{value}%"))
+    return query

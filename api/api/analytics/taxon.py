@@ -13,7 +13,7 @@ from api.db.models import (
     TaxonOrder,
     TaxonSpecies,
 )
-from api.db.utils import bulk_upsert
+from api.db.utils import bulk_upsert, optional_filters
 from api.dependencies import get_db
 from api.utils import get_unique_attributes, map_attribute
 from api.utils.enums import ConservationStatus, ProtectionClass
@@ -37,6 +37,44 @@ class Species(BaseModel):
     protection_class: ProtectionClass | None = None
     conservation_status: ConservationStatus | None = None
     __slots__ = "__weakref__"
+
+
+class SpeciesFilter(BaseModel):
+    species: str | None
+    genus: str | None
+    family: str | None
+    order: str | None
+    class_: str | None
+
+
+@router.get("/species")
+def get_species(
+    species_filter: SpeciesFilter = Depends(SpeciesFilter),
+    db: Session = Depends(get_db),
+):
+    query = db.query(
+        TaxonSpecies.name.label("species"),
+        TaxonGenus.name.label("genus"),
+        TaxonFamily.name.label("family"),
+        TaxonOrder.name.label("order"),
+        TaxonClass.name.label("class"),
+        TaxonSpecies.protection_class,
+        TaxonSpecies.conservation_status,
+    )
+
+    result = optional_filters(
+        query,
+        (TaxonSpecies.name, "~", species_filter.species),
+        (TaxonGenus.name, "~", species_filter.genus),
+        (TaxonFamily.name, "~", species_filter.family),
+        (TaxonOrder.name, "~", species_filter.order),
+        (TaxonClass.name, "~", species_filter.class_),
+        (TaxonGenus.id, "=", TaxonSpecies.genus_id),
+        (TaxonFamily.id, "=", TaxonGenus.family_id),
+        (TaxonOrder.id, "=", TaxonFamily.order_id),
+        (TaxonClass.id, "=", TaxonOrder.class_id),
+    ).all()
+    return {"species": result}
 
 
 @router.put("/species-bulk")
