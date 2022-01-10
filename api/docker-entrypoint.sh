@@ -4,7 +4,7 @@ set -e
 
 alembic upgrade head
 
-if [ $ENVRIONMENT = development ];
+if [ "$ENVIRONMENT" = development ];
 then
     echo "Starting up in development"
     exec uvicorn --reload --host 0.0.0.0 api.main:app
