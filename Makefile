@@ -9,6 +9,7 @@ LINT_COMPOSE_ARGS := -f docker-compose.lint.yml
 
 # The services that will be built and pushed all the time
 SERVICES := api analytics
+TEST_SERVICES := api
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
 LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 
@@ -92,6 +93,10 @@ bump-image: push-latest
 .PHONY: run-dev
 run-dev: $(DEV_SECRETS)
 	docker compose $(DEV_COMPOSE_ARGS) up -d --force-recreate $(SERVICES)
+
+.PHONY: run-tests
+run-tests: $(DEV_SECRETS)
+	docker compose $(DEV_COMPOSE_ARGS) exec $(TEST_SERVICES) pytest
 
 .PHONY: run-prod
 run-prod: $(PROD_SECRETS)
