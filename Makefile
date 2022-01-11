@@ -1,9 +1,9 @@
 # Arguments to use the overriden docker-compose file
 PROD_COMPOSE_ARGS := -f docker-compose.yml \
-		-f docker-compose.production.yml \
+		-f docker-compose.production.yml
 
 DEV_COMPOSE_ARGS := -f docker-compose.yml \
-		-f docker-compose.development.yml \
+		-f docker-compose.development.yml
 
 LINT_COMPOSE_ARGS := -f docker-compose.lint.yml
 
@@ -97,7 +97,8 @@ run-dev: $(DEV_SECRETS)
 
 .PHONY: run-tests
 run-tests: $(DEV_SECRETS)
-	docker compose $(DEV_COMPOSE_ARGS) exec $(TEST_SERVICES) pytest
+	@docker compose $(DEV_COMPOSE_ARGS) exec $(TEST_SERVICES) pytest \
+	|| echo "The dev services are not running! Have you run \"make run-dev\"?"
 
 .PHONY: run-prod
 run-prod: $(PROD_SECRETS)

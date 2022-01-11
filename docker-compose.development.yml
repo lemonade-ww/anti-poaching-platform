@@ -3,13 +3,10 @@ version: '3.8'
 services:
   analytics:
     volumes:
-      - ./analytics/analytics:/opt/app/analytics
+      - ./analytics:/opt/app
 
   api:
     depends_on:
       - db-test
     volumes:
-      - ./api/api:/opt/app/api
-      - ./api/tests:/opt/app/tests
-      - ./api/alembic:/opt/app/alembic
-      - ./api/alembic.ini:/opt/app/alembic.ini
+      - ./api:/opt/app

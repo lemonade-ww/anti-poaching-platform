@@ -23,6 +23,4 @@ services:
     environment:
       TARGET_DIR: /opt/app/api
     volumes:
-      - ./api/api:/opt/app/api
-      - ./api/tests:/opt/app/api/tests
-      - ./api/alembic:/opt/app/api/alembic
+      - ./api:/opt/app
