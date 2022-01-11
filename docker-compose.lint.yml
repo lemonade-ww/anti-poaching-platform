@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  analytics:
+  analytics-lint:
     build:
       context: .
       dockerfile: shared/lint.Dockerfile
@@ -13,7 +13,7 @@ services:
     volumes:
       - ./analytics/analytics:/opt/app/analytics
 
-  api:
+  api-lint:
     build:
       context: .
       dockerfile: shared/lint.Dockerfile

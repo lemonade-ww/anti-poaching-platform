@@ -10,6 +10,7 @@ LINT_COMPOSE_ARGS := -f docker-compose.lint.yml
 # The services that will be built and pushed all the time
 SERVICES := api analytics
 TEST_SERVICES := api
+LINT_SERVICES := api-lint analytics-lint
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
 LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 
@@ -58,7 +59,7 @@ build-prod:
 
 .PHONY: build-lint
 build-lint:
-	docker compose $(LINT_COMPOSE_ARGS) build $(SERVICES) --parallel
+	docker compose $(LINT_COMPOSE_ARGS) build $(LINT_SERVICES) --parallel
 
 .PHONY: update-revision
 update-revision:
@@ -104,7 +105,7 @@ run-prod: $(PROD_SECRETS)
 
 .PHONY: run-lint
 run-lint:
-	docker compose $(LINT_COMPOSE_ARGS) up $(SERVICES)
+	docker compose $(LINT_COMPOSE_ARGS) up $(LINT_SERVICES)
 
 .PHONY: clean-containers
 clean-containers:
