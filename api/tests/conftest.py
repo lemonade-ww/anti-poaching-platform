@@ -4,7 +4,7 @@ from configparser import Error
 import pytest
 from fastapi.testclient import TestClient
 
-from api.config import Environment, Settings, get_connection_string, get_settings
+from api.config import Environment, Settings, get_settings
 from api.db.engine import bind_session
 from api.db.models import Base
 from api.db.session import SessionLocal

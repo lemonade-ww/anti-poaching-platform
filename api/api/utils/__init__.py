@@ -1,7 +1,22 @@
 from typing import Any, Iterable, OrderedDict, TypeVar
 from weakref import WeakValueDictionary
 
+from pydantic.main import BaseModel
+
 T = TypeVar("T")
+
+
+def to_camel(string: str) -> str:
+    string.removesuffix("_")
+    words = [word for word in string.split("_") if len(word) > 0]
+    return "".join(word.capitalize() if i > 0 else word for i, word in enumerate(words))
+
+
+class APIModel(BaseModel):
+    class Config:
+        orm_mode = True
+        alias_generator = to_camel
+        allow_population_by_field_name = True
 
 
 def get_unique_attributes(

@@ -2,7 +2,7 @@ from typing import Any, TypeVar
 
 from fastapi import Depends
 from fastapi.routing import APIRouter
-from pydantic import BaseModel
+from sqlalchemy.engine.row import Row
 from sqlalchemy.orm.session import Session
 
 from api.db.models import (
@@ -15,7 +15,7 @@ from api.db.models import (
 )
 from api.db.utils import bulk_upsert, optional_filters
 from api.dependencies import get_db
-from api.utils import get_unique_attributes, map_attribute
+from api.utils import APIModel, get_unique_attributes, map_attribute
 from api.utils.enums import ConservationStatus, ProtectionClass
 
 TModel = TypeVar("TModel")
@@ -24,7 +24,7 @@ TKey = TypeVar("TKey")
 router = APIRouter(prefix="/analytics")
 
 
-class Species(BaseModel):
+class Species(APIModel):
     """
     Defines a species catagorized by the taxonomy ranks
     """
@@ -39,7 +39,15 @@ class Species(BaseModel):
     __slots__ = "__weakref__"
 
 
-class SpeciesFilter(BaseModel):
+class SpeciesBulkPutResult(APIModel):
+    species: list[str] = []
+    genus: list[str] = []
+    family: list[str] = []
+    order: list[str] = []
+    class_: list[str] = []
+
+
+class SpeciesFilter(APIModel):
     species: str | None
     genus: str | None
     family: str | None
@@ -47,22 +55,22 @@ class SpeciesFilter(BaseModel):
     class_: str | None
 
 
-@router.get("/species")
+@router.get("/species", response_model=list[Species])
 def get_species(
     species_filter: SpeciesFilter = Depends(SpeciesFilter),
     db: Session = Depends(get_db),
-):
+) -> list[Species]:
     query = db.query(
         TaxonSpecies.name.label("species"),
         TaxonGenus.name.label("genus"),
         TaxonFamily.name.label("family"),
         TaxonOrder.name.label("order"),
-        TaxonClass.name.label("class"),
+        TaxonClass.name.label("class_"),
         TaxonSpecies.protection_class,
         TaxonSpecies.conservation_status,
     )
 
-    result = optional_filters(
+    result: list[Row] = optional_filters(
         query,
         (TaxonSpecies.name, "~", species_filter.species),
         (TaxonGenus.name, "~", species_filter.genus),
@@ -74,10 +82,10 @@ def get_species(
         (TaxonOrder.id, "=", TaxonFamily.order_id),
         (TaxonClass.id, "=", TaxonOrder.class_id),
     ).all()
-    return {"species": result}
+    return [Species(**row._mapping) for row in result]
 
 
-@router.put("/species-bulk")
+@router.put("/species-bulk", response_model=SpeciesBulkPutResult)
 def bulk_put_species(species: list[Species], db: Session = Depends(get_db)):
     """Insert or update species in bulk
 
@@ -105,7 +113,7 @@ def bulk_put_species(species: list[Species], db: Session = Depends(get_db)):
     previous_taxon: str = ""
     # Keep track of the name-to-id mapping for foreign keys
     taxon_name_id_dict: dict[str, Any] = {}
-    upserted_objects = {key: list[str]() for key in taxon_unique_dict.keys()}
+    upserted_objects = SpeciesBulkPutResult()
 
     for table, taxon, (taxon_names, taxon_ref) in zip(
         tables, taxon_unique_dict.keys(), taxon_unique_dict.values()
@@ -157,8 +165,7 @@ def bulk_put_species(species: list[Species], db: Session = Depends(get_db)):
         previous_taxon = taxon
         has_previous_taxon = True
         taxon_name_id_dict = map_attribute(upsert_results, "name", "id")
-        upserted_objects[taxon] = [name for name in taxon_name_id_dict.keys()]
+        setattr(upserted_objects, taxon, [name for name in taxon_name_id_dict.keys()])
 
     db.commit()
-
     return upserted_objects
