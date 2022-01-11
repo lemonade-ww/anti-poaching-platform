@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from api.analytics.taxon import router
+from api.analytics.species import router
 from api.db.engine import bind_session
 from api.db.session import SessionLocal
 
