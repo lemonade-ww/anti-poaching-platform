@@ -5,7 +5,8 @@ PROD_COMPOSE_ARGS := -f docker-compose.yml \
 DEV_COMPOSE_ARGS := -f docker-compose.yml \
 		-f docker-compose.development.yml
 
-LINT_COMPOSE_ARGS := -f docker-compose.lint.yml
+LINT_COMPOSE_ARGS := -f docker-compose.lint.yml \
+		-p anti-poaching-lint
 
 # The services that will be built and pushed all the time
 SERVICES := api analytics
