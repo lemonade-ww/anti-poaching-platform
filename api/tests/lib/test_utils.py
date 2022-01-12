@@ -8,6 +8,7 @@ def test_to_snake():
     assert to_snake("_TestCase") == "test_case"
     assert to_snake("TestCase_") == "test_case_"
 
+
 def test_to_camel():
     assert to_camel("test") == "test"
     assert to_camel("class_") == "class"

@@ -21,6 +21,6 @@ services:
         SOURCE_DIR: api
         REQUIREMENTS_TXT: api/requirements/dev.txt
     environment:
-      TARGET_DIR: /opt/app/api
+      TARGET_DIR: /opt/app
     volumes:
       - ./api:/opt/app
