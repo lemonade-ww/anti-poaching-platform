@@ -2,6 +2,7 @@ from enum import Enum
 
 from api.lib import APIModel
 
+
 class ConservationStatus(str, Enum):
     EX = "EX"  # Extinct
     EW = "EW"  # Extinct in the wild
@@ -24,6 +25,7 @@ class Species(APIModel):
     """
     Defines a species catagorized by the taxonomy ranks
     """
+
     species: str
     genus: str
     family: str

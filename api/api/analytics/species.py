@@ -2,9 +2,9 @@ from typing import Any, TypeVar
 
 from fastapi import Depends
 from fastapi.routing import APIRouter
-from sqlalchemy.engine.row import Row
 from sqlalchemy.orm.session import Session
 
+from api.crud.species import query_species
 from api.db.models import (
     ModelT,
     TaxonClass,
@@ -13,7 +13,7 @@ from api.db.models import (
     TaxonOrder,
     TaxonSpecies,
 )
-from api.db.utils import bulk_upsert, optional_filters
+from api.db.utils import bulk_upsert
 from api.dependencies import get_db
 from api.lib import APIModel, get_unique_attributes, map_attribute
 from api.lib.schemas import Species
@@ -28,6 +28,7 @@ class SpeciesBulkPatchResult(APIModel):
     """
     The taxons inserted or updated
     """
+
     species: list[str] = []
     genus: list[str] = []
     family: list[str] = []
@@ -48,29 +49,27 @@ def get_species(
     species_filter: SpeciesFilter = Depends(SpeciesFilter),
     db: Session = Depends(get_db),
 ) -> list[Species]:
-    query = db.query(
-        TaxonSpecies.name.label("species"),
-        TaxonGenus.name.label("genus"),
-        TaxonFamily.name.label("family"),
-        TaxonOrder.name.label("order"),
-        TaxonClass.name.label("class_"),
-        TaxonSpecies.protection_class,
-        TaxonSpecies.conservation_status,
+    """Get a list of species with the given filters
+
+    Args:
+        species_filter (SpeciesFilter, optional): [description]. Defaults to Depends(SpeciesFilter).
+        db (Session, optional): [description]. Defaults to Depends(get_db).
+
+    Returns:
+        list[Species]: [description]
+    """
+
+    # Retrieve records of species from the database
+    result = query_species(
+        db,
+        species=species_filter.species,
+        genus=species_filter.genus,
+        family=species_filter.family,
+        order=species_filter.order,
+        class_=species_filter.class_,
     )
 
-    result: list[Row] = optional_filters(
-        query,
-        (TaxonSpecies.name, "~", species_filter.species),
-        (TaxonGenus.name, "~", species_filter.genus),
-        (TaxonFamily.name, "~", species_filter.family),
-        (TaxonOrder.name, "~", species_filter.order),
-        (TaxonClass.name, "~", species_filter.class_),
-        (TaxonGenus.id, "=", TaxonSpecies.genus_id),
-        (TaxonFamily.id, "=", TaxonGenus.family_id),
-        (TaxonOrder.id, "=", TaxonFamily.order_id),
-        (TaxonClass.id, "=", TaxonOrder.class_id),
-    ).all()
-    return [Species(**row._mapping) for row in result]
+    return result
 
 
 @router.patch("", response_model=SpeciesBulkPatchResult)
