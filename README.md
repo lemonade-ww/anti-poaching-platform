@@ -18,8 +18,17 @@
 
 部署项目 (开发环境):
 
-    docker-compose up
+构建开发环境
 
+    make build-dev
+
+运行开发环境
+
+    make run-dev
+
+运行测试
+
+    make run-tests
 
 ## 结构概览
 
