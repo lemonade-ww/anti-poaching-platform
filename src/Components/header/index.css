@@ -1,45 +1,59 @@
+body{
+  background-color: #829593;
+  width: 100%;
+}
 
 
+/* 头部整体背景与大小 */
 .header-main{
   width: 100%;
   height: 115px;
-  padding: 12px 60px;
   background-color: rgb(0, 0, 0,.7);
   box-sizing: border-box;
   overflow: hidden;
-  position: relative;
   transition: 0.5s;
+  position: relative;
 }
-
 .header-main-expand{
   height: 170px;
 }
 
-/* 左侧logo区域 */
+/* 主体容器 */
+.header-main-container{
+  max-width: 1056px;
+  min-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  position: relative;
+  /* background-color: yellow; */
+}
+
+/* 主体-左侧区域 */
 .header-logo{
+  display: block;
   /* background-color: red; */
-  height: 90px;
+  height: 100px;
   width: 450px;
-  padding: 20px 0 0 20px;
+  padding: 30px 0 0 10px;
   line-height: 23px;
   box-sizing: border-box;
-  display: block;
   text-decoration: none;
-  position: absolute;
+  /* position: absolute; */
 }
 
 .logo-img{
   height: 50px;
   float: left;
 }
-
 .header-logo p {
   display: inline-block;
   margin-left: 10px;
+  /* background-color: #fff; */
   width: 350px;
   text-decoration: solid;
 }
-
 .header-logo p:nth-child(2){
   font-family: '苹方-简';
   color: #fff;
@@ -52,37 +66,32 @@
   color: #fc7557;
 }
 
-/* 右侧整体 */
+/* 主体-右侧区域 */
 .header-menu{
-  height: 90px;
+  height: 100px;
   width: 550px;
-  /* background-color: navy; */
-  clear: both;
-  position: absolute;
-  right: 100px;
+  position: relative;
   font-family:'苹方-简';
+  /* background-color: navy; */
 }
 
 
 /* 右侧上部 */
 .header-login{
-  height: 30px;
+  height: 25px;
   position: absolute;
-  top: 5px;
-  right: 0;
+  top: 15px;
+  right: 10px;
 }
-
 
 .header-login a{
-  height: 30px;
+  height: 25px;
   display: inline-block;
   text-align: center;
-  line-height: 30px;
+  line-height: 25px;
   text-decoration: none;
   font-size: 13px;
-  /* float: right; */
 }
-
 .header-login a:nth-child(1){
   width: 110px;
   border-right: 1px rgb(185, 185, 185) solid;
@@ -91,7 +100,6 @@
 .header-login a:nth-child(1):hover{
   text-decoration: underline;
 }
-
 .header-login a:nth-child(2){
   width: 80px;
   margin-left: 30px;
@@ -103,7 +111,6 @@
   color: black;
   background-color: white;
 }
-
 .header-login a:nth-child(3){
   width: 80px;
   margin-left: 15px;
@@ -118,40 +125,40 @@
 }
 
 /* 右侧下部 */
-
 .header-nav{
   height: 40px;
   width: 450px;
+  border-right: 1px rgb(185, 185, 185) solid;
+  padding-right: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* background-color: black; */
-  padding-right: 10px;
-  border-right: 1px rgb(185, 185, 185) solid;
   position: absolute;
   bottom: 0;
-  left: 20px;
+  /* background-color: black; */
 }
-
 .header-link{
-  /* display: block; */
   flex-grow: 1;
 }
 
-/* 搜索图标 */
+
+/* 扩展搜索区域 */
+.header-expand-area{
+  margin-top: 15px;
+}
+
+/* 搜索下拉按钮 */
 .search-icon{
   display: block;
   height: 30px;
-  width: 60px;
-  /* background-color:ivory; */
-  padding-left: 15px;
+  width: 40px;
   position: absolute;
+  right: 26px;
+  top: -50px;
   z-index: 200;
-  right: 100px;
   cursor: pointer;
-  top: 67px;
-  transition-property: top;
   transition-duration: 0.4s;
+  /* background-color: #fff; */
 }
 .search-icon path{
   transition: 0.2s;
@@ -159,87 +166,55 @@
 .search-icon:hover > path{
   fill: #f16648;
 }
-
 .search-icon-expand{
-  top: 120px;
+  top: 4px;
+}
+
+/* 关闭按钮 */
+.header-closebtn{
+  font-size:30px;
+  font-weight: bold;
+  color: white;
+  
+  position: absolute;
+  top: -50px;
+  right: 39px;
+  z-index: 100;
+  transition: 0.2s;
+  cursor: pointer;
+  opacity: 0;
+}
+.header-closebtn-expand{
+  opacity: 100;
+}
+.header-closebtn:hover{
+  color: #f16648;
 }
 
 
 /* 搜索栏 */
-
-.header-search{
-  position:absolute;
-  width: 75%;
-  right: 100px;
-  top: 115px;
-  /* background-color: wheat; */
-}
-
-.header-search input{
+.header-input{
   display: block;
   width: 100%;
+  flex: initial;
   height: 35px;
+  margin-left: 20px;
   padding: 0 10px;
   border-radius: 5px;
-  position:absolute;
-  right: 65px;
-  /* outline: none; */
 }
 
-.header-search button{
+.header-submit{
   height: 35px;
-  width: 40px;
-  /* background-color: transparent; */
-  background-color: red;
+  width: 45px;
+  background-color: transparent;
   border: none;
-  /* visibility: hidden; */
+  margin: 3px 25px 0;
+  cursor: pointer;
+  z-index: 999;
 }
 
-.search-submit{
-  display: block;
-  height: 30px;
-  width: 60px;
-  position: absolute;
-  z-index: 999;
-  right: 0;
-  top: 5px;
-  cursor: pointer;
-  opacity: 0;
-}
-.search-submit path{
-  transition: 0.2s;
-}
-.search-submit:hover > path{
+.header-submit:hover + svg path{
   fill: #f16648;
 }
 
-/* .search-submit-closed{
-  transition: 0.4s;
-  top: -48px;
-} */
 
-
-
-/* 动态关闭按钮 */
-.header-search-closebtn{
-  opacity: 100;
-  font-weight: bold;
-  color: white;
-  font-size:30px;
-  position: absolute;
-  right: 70px;
-  top: 67px;
-  right: 123px;
-  cursor: pointer;
-  transition: 0.2s;
-  z-index: 100;
-
-}
-
-.header-search-closebtn:hover{
-  color: #f16648;
-}
-
-.header-search-closebtn-closed{
-  opacity: 0;
-}
