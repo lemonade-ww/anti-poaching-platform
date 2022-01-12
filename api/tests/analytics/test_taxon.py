@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from api.utils.enums import ConservationStatus, ProtectionClass
+from api.lib.schemas import ConservationStatus, ProtectionClass
 
 
 @pytest.fixture
@@ -18,7 +18,7 @@ def simple_species():
 
 
 def test_bulk_put_taxon(client: TestClient, simple_species: dict):
-    result = client.put("/analytics/species-bulk", json=[simple_species])
+    result = client.patch("/analytics/species", json=[simple_species])
 
     expected_result = simple_species.copy()
     del expected_result["protectionClass"]
@@ -28,8 +28,8 @@ def test_bulk_put_taxon(client: TestClient, simple_species: dict):
 
 
 def test_get_taxon(client: TestClient, simple_species):
-    put_result = client.put("/analytics/species-bulk", json=[simple_species])
-    assert put_result.status_code == 200
+    patch_result = client.patch("/analytics/species", json=[simple_species])
+    assert patch_result.status_code == 200
 
     get_result = client.get("/analytics/species")
     assert get_result.status_code == 200

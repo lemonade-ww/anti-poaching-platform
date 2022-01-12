@@ -15,31 +15,19 @@ from api.db.models import (
 )
 from api.db.utils import bulk_upsert, optional_filters
 from api.dependencies import get_db
-from api.utils import APIModel, get_unique_attributes, map_attribute
-from api.utils.enums import ConservationStatus, ProtectionClass
+from api.lib import APIModel, get_unique_attributes, map_attribute
+from api.lib.schemas import Species
 
 TModel = TypeVar("TModel")
 TKey = TypeVar("TKey")
 
-router = APIRouter(prefix="/analytics")
+router = APIRouter(prefix="/analytics/species")
 
 
-class Species(APIModel):
+class SpeciesBulkPatchResult(APIModel):
     """
-    Defines a species catagorized by the taxonomy ranks
+    The taxons inserted or updated
     """
-
-    species: str
-    genus: str
-    family: str
-    order: str
-    class_: str
-    protection_class: ProtectionClass | None = None
-    conservation_status: ConservationStatus | None = None
-    __slots__ = "__weakref__"
-
-
-class SpeciesBulkPutResult(APIModel):
     species: list[str] = []
     genus: list[str] = []
     family: list[str] = []
@@ -55,7 +43,7 @@ class SpeciesFilter(APIModel):
     class_: str | None
 
 
-@router.get("/species", response_model=list[Species])
+@router.get("", response_model=list[Species])
 def get_species(
     species_filter: SpeciesFilter = Depends(SpeciesFilter),
     db: Session = Depends(get_db),
@@ -85,17 +73,14 @@ def get_species(
     return [Species(**row._mapping) for row in result]
 
 
-@router.put("/species-bulk", response_model=SpeciesBulkPutResult)
-def bulk_put_species(species: list[Species], db: Session = Depends(get_db)):
-    """Insert or update species in bulk
+@router.patch("", response_model=SpeciesBulkPatchResult)
+def bulk_patch_species(species: list[Species], db: Session = Depends(get_db)):
+    """Insert or update species in bulk, creating missing taxons for each rank during operation
 
     Args:
-        species (List[Species]): [description]
-
-    Returns:
-        [type]: [description]
+        species (List[Species]): The species to be added/updated
     """
-    # Find the minimal set for each taxon of all species to be inserted
+    # Find the minimal set for each rank of taxons of all species to be inserted
     # and then upsert in the top-to-down order (class -> order -> family -> genus -> species)
     tables: list[ModelT] = [
         TaxonClass,
@@ -113,7 +98,7 @@ def bulk_put_species(species: list[Species], db: Session = Depends(get_db)):
     previous_taxon: str = ""
     # Keep track of the name-to-id mapping for foreign keys
     taxon_name_id_dict: dict[str, Any] = {}
-    upserted_objects = SpeciesBulkPutResult()
+    upserted_objects = SpeciesBulkPatchResult()
 
     for table, taxon, (taxon_names, taxon_ref) in zip(
         tables, taxon_unique_dict.keys(), taxon_unique_dict.values()

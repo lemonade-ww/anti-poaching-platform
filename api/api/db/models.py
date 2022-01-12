@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.schema import Column, ForeignKey
 
-from api.utils.enums import ConservationStatus, ProtectionClass
+from api.lib.schemas import ConservationStatus, ProtectionClass
 
 Base = declarative_base()
 BaseT = TypeVar("BaseT", bound=Base)

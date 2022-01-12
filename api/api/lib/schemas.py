@@ -1,5 +1,6 @@
 from enum import Enum
 
+from api.lib import APIModel
 
 class ConservationStatus(str, Enum):
     EX = "EX"  # Extinct
@@ -17,3 +18,17 @@ class ConservationStatus(str, Enum):
 class ProtectionClass(str, Enum):
     I = "I"
     II = "II"
+
+
+class Species(APIModel):
+    """
+    Defines a species catagorized by the taxonomy ranks
+    """
+    species: str
+    genus: str
+    family: str
+    order: str
+    class_: str
+    protection_class: ProtectionClass | None = None
+    conservation_status: ConservationStatus | None = None
+    __slots__ = "__weakref__"
