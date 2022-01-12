@@ -7,9 +7,25 @@ T = TypeVar("T")
 
 
 def to_camel(string: str) -> str:
-    string.removesuffix("_")
-    words = [word for word in string.split("_") if len(word) > 0]
-    return "".join(word.capitalize() if i > 0 else word for i, word in enumerate(words))
+    """
+    Convert a string to camelcase by capitalizing the first characters
+    in each word of a snakecase string after removing leading underscores
+    """
+    string = string.lstrip("_")
+    words = [word for word in string.title() if not word.isspace() and not word == "_"]
+    return words[0].lower() + "".join(words[1:])
+
+
+def to_snake(string: str) -> str:
+    """
+    Convert a string to snakecase by uncapping uppercase characters
+    and inserting an underscore for each occurence
+    """
+    string = "".join(
+        [f"{'_' if char.isupper() else ''}{char.lower()}" for char in string]
+    )
+    string = string.lstrip("_")
+    return string
 
 
 class APIModel(BaseModel):
