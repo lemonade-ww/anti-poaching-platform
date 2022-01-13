@@ -98,8 +98,8 @@ run-dev: $(DEV_SECRETS)
 
 .PHONY: run-tests
 run-tests: $(DEV_SECRETS)
-	@docker compose $(DEV_COMPOSE_ARGS) exec $(TEST_SERVICES) pytest \
-	|| echo "The dev services are not running! Have you run \"make run-dev\"?"
+	@echo Preparing tests... Please make sure that the dev services are running
+	@docker compose $(DEV_COMPOSE_ARGS) exec $(TEST_SERVICES) pytest
 
 .PHONY: run-prod
 run-prod: $(PROD_SECRETS)
