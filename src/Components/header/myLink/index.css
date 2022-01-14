@@ -15,6 +15,10 @@
   transition: 0.3s;
 }
 
+.header-link:hover{
+  color: white;
+}
+
 .header-link:hover >.button-line{
   width: 100%;
 }

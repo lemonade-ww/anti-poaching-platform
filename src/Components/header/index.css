@@ -12,7 +12,8 @@ body{
   box-sizing: border-box;
   overflow: hidden;
   transition: 0.5s;
-  position: relative;
+  position: absolute;
+  z-index: 999;
 }
 .header-main-expand{
   height: 170px;
@@ -58,12 +59,14 @@ body{
   font-family: '苹方-简';
   color: #fff;
   font-size: 24px;
+  margin-bottom: 5px;
   /* font-weight: bold; */
 }
 .header-logo p:nth-child(3){
   font-family:'苹方-简';
   font-size: 23px;
   color: #fc7557;
+  margin-bottom: 0;
 }
 
 /* 主体-右侧区域 */

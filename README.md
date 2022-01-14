@@ -44,10 +44,10 @@
 
 注意点：
 
-1. React组件内的方法，需要用箭头函数，否则this会丢失，无法获取this.state
+1. React组件内的方法，需要用**箭头函数**，否则this会丢失，无法获取`this.state`
 2. svg标签，更改颜色需要操纵内部的path标签的fill属性，无法用color直接改变颜色
-3. transition属性有transition-property和transition-duration
-4. input框如果想要手动获取焦点，使用element.focus()操作DOM，但是一旦获取焦点，相关的trasition就会被打断，因此可以给transition一个定时器
+3. transition属性有`transition-property`和`transition-duration`
+4. input框如果想要手动获取焦点，使用`element.focus()`操作DOM，但是一旦获取焦点，相关的trasition就会被打断，因此可以给transition一个定时器
 
 
 ### 2022年1月9日
@@ -61,11 +61,30 @@
 
 ### 2022年1月12日
 
-主要内容
+主要内容:
 
-1. 重新用flex布局写了Header组件：
+重新用flex布局写了Header组件：
    
-   外容器宽度100%
-   主体宽度 max 1056px  min 1000px  (参考知乎)
-   主体布局为flex，space-between
+ - 外容器宽度100%
+ - 主体宽度 max 1056px  min 1000px  (参考知乎)
+ - 主体布局为flex，`space-between`
+
+
+### 2022年1月14日
+
+主要内容：
+
+完成首页（Home组件）的轮播图、搜索框区域的整体：
+
+  - 使用了Boostrap V5.1.3 的组件及图标，用CDN引入
+  - 引入Boostrap的CSS之后，会对全局产生影响，主要的问题在p标签和Link组件超链接
+      - p标签会增加`margin-bottom`
+      - Link组件（不确定是否a标签都会受影响）在`hover`状态下的文字会变成蓝色
+  - 针对上面两个问题，进行了单独的样式处理
+  - 研究了Boostrap的输入框组件的属性：
+      - 比如，focus状态下的阴影： `border-shadow`
+
+感受：
+
+调整CSS样式真的好慢，研究boostrap的既定样式需要花时间。不过最终做出来的成品特别有成就感！加油！！！！！！！
 
