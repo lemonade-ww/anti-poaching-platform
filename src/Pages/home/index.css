@@ -23,6 +23,9 @@
   min-width: 1056px !important;
   max-height: 600px !important;
 }
+.carousel-item div p{
+  padding-bottom: 14px;
+}
 
 /* 轮播图上方悬浮区域容器*/
 .home-title-container{

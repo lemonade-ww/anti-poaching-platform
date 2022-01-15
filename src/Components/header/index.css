@@ -88,7 +88,7 @@ body{
 }
 
 .header-login a{
-  height: 25px;
+  height: 26px;
   display: inline-block;
   text-align: center;
   line-height: 25px;
@@ -109,6 +109,8 @@ body{
   border: 1px solid white;
   color: white;
   transition: 0.2s;
+  border-radius: 3.5px;
+
 }
 .header-login a:nth-child(2):hover{
   color: black;
@@ -117,10 +119,11 @@ body{
 .header-login a:nth-child(3){
   width: 80px;
   margin-left: 15px;
-  border: 1.5px solid #f16648;
+  border: 1px solid #f16648;
   background-color: #f16648;
   color: black;
   transition: 0.2s;
+  border-radius: 3.5px;
 }
 .header-login a:nth-child(3):hover{
   background-color: #ef4825;
