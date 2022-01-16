@@ -1,0 +1,21 @@
+.myTab-container i{
+  font-size: 45px;
+  float: left;
+  background-color: #fff;
+  height: 70px;
+  margin-right: 15px;
+}
+
+.myTab-container a{
+  display: block;
+  font-size: 18px;
+  font-weight: bold;
+  color: #c44d34;
+  margin-bottom: 10px;
+}
+
+.myTab-container p{
+  font-size: 16px;
+  color: #565656;
+  line-height: 20px;
+}

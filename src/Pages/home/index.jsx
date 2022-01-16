@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import MyTab from './myTab'
 import './index.css'
 
 export default class Home extends Component {
@@ -29,7 +29,107 @@ export default class Home extends Component {
         url:'/img/5_1056_600.jpg',
         caption: '绿水青山，就是金山银山。'
       },
-    ]
+    ],
+    tab:{
+      tab1:{
+        title:'工具',
+        description:'为您提供查询违法盗猎案件记录的工具，欢迎开始探索！',
+        rows:{
+          rows1:{
+            title:'探索工具',
+            mytab:[
+              {
+                iClass:'bi bi-search',
+                aLink:'#',
+                aText:'案件检索',
+                pText:'描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容',
+              },
+              {
+                iClass:'bi bi-map-fill',
+                aLink:'#',
+                aText:'热力图',
+                pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
+              },
+              {
+                iClass:'bi bi-bar-chart-line-fill',
+                aLink:'#',
+                aText:'数据统计',
+                pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
+              }
+            ]
+          }
+        }
+
+      },
+      tab2:{
+        title:'政策与法律',
+        description:'我是这个tab的说明文字，为您提供查询违法盗猎案件记录的工具，欢迎开始探索！',
+        rows:{
+          rows1:{
+            title:'法律文件',
+            mytab:[
+              {
+                iClass:'bi bi-book-half',
+                aLink:'#',
+                aText:'《野生动物保护法》',
+                pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
+              },
+              {
+                iClass:'bi bi-book-half',
+                aLink:'#',
+                aText:'《自然保护区条例》',
+                pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
+              }
+            ]
+          },
+          rows2:{
+            title:'政策文件',
+            mytab:[]
+          }
+        }
+
+      },
+      tab3:{
+        title:'社会机构与组织',
+        description:'我是这个tab的说明文字，为您提供查询违法盗猎案件记录的工具，欢迎开始探索！',
+        rows:{
+          rows1:{
+            title:'研究机构',
+            mytab:[
+              {
+                iClass:'bi bi-bank2',
+                aLink:'#',
+                aText:'中山大学XX研究团队',
+                pText:'描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内描述内容描述内容',
+              },
+              {
+                iClass:'bi bi-bank2',
+                aLink:'#',
+                aText:'昆山杜克大学XX研究团队',
+                pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
+              }
+            ]
+          },
+          rows2:{
+            title:'公益组织',
+            mytab:[
+              {
+                iClass:'bi bi-tree-fill',
+                aLink:'#',
+                aText:'小象君',
+                pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
+              },
+              {
+                iClass:'bi bi-tree-fill',
+                aLink:'#',
+                aText:'城市荒野',
+                pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
+              }
+            ]
+          }
+        }
+      }
+    }
   }
 
 
@@ -38,7 +138,8 @@ export default class Home extends Component {
     const {centerTitle, 
       carouselFirstUrl,
       carouselFirstCaption,
-      carouselList} = this.state
+      carouselList,
+      tab} = this.state
 
     return (
       <div className='home-main'>
@@ -99,6 +200,53 @@ export default class Home extends Component {
             </div>
           </div>
 
+          {/* 中部TAB区域 */}
+          <nav className='home-tab-container'>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              <button class="nav-link active" id="nav-1-tab" data-bs-toggle="tab" data-bs-target="#nav-1" type="button" role="tab" aria-controls="nav-1" aria-selected="true">{tab.tab1.title}</button>
+              <button class="nav-link" id="nav-2-tab" data-bs-toggle="tab" data-bs-target="#nav-2" type="button" role="tab" aria-controls="nav-2" aria-selected="false">{tab.tab2.title}</button>
+              <button class="nav-link" id="nav-3-tab" data-bs-toggle="tab" data-bs-target="#nav-3" type="button" role="tab" aria-controls="nav-3" aria-selected="false">{tab.tab3.title}</button>
+            </div>
+          </nav>
+
+          {/* 中部TAB内容显示区域 */}
+          <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-1" role="tabpanel" aria-labelledby="nav-1-tab">
+              <div className='tab-description'>{tab.tab1.description}</div>
+              <div className='tab-inner-container'>
+                <div className='tab-inner-row first-tab-inner-row' >
+                  <div className='tab-inner-row-title'>{tab.tab1.rows.rows1.title}</div>
+                  {tab.tab1.rows.rows1.mytab.map(item=>(<MyTab {...item} />))}
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="nav-2" role="tabpanel" aria-labelledby="nav-2-tab">
+              <div className='tab-description'>{tab.tab2.description}</div>
+              <div className='tab-inner-container'>
+                <div className='tab-inner-row' >
+                  <div className='tab-inner-row-title'>{tab.tab2.rows.rows1.title}</div>
+                  {tab.tab2.rows.rows1.mytab.map(item=>(<MyTab {...item} />))}
+                </div>
+                <div className='tab-inner-row' >
+                  <div className='tab-inner-row-title'>{tab.tab2.rows.rows2.title}</div>
+                  {tab.tab2.rows.rows2.mytab.map(item=>(<MyTab {...item} />))}
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="nav-3" role="tabpanel" aria-labelledby="nav-3-tab">
+              <div className='tab-description'>{tab.tab3.description}</div>
+              <div className='tab-inner-container'>
+                <div className='tab-inner-row' >
+                  <div className='tab-inner-row-title'>{tab.tab3.rows.rows1.title}</div>
+                  {tab.tab3.rows.rows1.mytab.map(item=>(<MyTab {...item} />))}
+                </div>
+                <div className='tab-inner-row' >
+                  <div className='tab-inner-row-title'>{tab.tab3.rows.rows2.title}</div>
+                  {tab.tab3.rows.rows2.mytab.map(item=>(<MyTab {...item} />))}
+                </div>
+              </div>
+            </div>
+          </div>
         
       </div>
     )

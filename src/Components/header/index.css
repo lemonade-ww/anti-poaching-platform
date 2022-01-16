@@ -1,5 +1,5 @@
 body{
-  background-color: #829593;
+  /* background-color: #829593; */
   width: 100%;
 }
 
@@ -7,6 +7,7 @@ body{
 /* 头部整体背景与大小 */
 .header-main{
   width: 100%;
+  min-width: 960px;
   height: 115px;
   background-color: rgb(0, 0, 0,.7);
   box-sizing: border-box;
@@ -22,7 +23,7 @@ body{
 /* 主体容器 */
 .header-main-container{
   max-width: 1056px;
-  min-width: 1000px;
+  min-width: 960px;
   margin: 0 auto;
   display: flex;
   flex-flow: row nowrap;

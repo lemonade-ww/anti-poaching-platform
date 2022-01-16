@@ -8,10 +8,10 @@
 
 /* Bootstrap轮播图，改造*/
 .carousel-container{
-  width: 100% !important;
-  min-width: 1056px;
+  min-width: 960px !important;
   position: relative;
   top: 0;
+  overflow: hidden;
 }
 .carousel-indicators{
   z-index: 999;
@@ -20,8 +20,12 @@
   z-index: 900;
 }
 .carousel-item{
-  min-width: 1056px !important;
-  max-height: 600px !important;
+  min-width: 960px !important;
+  /* max-width: 100%; */
+  height: 600px !important; 
+}
+.carousel-item img{
+  min-width: 1056px;
 }
 .carousel-item div p{
   padding-bottom: 14px;
@@ -120,4 +124,96 @@
   margin-right: 7px;
   position: relative;
   top: -1.5px;
+}
+
+/* 导航栏容器 */
+.home-tab-container{
+  min-width: 960px;
+  height: 50px;
+  padding-top: 15px; 
+  background-color: #f26649;
+}
+
+.home-tab-container .nav-tabs{
+  max-width: 1056px;
+  min-width: 960px;
+  border: none ;
+  margin: 0 auto;
+  padding: 0 50px;
+}
+
+.home-tab-container .nav-link{
+  /* width: 130px; */
+  height: 35px;
+  border: none !important;
+  line-height: 35px;
+  margin-right: 10px;
+  padding: 0 30px;
+  font-size: 16px;
+  /* font-family: '苹方-简'; */
+  background-color: #f58e79 !important;
+  color: black;
+}
+.nav-link:hover{
+  background-color: white !important;
+}
+.nav-link.active{
+  background-color: white !important;
+  color: #c44d34 !important;
+}
+
+
+/* tab栏容器 */
+.tab-content{
+  max-width: 1056px;
+  min-width: 960px;
+  margin: 0 auto;
+  /* background-color: wheat; */
+}
+
+.tab-pane{
+  /* background-color: #fff; */
+  padding: 0 50px;
+}
+
+.tab-description{
+  margin: 40px 0 30px;
+  /* background-color: grey; */
+  color: #565656;
+}
+
+.tab-inner-container{
+  /* background-color: pink; */
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+.tab-inner-row{
+  max-width: 47%;
+  /* background-color: yellow; */
+  flex-grow: 1;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.first-tab-inner-row{
+  max-width: 100%;
+  flex-flow: row wrap;
+  justify-content: space-between;
+}
+.first-tab-inner-row .myTab-container{
+  max-width: 47%;
+  flex-grow: 1;
+}
+
+.tab-inner-row-title{
+  width: 100%;
+  font-family: '苹方-简';
+  font-size: 23px;
+  font-weight: bold;
+}
+
+.tab-inner-row div{
+  margin: 10px 0;
 }
