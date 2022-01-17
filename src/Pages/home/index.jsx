@@ -79,7 +79,13 @@ export default class Home extends Component {
                 aLink:'#',
                 aText:'《自然保护区条例》',
                 pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
-              }
+              },
+              {
+                iClass:'bi bi-book-half',
+                aLink:'#',
+                aText:'《国家公园法》',
+                pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
+              },
             ]
           },
           rows2:{
@@ -124,11 +130,48 @@ export default class Home extends Component {
                 aLink:'#',
                 aText:'城市荒野',
                 pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
+              },
+              {
+                iClass:'bi bi-tree-fill',
+                aLink:'#',
+                aText:'自然之友',
+                pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
               }
             ]
           }
         }
       }
+    },
+    feature:{
+      bgImg:{
+        backgroundImage:'url(/img/bg2_1125_500.jpg)'
+      },
+      featureCard:[
+        { 
+          url:'#',
+          imgUrl:'/img/news1_400_255.jpg',
+          imgAlt:'文章图片介绍',
+          title:'这是一个文章标题',
+          text:'这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容',
+          date:'发表于 2022年01月01日 17:00'
+        },
+        { 
+          url:'#',
+          imgUrl:'/img/news3_400_255.jpg',
+          imgAlt:'文章图片介绍',
+          title:'这是一个文章标题',
+          text:'这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容',
+          date:'发表于 2022年01月01日 17:00'
+        },
+        { 
+          url:'#',
+          imgUrl:'/img/news4_400_255.jpg',
+          imgAlt:'文章图片介绍',
+          title:'这是一个文章标题',
+          text:'这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容',
+          date:'发表于 2022年01月01日 17:00'
+        }
+      ]
     }
   }
 
@@ -139,7 +182,8 @@ export default class Home extends Component {
       carouselFirstUrl,
       carouselFirstCaption,
       carouselList,
-      tab} = this.state
+      tab,
+      feature} = this.state
 
     return (
       <div className='home-main'>
@@ -247,6 +291,36 @@ export default class Home extends Component {
               </div>
             </div>
           </div>
+
+          {/* 文章栏区域 */}
+          <div className='home-feature-container' style={feature.bgImg}>
+            <div className='home-feature-title'>
+              <div>最新文章</div>
+              <a href="#">查看更多...</a>
+            </div>
+
+            <div class="home-feature row row-cols-3 g-4">
+              {
+                feature.featureCard.map(item => (
+                  <div class="col">
+                      <div class="feature-card card h-100">
+                        <a href={item.url}> 
+                          <img src={item.imgUrl}  alt={item.imgAlt}/>
+                          <div class="feature-card-body card-body">
+                            <h3 class="card-title">{item.title}</h3>
+                            <p class="card-text">{item.text}</p>
+                            <p class="card-text"><small class="text-muted">{item.date}</small></p>
+                          </div>
+                        </a>
+                      </div>
+                  </div>
+                ))
+              }
+            </div>
+          </div>
+
+
+          
         
       </div>
     )

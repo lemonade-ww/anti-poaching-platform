@@ -126,14 +126,15 @@
   top: -1.5px;
 }
 
-/* 导航栏容器 */
+
+
+/* tab导航栏容器 */
 .home-tab-container{
   min-width: 960px;
   height: 50px;
   padding-top: 15px; 
   background-color: #f26649;
 }
-
 .home-tab-container .nav-tabs{
   max-width: 1056px;
   min-width: 960px;
@@ -141,7 +142,6 @@
   margin: 0 auto;
   padding: 0 50px;
 }
-
 .home-tab-container .nav-link{
   /* width: 130px; */
   height: 35px;
@@ -163,32 +163,36 @@
 }
 
 
-/* tab栏容器 */
+/* tab内容外容器 */
 .tab-content{
   max-width: 1056px;
   min-width: 960px;
-  margin: 0 auto;
+  margin: 0 auto 30px;
   /* background-color: wheat; */
+  height: 100%;
+
 }
 
+/* 每个tab页面 */
 .tab-pane{
   /* background-color: #fff; */
   padding: 0 50px;
-}
 
+}
+/* 每个tab页面的描述语句 */
 .tab-description{
   margin: 40px 0 30px;
   /* background-color: grey; */
   color: #565656;
 }
-
+/* 每个tab页面的内部板块容器 */
 .tab-inner-container{
   /* background-color: pink; */
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
 }
-
+/* 内部板块分区 */
 .tab-inner-row{
   max-width: 47%;
   /* background-color: yellow; */
@@ -197,6 +201,7 @@
   flex-flow: column nowrap;
 }
 
+/* **特殊的内部板块，第一个tab栏 */
 .first-tab-inner-row{
   max-width: 100%;
   flex-flow: row wrap;
@@ -207,13 +212,92 @@
   flex-grow: 1;
 }
 
+/* 内部板块的标题 */
 .tab-inner-row-title{
   width: 100%;
   font-family: '苹方-简';
   font-size: 23px;
   font-weight: bold;
 }
-
 .tab-inner-row div{
   margin: 10px 0;
 }
+
+
+
+/* 文章栏容器 */
+.home-feature-container{
+  /* width: 100%; */
+  min-width: 960px;
+  background-size: cover;
+  padding: 40px 0 40px;
+}
+
+/* 文章栏容器标题 */
+.home-feature-title{
+  max-width: 1056px;
+  min-width: 960px;
+  margin: 0 auto 10px;
+  padding: 0 50px;
+  color: white;
+  font-family: '苹方-简';
+  font-size: 23px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  /* font-weight: 200; */
+}
+.home-feature-title a{
+  text-decoration: none;
+  color:white;
+}
+.home-feature-title a:hover{
+  text-decoration: underline;
+}
+
+
+/* 文章卡片容器组件 */
+.home-feature{
+  max-width: 1056px;
+  min-width: 960px;
+  margin: 0 auto;
+  padding: 0 40px 0;
+}
+
+/* 文章卡片 */
+.feature-card{
+  overflow: hidden;
+}
+.feature-card a{
+  text-decoration: none;
+}
+.feature-card a > img{
+  transition: 300ms;
+  width: 101%;
+}
+.feature-card a > img:hover{
+  transform: scale(1.05, 1.05);
+}
+
+
+/* 文章卡片内容主体 */
+.feature-card-body{
+  background-color: white;
+  position: relative;
+  top: -5px;
+  z-index: 999;
+}
+/* 文章卡片内容字体 */
+.feature-card-body h3{
+  color: #212529;
+}
+.feature-card-body p:nth-of-type(1){
+  color: #565656;
+  line-height: 22px;
+}
+.feature-card-body p:nth-of-type(2){
+  /* color: #565656; */
+  margin-top: 10px;
+  font-size: 15px;
+}
+
