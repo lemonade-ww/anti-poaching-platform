@@ -1,0 +1,104 @@
+.footer-container{
+  /* background-color: wheat; */
+  /* padding: 40px 0 0 0; */
+}
+
+.footer-main{
+  background-color: #fff;
+  max-width: 1056px;
+  min-width: 960px;
+  margin: 0 auto;
+  padding: 40px 50px 30px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+}
+
+/* 左侧 */
+.footer-left{
+  width: 47%;
+  /* background-color: yellow; */
+}
+.sponsor-text{
+  font-size: 14px;
+  font-family: '苹方-简';
+  color: #565656;
+  line-height: 25px;
+  margin-bottom: 20px;
+  /* padding: 0 5px; */
+}
+.sponsor-logo-area{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+}
+.sponsor-logo-area img{
+  width: 20%;
+  flex: initial;
+}
+
+
+/* 右侧 */
+.footer-right{
+  width: 47%;
+  /* background-color: yellow; */
+  display: flex;
+  justify-content: space-between;
+}
+.menu-tab{
+  width: 30%;
+}
+
+.menu-title{
+  color:#C44D34;
+  font-family: '苹方-简';
+  font-weight: bold;
+  font-size:14px;
+  line-height: 20px;
+  height: 23px;
+  margin-bottom: 8px;
+  border-bottom: 0.5px solid #C44D34;
+}
+
+.menu-tab a {
+  font-family: '苹方-简';
+  text-decoration: none;
+  display: block;
+  font-size:14px;
+  color: #565656;
+  line-height: 23px;
+  width: 60px;
+}
+.menu-tab a:hover{
+  text-decoration:underline;
+}
+
+
+.copy-right{
+  /* background-color: #f26649; */
+  max-width: 1056px;
+  min-width: 960px;
+  margin: 0 auto 30px;
+  padding: 0 50px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  /* border-top: 1px solid gray ; */
+  font-size:14px;
+  font-family: '苹方-简';
+  color: #565656;
+}
+.copy-right div{
+  height: 40px;
+  line-height: 40px;
+  /* background-color: red; */
+}
+.copy-right a{
+  color: #565656;
+  margin-left: 10px;
+  text-decoration: none;
+}
+
+.copy-right a img{
+  height: 15px;
+}
