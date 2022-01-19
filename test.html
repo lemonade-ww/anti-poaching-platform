@@ -10,24 +10,30 @@
 
 <body>
   <script type="text/javascript">
+    
+    var a  // 变量提升
 
-    let a = new Array(10)
+    function b(fn) {
+      return function d(...args){
+        if(fn){
+          const c = fn.apply(this,args) // 这句话没有意义
+          // let fn
+          fn = ()=> { console.log('321');}
+        }
+      }
+    }
+    
+    a = b(()=> console.log('123'))  
+  
+    a() 
+    a()
+    a()
+    b()
 
-    let b = [...a]
+    // console.log(a());
+    // console.log(a());
+    // console.log(a());
 
-    let c = [, , , , , , , , , ,]
-
-    let d = [undefined, undefined, undefined,
-      undefined, undefined, undefined,
-      undefined, undefined, undefined,
-      undefined]
-
-    let e = []
-    e.push()
-    c[0] = 1
-    c[3] = 2
-
-    console.log(c) // false
 
   </script>
 </body>

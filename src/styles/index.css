@@ -1,0 +1,5 @@
+.common-container{
+  max-width: 1056px;
+  min-width: 960px;
+  margin: 0 auto;
+}

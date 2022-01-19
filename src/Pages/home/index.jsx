@@ -5,6 +5,8 @@ import './index.css'
 export default class Home extends Component {
 
   state = {
+    caseInit: 600000,
+    speicesInit: 980,
     centerTitle: '面向公众的野生动物盗猎案件统计网站',
     carouselFirstUrl: '/img/2_1056_600.jpg',
     carouselFirstCaption: '中国现行的《野生动物保护法》于1989年3月开始正式施行。',
@@ -175,15 +177,30 @@ export default class Home extends Component {
     }
   }
 
+  componentDidMount(){
+      let caseTemp = this.state.caseInit, speciesTemp = this.state.speicesInit
+      setTimeout(()=>{
+        this.setState({caseInit:0,speicesInit:0})
+        let timer = setInterval(()=>{
+          this.setState({caseInit:this.state.caseInit + Number.parseInt(caseTemp/98),
+                        speicesInit:this.state.speicesInit + Number.parseInt(speciesTemp/112)})
+          if (this.state.caseInit >= caseTemp) {
+            clearInterval(timer)
+            this.setState({caseInit:caseTemp,speicesInit:speciesTemp})
+          }
+        },20)
+      },500)
+    }
+  
 
   render() {
-
     const {centerTitle, 
       carouselFirstUrl,
       carouselFirstCaption,
       carouselList,
       tab,
-      feature} = this.state
+      feature,
+      caseInit,speicesInit,typeInit} = this.state
 
     return (
       <div className='home-main'>
@@ -205,12 +222,12 @@ export default class Home extends Component {
               <div className='home-title-link-container'>
                 <a href='#'>
                   <i className="bi bi-vector-pen"></i>
-                  <p>600,000起</p>
+                  <p>{caseInit.toLocaleString()}<p className='unit1'>起</p> </p>
                   <p>违法盗猎案件记录</p>
                 </a>
                 <a href='#'>
                   <i className="bi bi-server"></i>
-                  <p>980种8类</p>
+                  <p>{speicesInit}<p className='unit2'>种8类</p></p>
                   <p>国家重点保护动物</p>
                 </a>
               </div>
