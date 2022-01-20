@@ -1,0 +1,54 @@
+.case-main{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  padding: 50px 0;
+}
+
+.related-search-container{
+  width: 23%;
+}
+.accordion-button{
+  height: 30px;
+}
+
+.accordion-body{
+  font-size: 15px;
+  padding: 15px 20px 0;
+}
+.accordion-body input{
+  margin-top: 0px;
+}
+.accordion-body label{
+  line-height: 16px;
+}
+
+.check-cate{
+  font-size: 15px;
+  font-weight: bold;
+  margin: 0 0 5px;
+}
+
+
+
+.case-container{
+  width: 75%;
+}
+
+.case-title{
+  font-size:27px;
+  line-height: 35px;
+  font-family: '苹方-简';
+  text-align: center
+}
+
+.case-container th{
+  text-align: center;
+  width: 100px;
+  line-height: 18px;
+}
+
+
+.case-container tbody{
+  font-size: 15px;
+}

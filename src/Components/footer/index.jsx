@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
+import {v4} from 'uuid'
 import './index.css'
+
 
 export default class Footer extends Component {
 
@@ -83,17 +85,17 @@ export default class Footer extends Component {
             <div className='sponsor-text'>{sponsor}</div>
             <div className='sponsor-logo-area'>
               {logos.map(item => (
-                <img {...item} />
+                <img key={v4()} {...item} />
               ))}
             </div>
           </div>
           <div className='footer-right'>
             {
               menu.map(item => (
-                <div className='menu-tab'>
+                <div key={v4()}  className='menu-tab'>
                   <div className='menu-title'>{item.title}</div>
                   {item.content.map(cont => (
-                    <a href={cont.url}>{cont.text}</a>
+                    <a key={v4()} href={cont.url}>{cont.text}</a>
                   ))}
                 </div>
               ))
