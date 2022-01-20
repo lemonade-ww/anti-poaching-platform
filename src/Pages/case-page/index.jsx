@@ -72,14 +72,14 @@ export default function Case() {
     })
     const arr = [
       {
-        title: '根据审理信息',
+        title: '根据审理信息筛选',
         opt: [
           ['地点', [caseInfo.location.substring(0, caseInfo.location.length - 4)]],
           ['年份', [caseInfo.number.substring(1, 5)]]
         ]
       },
       {
-        title: '根据被告人信息',
+        title: '根据被告人信息筛选',
         opt: [
           ['性别', [...gender]],
           ['民族', [...race]],
@@ -87,7 +87,7 @@ export default function Case() {
         ]
       },
       {
-        title: '根据物种信息',
+        title: '根据物种信息筛选',
         opt: [
           ['种名', [...speciesN]],
           ['纲名', [...classN]],
@@ -107,12 +107,12 @@ export default function Case() {
     <div className='common-container case-main'>
 
       <form className='related-search-container'>
-
+        
         <div className="accordion" id="accordionPanelsStayOpenExample">  {/* 原始外层容器 */}
           
           {
             options.map((item,index) => (
-              <div className="accordion-item" key={v4()}>
+              <div className="accordion-item border-0" key={v4()}>
                 <h2 className="accordion-header" id={"heading"+index} key={v4()}>
                   <button className="accordion-button" type="button" 
                     data-bs-toggle="collapse" 
@@ -126,22 +126,22 @@ export default function Case() {
 
                 {/* 折叠卡内部容器 */}
                 <div id={"collapse"+index} 
-                  className="accordion-collapse collapse show" 
+                  className="accordion-collapse collapse show " 
                   aria-labelledby={"heading"+index} 
                   key={v4()} >
-                  <div className="accordion-body" key={v4()}>
+                  <div className="accordion-body " key={v4()}>
                     {item.opt.map((v)=>(
                       <div key={v4()}>
                         <div className='check-cate' key={v4()}>{'- '+v[0]}</div>
                         {v[1].map((v2)=>(
-                          <div className="form-check" key={v4()}>
+                          <div className="checkbox-wrapper form-check" key={v4()}>
                             <input 
                               className="form-check-input" 
                               id={v2}
                               type="checkbox" 
                               value="1" 
                               key={v4()} />
-                            <label className="form-check-label" 
+                            <label className="form-check-label " 
                               htmlFor={v2} key={v4()}>
                               {v2}
                             </label>
@@ -158,7 +158,7 @@ export default function Case() {
 
         </div>
 
-        <button type="submit" className="btn btn-primary btn-sm">查找相似案件</button>
+        <button type="submit" className="related-search-btn  btn btn-dark btn-sm">搜索相似案件</button>
       </form>
 
       <div className='case-container'>

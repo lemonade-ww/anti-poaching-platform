@@ -6,12 +6,33 @@
 }
 
 .related-search-container{
-  width: 23%;
-}
-.accordion-button{
-  height: 30px;
+  width: 21%;
+  padding-top: 5px;
 }
 
+/* 手风琴按钮 */
+.accordion-button{
+  height: 30px;
+  font-size:15px !important;
+  font-family: '苹方-简';
+  /* color: aquamarine !; */
+}
+.accordion-button:not(.collapsed) {
+  color: #C44D34 !important;
+  background-color: rgb(248, 249, 250);
+  box-shadow: none;
+}
+.accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+.accordion-button:focus {
+  z-index: 3;
+  outline: 0;
+  box-shadow: none;
+}
+
+
+/* 手风琴内部 */
 .accordion-body{
   font-size: 15px;
   padding: 15px 20px 0;
@@ -22,17 +43,31 @@
 .accordion-body label{
   line-height: 16px;
 }
-
 .check-cate{
   font-size: 15px;
   font-weight: bold;
   margin: 0 0 5px;
 }
+.checkbox-wrapper{
+  margin-left: 8px;
+  /* background-color: red; */
+}
+
+
+/* 提交按钮 */
+.related-search-btn{
+  position: relative;
+  left: 55px;
+  top:10px;
+  background-color: #C44D34;
+  border: none;
+}
 
 
 
+/* 案件内容 */
 .case-container{
-  width: 75%;
+  width: 76%;
 }
 
 .case-title{

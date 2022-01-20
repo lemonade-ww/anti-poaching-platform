@@ -153,3 +153,13 @@
 
 
 
+### 2022年1月20日
+
+主要内容：
+
+1. 完成详情页
+2. 修复错误：1. class =》 className   2. key={v4()}  使用uuid为遍历的子元素添加key 
+3. 学习/复习到的内容：
+
+    - useState、useEffect 在函数式组件中的使用
+    - lable标签的 for 属性，是为了和input联动。 在React里这个属性叫 htmlFor
