@@ -4,7 +4,9 @@ from sqlalchemy import Enum, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.decl_api import declared_attr
-from sqlalchemy.sql.schema import Column, ForeignKey
+from sqlalchemy.sql import func
+from sqlalchemy.sql.schema import Column, ForeignKey, Table
+from sqlalchemy.sql.sqltypes import DateTime
 
 from api.lib import to_snake
 from api.lib.schemas import ConservationStatus, ProtectionClass
@@ -52,9 +54,39 @@ class TaxonGenus(Base, IdMixin):
     species: List["TaxonSpecies"] = relationship("TaxonSpecies", backref="genus")
 
 
+judgment_species = Table(
+    "judgment_species",
+    Base.metadata,
+    Column("species_id", ForeignKey("taxon_species.id"), primary_key=True),
+    Column("judgment_id", ForeignKey("judgment.id"), primary_key=True),
+)
+
+
 class TaxonSpecies(Base, IdMixin):
     name = Column(String(255), nullable=False, unique=True)
     genus_id = Column(Integer, ForeignKey(TaxonGenus.id), nullable=False)
 
     protection_class = Column(Enum(ProtectionClass))
     conservation_status = Column(Enum(ConservationStatus))
+
+    judgments: list["Judgment"] = relationship(
+        "Judgment", secondary=judgment_species, back_populates="species"
+    )
+
+
+class Judgment(Base, IdMixin):
+    """
+    A complete judgment document with meta data
+    """
+
+    title = Column(String())
+
+    date_released = Column(DateTime)
+    date_created = Column(DateTime, server_default=func.now())
+
+    species: list[TaxonSpecies] = relationship(
+        TaxonSpecies,
+        secondary=judgment_species,
+        back_populates="judgments",
+        uselist=True,
+    )
