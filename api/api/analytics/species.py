@@ -18,9 +18,6 @@ from api.dependencies import get_db
 from api.lib import APIModel, get_unique_attributes, map_attribute
 from api.lib.schemas import Species
 
-TModel = TypeVar("TModel")
-TKey = TypeVar("TKey")
-
 router = APIRouter(prefix="/analytics/species")
 
 

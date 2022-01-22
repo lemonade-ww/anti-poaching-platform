@@ -39,20 +39,26 @@ def test_db(engine):
     Base.metadata.drop_all(engine)
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def client():
+    session = SessionLocal()
+    session.commit = session.flush
+
     def get_db_override():
-        session = SessionLocal()
-        try:
-            yield session
-        finally:
-            session.close()
+        yield session
 
     app.dependency_overrides[get_db] = get_db_override
 
-    return TestClient(app)
+    yield TestClient(app)
+
+    session.rollback()
+    session.close()
 
 
-@pytest.fixture
-def db_test_session():
-    return
+@pytest.fixture(scope="function")
+def db_session():
+    session = SessionLocal()
+    try:
+        yield session
+    finally:
+        session.close()

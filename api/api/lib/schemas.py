@@ -1,6 +1,9 @@
 from enum import Enum
+from typing import Generic, TypeVar
 
 from api.lib import APIModel
+
+ResultT = TypeVar("ResultT")
 
 
 class ConservationStatus(str, Enum):
@@ -21,6 +24,12 @@ class ProtectionClass(str, Enum):
     II = "II"
 
 
+class ResponseStatus(str, Enum):
+    Success = "success"
+    Pending = "pending"
+    Error = "error"
+
+
 class Species(APIModel):
     """
     Defines a species catagorized by the taxonomy ranks
@@ -34,3 +43,25 @@ class Species(APIModel):
     protection_class: ProtectionClass | None = None
     conservation_status: ConservationStatus | None = None
     __slots__ = "__weakref__"
+
+
+class Judgment(APIModel):
+    """
+    The judgment document
+    """
+
+    title: str
+    species: list[Species]
+
+
+class ActionResult(APIModel):
+    """
+    The result of the current action
+    """
+
+    status: ResponseStatus
+    message: str | None
+
+
+class QueryActionResult(ActionResult, Generic[ResultT]):
+    result: ResultT
