@@ -2,7 +2,7 @@ import React,{ Component } from "react"
 import {Header, Footer} from './Components'
 import Routers from './Routers'
 
-import './styles/index.css'
+import './App.less'
 
 export default class App extends Component{
   state = {

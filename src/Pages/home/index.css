@@ -29,6 +29,7 @@
 }
 .carousel-item div p{
   padding-bottom: 14px;
+  font-size: 15px;
 }
 
 /* 轮播图上方悬浮区域容器*/
@@ -63,7 +64,7 @@
   flex-flow: row nowrap;
   justify-content: space-between;
 }
-.home-title-link-container a{
+.home-title-link-container div{
   /* background-color: grey; */
   width: 220px;
   display: block;
@@ -72,33 +73,34 @@
   text-shadow: 2px 2px black;
   color: white;
 }
-.home-title-link-container a i{
+.home-title-link-container div i{
   line-height: 65px;
   font-size: 65px;
   float: left;
   margin-right: 20px;
 }
-.home-title-link-container a p:nth-child(2){
+.home-title-link-container div p:nth-child(2){
   display: block;
   height: 30px;
   line-height: 30px;
   font-size: 25px;
   position: relative;
 }
-.home-title-link-container a p:nth-child(2) .unit1{
+.home-title-link-container div p:nth-child(2) .unit1{
   display: inline-block;
   position: absolute;
   right: 11px;
 }
-.home-title-link-container a p:nth-child(2) .unit2{
+.home-title-link-container div p:nth-child(2) .unit2{
   display: inline-block;
   position: absolute;
   right: 23px;
 }
-.home-title-link-container a p:nth-child(3){
+.home-title-link-container div p:nth-child(3){
   display: block;
   height: 30px;
   line-height: 30px;
+  font-size: 16px;
 }
 
 
@@ -195,6 +197,7 @@
   margin: 40px 0 30px;
   /* background-color: grey; */
   color: #565656;
+  font-size: 16px;
 }
 /* 每个tab页面的内部板块容器 */
 .tab-inner-container{
@@ -304,7 +307,9 @@
 }
 .feature-card-body p:nth-of-type(1){
   color: #565656;
+  font-size: 16px;
   line-height: 22px;
+  font-style: italic;
 }
 .feature-card-body p:nth-of-type(2){
   /* color: #565656; */
