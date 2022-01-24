@@ -3,6 +3,11 @@ body{
   width: 100%;
 }
 
+body{
+  /* font-family: sans-serif !important; */
+  /* line-height: 100% !important; */
+}
+
 
 /* 头部整体背景与大小 */
 .header-main{
@@ -180,12 +185,11 @@ body{
 /* 关闭按钮 */
 .header-closebtn{
   font-size:30px;
-  font-weight: bold;
   color: white;
   
   position: absolute;
-  top: -50px;
-  right: 39px;
+  top: -60px;
+  right: 37px;
   z-index: 100;
   transition: 0.2s;
   cursor: pointer;
