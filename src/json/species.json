@@ -1,0 +1,89 @@
+[
+  {
+  "label": "脊索动物门",
+  "value": "脊索动物门",
+  "children": [
+    {
+      "label": "哺乳纲",
+      "value": "哺乳纲",
+      "children": [
+        {
+          "label": "灵长目",
+          "value": "灵长目",
+          "children": [
+            {
+              "label": "懒猴科",
+              "value": "懒猴科",
+              "children": [
+                {
+                  "label": "蜂猴",
+                  "value": "蜂猴"
+                },
+                {
+                  "label": "倭蜂猴",
+                  "value": "倭蜂猴"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "鸟纲",
+      "value": "鸟纲",
+      "children": [
+      ]
+    },
+    {
+      "label": "爬行纲",
+      "value": "爬行纲",
+      "children": [
+      ]
+    },
+    {
+      "label": "两栖纲",
+      "value": "两栖纲",
+      "children": [
+      ]
+    }
+  ]
+  },
+  {
+    "label": "半索动物门",
+    "value": "半索动物门",
+    "children": [
+      {
+        "label": "肠鳃纲",
+        "value": "肠鳃纲",
+        "children": [
+        ]
+      }
+    ]
+  },
+  {
+    "label": "节肢动物门",
+    "value": "节肢动物门",
+    "children": [
+      {
+        "label": "昆虫纲",
+        "value": "昆虫纲",
+        "children": [
+        ]
+      }
+    ]
+  },
+  {
+    "label": "软体动物门",
+    "value": "软体动物门",
+    "children": [
+    ]
+  },
+  {
+    "label": "刺胞动物门",
+    "value": "刺胞动物门",
+    "children": [
+    ]
+  }
+]
+  
