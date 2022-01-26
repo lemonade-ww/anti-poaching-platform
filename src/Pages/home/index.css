@@ -113,26 +113,26 @@
 }
 
 /* boostrap的输入框，改造 */
-.home-title-search input {
-  border: white 1px solid;
+.quick-search input {
+  /* border: white 1px solid; */
   }
-.home-title-search input:focus {
+.quick-search input:focus {
   box-shadow: 0 0 0 0.25rem rgba(241, 102, 72, 0.5);  
   border-color: white !important;
   }
-.home-title-search button{
+.quick-search button{
   color: white;
   border: 1px solid rgb(0, 0, 0,.7);
   background-color: rgb(0, 0, 0,.7);
 }
-.home-title-search button:hover {
+.quick-search button:hover {
   background-color: black;
   border: 1px solid black;
 }
-.home-title-search button:focus {
+.quick-search button:focus {
   box-shadow: 0 0 0 0.25rem rgba(241, 102, 72, 0.5);  
 }
-.home-title-search button svg{
+.quick-search button svg{
   height: 18px;
   margin-right: 7px;
   position: relative;

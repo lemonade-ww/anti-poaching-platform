@@ -1,0 +1,76 @@
+.result-container{
+  padding: 20px 50px;
+  
+}
+
+.query-box{
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  font-size: 13px;
+  padding: 1px 3px;
+}
+
+.query-box .query-title, .list-count{
+  font-weight: bold;
+}
+
+.query-box p{
+  display: inline-block;
+  margin-right: 10px;
+}
+.list-count span{
+  margin: 0 5px;
+  color: #c44d34;
+}
+
+
+.list-link{
+  color: #c44d34;
+}
+.list-link:hover{
+  color: #c44d34;
+  transition: 0s !important;
+  text-decoration: underline;
+  
+}
+
+
+
+.result-list .ant-table-pagination.ant-pagination {
+  margin: 5px 5px 5px 0;
+}
+
+.result-list thead tr th{
+  text-align: center;
+
+}
+.result-list thead tr th:nth-child(1){
+  width: 40px !important;
+}
+.result-list thead tr th:nth-child(2){
+  width: 320px !important;
+}
+.result-list thead tr th:nth-child(3){
+  width: 100px !important;
+}
+.result-list thead tr th:nth-child(4){
+  width: 50px !important;
+}
+.result-list thead tr th:nth-child(5){
+  width: 80px !important;
+}
+.result-list thead tr th:nth-child(7){
+  width: 85px !important;
+}
+
+.result-list tbody tr td{
+  /* font-weight: 500; */
+  /* font-weight: bold; */
+}
+.result-list tbody tr 
+  td:nth-child(3),
+  td:nth-child(4),
+  td:nth-child(5),
+  td:nth-child(6){
+  font-size: 13px;
+}

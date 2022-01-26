@@ -1,5 +1,6 @@
 import React from 'react'
 import { v4 } from 'uuid';
+import { Checkbox, Button } from 'antd';
 import './index.css'
 
 
@@ -114,10 +115,10 @@ export default function Case() {
             options.map((item,index) => (
               <div className="accordion-item border-0" key={v4()}>
                 <h2 className="accordion-header" id={"heading"+index} key={v4()}>
-                  <button className="accordion-button" type="button" 
+                  <button className="accordion-button collapsed " type="button" 
                     data-bs-toggle="collapse" 
                     data-bs-target={"#collapse"+index} 
-                    aria-expanded="true" 
+                    aria-expanded="false" 
                     aria-controls={"collapse"+index} 
                     key={v4()} >
                     {item.title}
@@ -126,7 +127,7 @@ export default function Case() {
 
                 {/* 折叠卡内部容器 */}
                 <div id={"collapse"+index} 
-                  className="accordion-collapse collapse show " 
+                  className="accordion-collapse collapse  " 
                   aria-labelledby={"heading"+index} 
                   key={v4()} >
                   <div className="accordion-body " key={v4()}>
@@ -134,18 +135,7 @@ export default function Case() {
                       <div key={v4()}>
                         <div className='check-cate' key={v4()}>{'- '+v[0]}</div>
                         {v[1].map((v2)=>(
-                          <div className="checkbox-wrapper form-check" key={v4()}>
-                            <input 
-                              className="form-check-input" 
-                              id={v2}
-                              type="checkbox" 
-                              value="1" 
-                              key={v4()} />
-                            <label className="form-check-label " 
-                              htmlFor={v2} key={v4()}>
-                              {v2}
-                            </label>
-                          </div>
+                            <Checkbox size='sm' key={v4()} className='related-checkBox'>{v2}</Checkbox>
                         ))}
                       </div>
                     ))}
@@ -158,7 +148,7 @@ export default function Case() {
 
         </div>
 
-        <button type="submit" className="related-search-btn  btn btn-dark btn-sm">搜索相似案件</button>
+        <Button type="submit" type="primary" size='small' className="related-search-btn">搜索相似案件</Button>
       </form>
 
       <div className='case-container'>
@@ -185,7 +175,7 @@ export default function Case() {
             <tr>
               <th>被告人信息</th>
               <td className='p-0'>
-                <table className='table mb-0 table-striped'>
+                <table className='table mb-0'>
                   <tbody>
                     <tr>
                       <td>姓名</td>
@@ -214,7 +204,7 @@ export default function Case() {
             <tr>
               <th>案件涉及的野生动物</th>
               <td className='p-0'>
-                <table className='table mb-0 table-striped'>
+                <table className='table mb-0 '>
                   <tbody>
                     <tr>
                       <td>物种名称</td>

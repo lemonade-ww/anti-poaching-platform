@@ -2,7 +2,9 @@
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
-  padding: 50px 0;
+  padding: 20px 50px;
+
+  
 }
 
 .related-search-container{
@@ -13,9 +15,8 @@
 /* 手风琴按钮 */
 .accordion-button{
   height: 30px;
-  font-size:15px !important;
-  font-family: '苹方-简';
-  /* color: aquamarine !; */
+  font-size:14px !important;
+  /* font-family: '苹方-简'; */
 }
 .accordion-button:not(.collapsed) {
   color: #C44D34 !important;
@@ -34,33 +35,29 @@
 
 /* 手风琴内部 */
 .accordion-body{
-  font-size: 15px;
-  padding: 15px 20px 0;
-}
-.accordion-body input{
-  margin-top: 0px;
-}
-.accordion-body label{
-  line-height: 16px;
-}
-.check-cate{
-  font-size: 15px;
-  font-weight: bold;
-  margin: 0 0 5px;
-}
-.checkbox-wrapper{
-  margin-left: 8px;
   /* background-color: red; */
+  padding: 0px 20px 0;
+}
+
+.check-cate{
+  font-size: 13px;
+  font-weight: bold;
+  /* margin: 0 0 5px; */
+}
+
+.related-checkBox{
+  font-size: 13px !important;
+  display: inline-block;
 }
 
 
 /* 提交按钮 */
 .related-search-btn{
-  position: relative;
-  left: 55px;
-  top:10px;
-  background-color: #C44D34;
+  width: 120px;
+  margin: 10px 40px;
   border: none;
+  font-size:13px !important;
+
 }
 
 
@@ -71,9 +68,8 @@
 }
 
 .case-title{
-  font-size:27px;
+  font-size:24px;
   line-height: 35px;
-  font-family: '苹方-简';
   text-align: center
 }
 
@@ -85,5 +81,5 @@
 
 
 .case-container tbody{
-  font-size: 15px;
+  font-size: 14px;
 }

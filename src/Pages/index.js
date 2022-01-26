@@ -4,6 +4,7 @@ import Search from './search'
 import About from './about'
 import Case from './case-page'
 import Advance from './advance'
+import Result from './result-page'
 
 
 export {
@@ -12,5 +13,6 @@ export {
   Search,
   About,
   Case,
-  Advance
+  Advance,
+  Result
 }

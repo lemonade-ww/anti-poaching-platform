@@ -11,11 +11,12 @@
 <body>
   <script type="text/javascript">
     
-    let a = '(({}{[]}))'
+    let a = 'C'
 
-    let b = a.replace(/\(\)/g,' ')
+    let b = Number(a)
 
-    console.log(b)
+    console.log(Number.isNaN(b))
+    console.log(Number.isNaN(a))
 
   </script>
 </body>
