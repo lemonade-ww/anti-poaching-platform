@@ -32,7 +32,13 @@
 /* 高级搜索属性表 */
 .advance-table{
   width: 100%;
+  background-color: rgba(240, 240, 240, 0.39);
 }
+.table1 tr:nth-child(1) td,.table2 tr:nth-child(1) td{
+  height: 40px;
+  /* background-color: black; */
+}
+
 
 .advance-table tr td:first-child{
   width: 100px;
@@ -48,7 +54,6 @@
 
 /* 属性分类的div标题 */
 .table-title{
-  background-color: rgba(240, 240, 240, 0.39);
   color: #c44d34;
   font-weight: bold;
   font-style: italic;
@@ -78,21 +83,5 @@
 /* 两个范围选择器 */
 .advance-slider1{
   position: relative;
-  top: 11px;
-}
-
-.submit-box{
-  margin-top: 5px;
-  display: flex;
-  flex-flow: nowrap row;
-  align-items: center;
-  justify-content: end;
-}
-
-.submit-box div{
-  margin-right: 20px;
-  color: rgba(0, 0, 0, 0.4) ;
-}
-.submit-box .submit-btn{
-  width: 120px;
+  top: 5px;
 }

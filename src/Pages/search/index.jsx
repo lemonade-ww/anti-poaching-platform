@@ -1,24 +1,26 @@
 import React, { Component } from 'react'
 import { Outlet } from 'react-router-dom'
 import './index.css'
+import { connect } from 'react-redux'
 
-export default class Search extends Component {
 
-  state = {
-    header:{
-      style:{
-        backgroundImage:'url(/img/bg3_1125_500.jpg)',
-        backgroundPosition:'middle',
-      }
-    }
+class Search extends Component {
+
+  componentDidMount(){
+    this.props.header()
   }
-
+  
   render() {
     return (
       <div>
-        <div className='header-bg-img' {...this.state.header}></div>
         <Outlet/>
       </div>
     )
   }
 }
+
+
+export default connect(
+  ()=>({}),
+  {header: ()=>({type:'search'})}
+  )(Search)

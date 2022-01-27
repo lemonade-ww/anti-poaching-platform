@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import MyTab from './myTab'
 import {v4} from 'uuid'
+// import store from '../../redux/store'
+import { connect } from 'react-redux'
+import MyTab from './myTab'
 import './index.css'
 
-export default class Home extends Component {
+class Home extends Component {
 
   state = {
     caseInit: 600000,
@@ -184,6 +186,7 @@ export default class Home extends Component {
   }
 
   componentDidMount(){
+      this.props.header()
       let caseTemp = this.state.caseInit, speciesTemp = this.state.speicesInit
       setTimeout(()=>{
         this.setState({caseInit:0,speicesInit:0})
@@ -348,3 +351,7 @@ export default class Home extends Component {
   }
 }
 
+export default connect(
+  ()=>({}),
+  {header: ()=>({type:'home'})}
+  )(Home)

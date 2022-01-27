@@ -1,20 +1,25 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-export default class About extends Component {
-  state = {
-    header:{
-      style:{
-        backgroundImage:'url(/img/bg6_1125_500.jpg)',
-        backgroundPosition:'bottom',
-      }
-    }
+
+
+class About extends Component {
+
+
+  componentDidMount() {
+    this.props.header()
   }
+
   render() {
     return (
       <div>
-        <div className='header-bg-img' {...this.state.header}></div>
         关于我们介绍：。。。
       </div>
     )
   }
 }
+
+export default connect(
+  ()=>({}),
+  {header: ()=>({type:'about'})}
+  )(About)

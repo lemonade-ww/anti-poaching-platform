@@ -1,23 +1,25 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
 
 
-export default class Charts extends Component {
-  state = {
-    header:{
-      style:{
-        backgroundImage:'url(/img/bg5_1125_500.jpg)',
-        backgroundPosition:'bottom',
-      }
-    }
-  }
+
+class Charts extends Component {
   
+  componentDidMount() {
+    this.props.header()
+  }
+
   render() {
     return (
       <div>
-        <div className='header-bg-img' {...this.state.header}></div>
         Charts
       </div>
     )
   }
 }
+
+export default connect(
+  ()=>({}),
+  {header: ()=>({type:'charts'})}
+  )(Charts)

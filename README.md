@@ -219,3 +219,48 @@ AntD引入后会污染原样式，对h标签和p标签样式有影响:
 心得：主要是学习和摸索antd的组件的API
 
 灵感：头部快捷搜索按钮修改一下，不让它冒出来。
+
+
+## 2020年1月27日
+
+主要内容：
+
+1. 高级检索
+
+   - 微调table的背景颜色
+
+   - 浏览器提示错误：不能在 `<table>`标签内直接用`<tr>`，虽然能正常显示，但也需要用`<thead>`或`<tbody>`包裹。
+
+2. Header组件的背景图片
+
+   - 调整样式和结构，使背景图片变成Header组件内的一个部分
+
+   - 因为图片要随路由组件变化而变化，因此需要用 **Redux** 来管理状态，但是遇到了一些问题：
+
+      - 把store.dispatch()放在componentDidMount中，然而如果在同一个页面内，初次加载组件，虽然action被dispatch到了reducer内，但是store不会更新。猜测可能的原因跟store.subscribe的位置有关：
+      ```js
+      import store from "./redux/store"
+
+      ReactDOM.render(<App/>,document.getElementById('root')) // 初次挂载
+
+      store.subscribe(()=>{
+        console.log('hello!') // 页面第一次加载时，不会输出hello
+        ReactDOM.render(<App/>,document.getElementById('root'))
+      })
+      ```
+      - 解决办法：用了 **React-Redux**, 利用`<Provider>`来代替store.subscribe，使得初次挂载时的更新也能被监听到：
+      ```js
+      import {Provider} from 'react-redux';
+
+      ReactDOM.render(
+        <Provider store={store}>
+          <App/>
+        </Provider>
+      ,document.getElementById('root'))
+      ```
+      - 并且Provider还使得每个页面的UI组件和操作分离，更加清晰和简洁
+
+3. 心得：
+
+    - 以后要重新看文档好好再学习一下 Redux 以及 React-redux 的用法和原理
+    - ES2017 的修饰器可以配合 connect 使用，会更简洁，以后再研究一下 （阮一峰ES6）。

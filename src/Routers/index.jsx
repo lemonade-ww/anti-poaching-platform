@@ -9,7 +9,7 @@ export default class Routers extends Component {
             <Route path='/' element={<Home/>}></Route>
             <Route path='/charts' element={<Charts/>}></Route>
             <Route path='/search' element={<Search/>}>
-              <Route path='/search/' element={<Advance/>}/>
+              <Route index element={<Advance/>}/>
               <Route path="/search/result" element={<Result/>}/>
               <Route path="/search/case_:caseId" element={<Case/>} />
             </Route>
