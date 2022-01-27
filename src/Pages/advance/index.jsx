@@ -72,8 +72,8 @@ export default class index extends Component {
           <InfoCircleFilled className="info-icon" />
           勾选提示：若某一项未进行勾选，则该项默认为全选
 
-          <a href="http://localhost:3000/search/result"> {`👉👉👉搜索结果样例页`}</a>
-          <a href="http://localhost:3000/search/case_123"> {`👉👉👉判决书样例页`}</a>
+          <a target="_blank" href="http://localhost:3000/search/result"> {`👉👉👉搜索结果样例页`}</a>
+          <a target="_blank" href="http://localhost:3000/search/case_123"> {`👉👉👉判决书样例页`}</a>
         </div>
 
         <div className='table-title'>案件审理属性</div>

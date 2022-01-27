@@ -1,7 +1,5 @@
 export default function headerImgReducer(preState ,action){
-
-  console.log(action)
-
+  // console.log(action)
   const {type} = action
   switch(type){
     case 'home':
@@ -17,7 +15,5 @@ export default function headerImgReducer(preState ,action){
       preState = {backgroundImage: 'url(/img/bg6_1125_500.jpg)',backgroundPosition: 'bottom',}
       break;
   }
-
   return {style:preState}
-
 }

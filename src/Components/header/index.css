@@ -19,6 +19,7 @@ body{
   overflow: hidden;
   transition: 0.5s;
   position: absolute;
+  top: 0px;
   z-index: 999;
 }
 .header-main-expand{

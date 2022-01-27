@@ -8,7 +8,7 @@ export default class MyLink extends Component {
     const {name} = this.props
     return (
       <Link 
-      target="_blank"
+      // target="_blank"
        className='header-link' {...this.props} >{name}
         <div className='button-line'></div>
       </Link>
