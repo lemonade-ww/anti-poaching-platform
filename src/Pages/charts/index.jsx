@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Outlet } from 'react-router-dom'
 
 
 
@@ -12,8 +13,8 @@ class Charts extends Component {
 
   render() {
     return (
-      <div>
-        Charts
+      <div className='common-container'>
+        <Outlet/>
       </div>
     )
   }

@@ -1,0 +1,72 @@
+.charts-nav-main{
+  padding: 70px 50px 50px;
+  // background-color: wheat;
+}
+
+.charts-nav-flex{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+
+  .left, .right{
+    width: 45%;
+    height: 250px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 2px 2px 10px rgb(77, 77, 77);
+    border-radius: 5px;
+
+    a{
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+      transition: 200ms;
+      position: relative;
+
+      h2{
+        font-size: 32px;
+        color: white;
+        font-family: '苹方-简';
+        text-shadow: 1px 1px 3px #000;
+        margin: 0 auto;
+        text-align: center;
+        padding-top: 80px;
+      }
+
+      p{
+        color: white;
+        font-family: '苹方-简';
+        text-shadow: 1px 1px 3px #000;
+        text-align: center;
+        padding: 10px 20px;
+        font-size: 15px;
+      }
+
+      .icon{
+        color: white;
+        font-size: 30px;
+        filter: drop-shadow(2px 2px 3px rgb(0 0 0 / 0.6));
+        text-shadow: 1px 1px 3px #000;
+        position: absolute;
+        right: 15px;
+        bottom: 10px;
+        transition: 400ms;
+        opacity: 0;
+      }
+    }
+
+    a:hover{
+      background-color: #fa6749cc;
+
+      .icon{
+        right: 10px;
+        opacity: 100;
+      }
+    }
+  }
+}
+
+.left{
+  // background-image: url();
+}

@@ -276,3 +276,18 @@ AntD引入后会污染原样式，对h标签和p标签样式有影响:
 
 重新学习Node.js，MongoDB，为后端接口和服务器做准备！加油！
 
+## 2022年2月19日
+
+在学习了Node.js搭建服务器和MySQL后，重新回到正轨！
+
+记录：
+svg图标利用CSS添加阴影效果：
+```css
+svg {
+  filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+}
+```
+https://css-tricks.com/adding-shadows-to-svg-icons-with-css-and-svg-filters/
+
+1. 更新了图表页 Charts 的路由
+2. 制作了图表页的首页

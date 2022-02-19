@@ -35,7 +35,7 @@ class Header extends Component {
        
         <div className='header-front-interface'>
           <div className='header-main-container'>
-            <a href="#" className='header-logo'>
+            <a href="http://localhost:3000/" className='header-logo'>
               <img className='logo-img' src="/img/盾牌,安全,保护.png" alt="logo" />
               <p>中国野生动物盗猎大数据平台</p>
               <p>antipoach.cn</p>
@@ -50,7 +50,7 @@ class Header extends Component {
 
               <nav className='header-nav'>
                 <MyLink className='header-link' to='/' name='主页' />
-                <MyLink className='header-link' to='/charts' name='数据统计' />
+                <MyLink className='header-link' to='/charts' name='图表' />
                 <MyLink className='header-link' to='/search' name='高级检索' />
                 <MyLink className='header-link' to='/about' name='关于' />
               </nav>

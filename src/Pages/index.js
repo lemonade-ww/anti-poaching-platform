@@ -5,6 +5,9 @@ import About from './about'
 import Case from './case-page'
 import Advance from './advance'
 import Result from './result-page'
+import Statistics from './statistics'
+import Map from './map'
+import ChartsNav from './chartsNav'
 
 
 export {
@@ -14,5 +17,8 @@ export {
   About,
   Case,
   Advance,
-  Result
+  Result,
+  Statistics,
+  Map,
+  ChartsNav
 }
