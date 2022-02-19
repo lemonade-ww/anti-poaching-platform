@@ -1,3 +1,4 @@
+import datetime
 from typing import Any, Iterable, Literal
 
 from sqlalchemy.dialects.postgresql import insert
@@ -39,7 +40,12 @@ def bulk_upsert(
 
 
 def optional_filters(
-    query: Query, *filters: tuple[Column, Literal["=", "~"], str | int | Column | None]
+    query: Query,
+    *filters: tuple[
+        Column,
+        Literal["=", "~", "<", ">"],
+        str | int | datetime.datetime | Column | None,
+    ],
 ) -> Query:
     """Generate a series of optional filters to the query
 
@@ -47,7 +53,12 @@ def optional_filters(
         query (Query): The query to be modified
         filters: A dict with the columns to be filtered as the key,
         a tuple of (filter operation, the value to be matched).
-        Possible operations are exact match (=) and contains (~)
+        Possible operations are:
+
+        - = exact match
+        - ~ contains
+        - > greater than
+        - < smaller than
 
     Returns:
         Query: [description]
@@ -60,4 +71,8 @@ def optional_filters(
                 if isinstance(value, Column):
                     raise NotImplementedError("ilike between columns is not supported")
                 query = query.filter(key.ilike(f"%{value}%"))
+            elif operation == ">":
+                query = query.filter(key > value)
+            elif operation == "<":
+                query = query.filter(key < value)
     return query

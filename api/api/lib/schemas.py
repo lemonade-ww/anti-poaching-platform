@@ -1,3 +1,4 @@
+import datetime
 from enum import Enum
 from typing import Generic, TypeVar
 
@@ -45,6 +46,17 @@ class Species(APIModel):
     __slots__ = "__weakref__"
 
 
+class Defendant(APIModel):
+    """
+    Basic information of a defendant
+    """
+
+    name: str
+    gender: str | None
+    birth: datetime.datetime | None
+    education_level: str | None
+
+
 class Judgment(APIModel):
     """
     The judgment document
@@ -52,6 +64,7 @@ class Judgment(APIModel):
 
     title: str
     species: list[Species]
+    defendants: list[Defendant]
 
 
 class ActionResult(APIModel):
