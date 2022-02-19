@@ -25,12 +25,14 @@ PROD_SECRETS := $(addprefix $(SECRETS_DIR)/prod/,$(SECRET_NAMES))
 export DOCKER_BUILDKIT = 1
 export COMPOSE_DOCKER_CLI_BUILD = 1
 export REVISION = $(IMAGE_REVISION)
+export COMPOSE_IGNORE_ORPHANS = True
 
 help:
 	@echo "make build - Build all dependencies"
 	@echo "make push-latest - Push and update the docker registry"
 	@echo "make run-dev - Run the dev build"
 	@echo "make run-prod - Run the prod build"
+	@echo 'make MESSAGE="migration revision message" generate-migration - Auto generate a new alembic migration'
 
 build: build-prod build-dev
 
@@ -68,6 +70,10 @@ update-revision:
 		NEW_REVISION=$$(git rev-parse --short HEAD); \
 		sed -i "0,/IMAGE_REVISION ?= */{s/IMAGE_REVISION ?= .*/IMAGE_REVISION ?= $${NEW_REVISION}/}" $(THIS_FILE); \
 		test $${NEW_REVISION} = $(IMAGE_REVISION) && echo "revision unchanged" || echo "$(IMAGE_REVISION) => $${NEW_REVISION}"
+
+.PHONY: generate-migration
+generate-migration:
+	docker compose ${DEV_COMPOSE_ARGS} run api alembic revision --autogenerate -m "$(MESSAGE)"
 
 .PHONY: push
 push:
