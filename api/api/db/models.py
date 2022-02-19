@@ -1,6 +1,6 @@
 from typing import List, Type, TypeVar
 
-from sqlalchemy import Enum, Integer, String
+from sqlalchemy import Date, Enum, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.decl_api import declared_attr
@@ -74,6 +74,16 @@ class TaxonSpecies(Base, IdMixin):
     )
 
 
+class Defendant(Base, IdMixin):
+    name = Column(String(255))
+    gender = Column(String(1))
+    birth = Column(Date)
+    education_level = Column(String(20))
+    judgment_id = Column(Integer, ForeignKey("judgment.id"), nullable=False)
+
+    judgment: "Judgment" = relationship("Judgment", back_populates="defendants")
+
+
 class Judgment(Base, IdMixin):
     """
     A complete judgment document with meta data
@@ -90,3 +100,4 @@ class Judgment(Base, IdMixin):
         back_populates="judgments",
         uselist=True,
     )
+    defendants: list[Defendant] = relationship("Defendant", back_populates="judgment")
