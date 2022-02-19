@@ -20,10 +20,11 @@ class ResponseError(Exception):
 
 
 class NoneError(ResponseError):
-    reason = Reason.ResourceDoesNotExist
-
     def __init__(self, name: str) -> None:
-        self.msg = f"{name} does not exist"
+        super().__init__(
+            f"Resource does not exist: {name}",
+            reason=Reason.ResourceDoesNotExist,
+        )
 
 
 def response_error_handler(request: Request, exc: ResponseError):
