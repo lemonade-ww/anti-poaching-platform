@@ -1,4 +1,4 @@
-name: push
+name: bump-image
 
 on: 
   push:
