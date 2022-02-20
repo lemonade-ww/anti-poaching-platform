@@ -3,7 +3,7 @@ name: bump-image
 on: 
   push:
     branches:
-      - main
+      - master
     paths:
       - Makefile
 

@@ -15,7 +15,7 @@ LINT_SERVICES := api-lint analytics-lint
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
 LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 
-IMAGE_REVISION ?= d2eb28c
+IMAGE_REVISION ?= fcc9250
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
@@ -94,7 +94,7 @@ push-latest:
 	@IMAGE_REVISION=latest $(MAKE) -f $(THIS_FILE) push
 
 .PHONY: bump-image
-bump-image: push-latest
+bump-revision: update-revision
 	git add $(THIS_FILE)
 	git commit -m "docker: Bump image revision"
 
