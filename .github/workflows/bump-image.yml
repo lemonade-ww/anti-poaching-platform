@@ -1,0 +1,23 @@
+name: push
+
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - Makefile
+
+jobs:
+  bump-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Images
+        run: make push-latest
