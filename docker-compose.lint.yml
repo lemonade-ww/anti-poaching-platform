@@ -7,11 +7,11 @@ services:
       dockerfile: shared/lint.Dockerfile
       args:
         SOURCE_DIR: analytics-cli
-        REQUIREMENTS_TXT: analytics/requirements/dev.txt
+        REQUIREMENTS_TXT: analytics-cli/requirements/dev.txt
     environment:
-      TARGET_DIR: /opt/app/analytics
+      TARGET_DIR: /opt/app/analytics-cli
     volumes:
-      - ./analytics/analytics:/opt/app/analytics
+      - ./analytics/analytics-cli:/opt/app/analytics-cli
 
   api-lint:
     build:
