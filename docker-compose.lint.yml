@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: shared/lint.Dockerfile
       args:
-        SOURCE_DIR: analytics
+        SOURCE_DIR: analytics-cli
         REQUIREMENTS_TXT: analytics/requirements/dev.txt
     environment:
       TARGET_DIR: /opt/app/analytics

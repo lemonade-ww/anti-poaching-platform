@@ -14,17 +14,6 @@ services:
       - pg_password
       - pg_user
 
-  analytics:
-    image: pig208/anti-poaching-analytics-prod:${REVISION:-latest}
-    build:
-      context: analytics
-      target: production
-      args:
-        REQUIREMENTS_TXT: requirements/min.txt
-    secrets:
-      - pg_user
-      - pg_password
-
   api:
     image: pig208/anti-poaching-api-prod:${REVISION:-latest}
     build:

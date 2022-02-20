@@ -9,7 +9,7 @@ LINT_COMPOSE_ARGS := -f docker-compose.lint.yml \
 		-p anti-poaching-lint
 
 # The services that will be built and pushed all the time
-SERVICES := api analytics
+SERVICES := api
 TEST_SERVICES := api
 LINT_SERVICES := api-lint analytics-lint
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
