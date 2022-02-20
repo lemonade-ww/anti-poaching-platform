@@ -44,6 +44,8 @@ def post_judgment(judgment: JudgmentPost, db: Session = Depends(get_db)):
         title=judgment.title,
         species_names=judgment.species_names,
     )
+    db.add(judgment_inserted)
+    db.flush()
 
     # Assuming that the insertion was successful
     assert judgment_inserted.id is not None

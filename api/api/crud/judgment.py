@@ -16,7 +16,5 @@ def insert_judgment(db: Session, title: str, species_names: list[str]) -> Judgme
         db.query(TaxonSpecies).filter(TaxonSpecies.name.in_(species_names)).all()
     )
     judgment = Judgment(title=title, species=species)
-    db.add(judgment)
-    db.flush()
 
     return judgment
