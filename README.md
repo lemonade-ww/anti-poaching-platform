@@ -291,3 +291,14 @@ https://css-tricks.com/adding-shadows-to-svg-icons-with-css-and-svg-filters/
 
 1. 更新了图表页 Charts 的路由
 2. 制作了图表页的首页
+
+## 2022年2月20日
+
+1. 重写Advance Search的样式
+2. 为图表、高级检索、搜索结果添加页头
+3. Statistics页面：
+   - 添加目录导航
+   - 尝试使用了AntV G6 plot！！！ 好棒！！！ 终于进入到核心功能了！开心，好有成就感，好好看啊！ 😍🥰🥰
+
+
+

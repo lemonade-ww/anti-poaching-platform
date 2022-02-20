@@ -13,7 +13,7 @@ class Charts extends Component {
 
   render() {
     return (
-      <div className='common-container'>
+      <div>
         <Outlet/>
       </div>
     )
