@@ -105,7 +105,7 @@ run-dev: $(DEV_SECRETS)
 .PHONY: run-tests
 run-tests: $(DEV_SECRETS)
 	@echo Preparing tests... Please make sure that the dev services are running
-	@docker compose $(DEV_COMPOSE_ARGS) exec $(TEST_SERVICES) pytest
+	@docker compose $(DEV_COMPOSE_ARGS) exec -T $(TEST_SERVICES) pytest
 
 .PHONY: run-prod
 run-prod: $(PROD_SECRETS)
