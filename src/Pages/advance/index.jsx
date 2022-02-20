@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Select, Cascader, Slider, Checkbox, Input } from 'antd';
+import { PageHeader, Row, Col } from 'antd';
+import { Select, Cascader, Slider, Checkbox, Input, Card } from 'antd';
 import { InfoCircleFilled } from '@ant-design/icons/lib/icons';
 import { v4 } from 'uuid';
 import region from '../../json/region.json'
 import species from '../../json/species.json'
 
-import './index.css'
-
-
+import './index.less'
 
 
 export default class index extends Component {
@@ -46,7 +45,7 @@ export default class index extends Component {
     start++
     while (start <= end) {
       marks_year[start] = start + ''
-      start += 2
+      start += 3
     }
     this.setState({ options, marks_year })
   }
@@ -55,154 +54,232 @@ export default class index extends Component {
     const { Option } = Select
 
     return (
-      <div className='common-container advance-container'>
+      <div className='common-container advance-main'>
 
+        <PageHeader
+          className="site-page-header"
+          onBack={() => window.history.back()}
+          title="高级检索"
+          subTitle="ADVANCED SEARCH"
+        />
 
-        <div className='table-title'>案件审理属性</div>
-        <table className='advance-table table1'>
-          <tbody>
-            <tr>
-              <td>审理地点</td>
-              <td>
-                <Cascader
-                  style={{ width: '100%' }}
-                  options={this.state.options}
-                  // onChange={e => this.onChange(e)}
-                  multiple
-                  // maxTagCount="responsive"
-                  dropdownClassName
-                  placeholder="点击选择审理法院所在行政单位（省级、市级、区/县级），可多选"
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                年份
-                (范围)
-              </td>
-              <td >
-                <Slider className='advance-slider1' range max={this.state.end} min={this.state.start} marks={this.state.marks_year} defaultValue={[2006, 2022]} />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="advance-container">
 
-        <div className='table-title'>被告人属性</div>
-        <table className='advance-table'>
-          <tbody>
+          <div className='left'>
+            <Card className='advanced-cards' title="案件审理属性" bordered={false}>
+              <table className='advance-table'>
+                <tbody>
+                  <tr>
+                    <td>审理地点</td>
+                    <td>
+                      <Cascader
+                        showArrow="true"
+                        style={{ width: '100%' }}
+                        options={this.state.options}
+                        // onChange={e => this.onChange(e)}
+                        multiple
+                        // maxTagCount="responsive"
+                        dropdownClassName
+                        placeholder="选择审理法院行政区划，可多选"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>年份</td>
+                    <td >
+                      <Slider className='advance-slider1'
+                        range
+                        max={this.state.end}
+                        min={this.state.start}
+                        marks={this.state.marks_year}
+                        defaultValue={[2006, 2022]} />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Card>
 
-            <tr className='defendent-property-row'>
-              <td>性别</td>
-              <td>
-                <Checkbox>男</Checkbox>
-                <Checkbox>女</Checkbox>
-              </td>
-              <td>年龄(范围)</td>
-              <td className='advance-slider2'>
-                <Slider range max={2000} min={1950}
-                  marks={this.state.marks_age}
-                  defaultValue={[1950, 2000]}
-                  step={10} />
-              </td>
-            </tr>
-            <tr>
-            </tr>
+            <Card className='advanced-cards' title="被告人属性" bordered={false} style={{ marginTop: '10px' }}>
+              <table className='advance-table'>
+                <tbody>
+                  <tr className='defendent-property-row'>
+                    <td>性别</td>
+                    <td>
+                      <Row>
+                        <Col span={8}>
+                          <Checkbox>男</Checkbox>
+                        </Col>
+                        <Col span={8}>
+                          <Checkbox>女</Checkbox>
+                        </Col>
+                        <Col span={8}>
+                          <Checkbox defaultChecked>不限</Checkbox>
+                        </Col>
+                      </Row>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>年龄</td>
+                    <td className='advance-slider2'>
+                      <Slider range max={2000} min={1950}
+                        marks={this.state.marks_age}
+                        defaultValue={[1950, 2000]}
+                        step={10} />
+                    </td>
+                  </tr>
+                  <tr className='checkbox-row'>
+                    <td>文化程度</td>
+                    <td>
+                      <Row>
+                        <Col span={8}>
+                          <Checkbox>文盲</Checkbox>
+                        </Col>
+                        <Col span={8}>
+                          <Checkbox>小学</Checkbox>
+                        </Col>
+                        <Col span={8}>
+                          <Checkbox>初中</Checkbox>
+                        </Col>
+                        <Col span={16}>
+                          <Checkbox>高中/中专/技校/职高</Checkbox>
+                        </Col>
+                        <Col span={8}>
+                          <Checkbox>大专</Checkbox>
+                        </Col>
+                        <Col span={8}>
+                          <Checkbox>本科</Checkbox>
+                        </Col>
+                        <Col span={8}>
+                          <Checkbox>硕士</Checkbox>
+                        </Col>
+                        <Col span={8}>
+                          <Checkbox defaultChecked>不限</Checkbox>
+                        </Col>
+                      </Row>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>民族</td>
+                    <td>
+                      <Select
+                        mode="multiple"
+                        showArrow="true"
+                        allowClear
+                        mode="tags" style={{ width: '100%' }} placeholder="选择民族，可多选">
+                        {this.state.ethnic.map(item => (
+                          <Option key={v4()}>{item}</Option>
+                        ))}
+                      </Select>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Card>
+          </div>
 
-            <tr>
-              <td>民族</td>
-              <td colSpan="3">
-                <Select
-                  mode="multiple"
-                  allowClear
-                  mode="tags" style={{ width: '100%' }} placeholder="点击选择民族，可多选">
-                  {this.state.ethnic.map(item => (
-                    <Option key={v4()}>{item}</Option>
-                  ))}
-                </Select>
-              </td>
-            </tr>
-            <tr className='checkbox-row'>
-              <td>文化程度</td>
-              <td colSpan="3">
-                <Checkbox>文盲</Checkbox>
-                <Checkbox>小学</Checkbox>
-                <Checkbox>初中</Checkbox>
-                <Checkbox>高中/中专/技校/职高</Checkbox>
-                <Checkbox>大专</Checkbox>
-                <Checkbox>本科</Checkbox>
-                <Checkbox>硕士及以上</Checkbox>
-              </td>
-            </tr>
-          </tbody>
+          <div className='right'>
+            <Card className='advanced-cards' title="物种属性" bordered={false}>
+              <table className='advance-table'>
+                <tbody>
+                  <tr>
+                    <td>物种分类</td>
+                    <td>
+                      <Cascader
+                        showArrow="true"
+                        style={{ width: '100%' }}
+                        options={this.state.SpeciesOptions}
+                        // onChange={e => this.onChange(e)}
+                        multiple
+                        // maxTagCount="responsive"
+                        dropdownClassName
+                        placeholder='选择生物学分类（门纲目科属种），可多选'
+                      />
+                    </td>
+                  </tr>
 
-        </table>
+                  <tr className='checkbox-row'>
+                    <td>保护级别</td>
+                    <td>
+                      <Row>
+                        <Col span={24}>
+                          <Checkbox>国家一级保护动物</Checkbox>
+                        </Col>
+                        <Col span={24}>
+                          <Checkbox>国家二级保护动物</Checkbox>
+                        </Col>
+                        <Col span={24}>
+                          <Checkbox>国家 “三有” 保护动物</Checkbox>
+                        </Col>
+                        <Col span={24}>
+                          <Checkbox defaultChecked>不限</Checkbox>
+                        </Col>
+                      </Row>
+                    </td>
+                  </tr>
 
-        <div className='table-title'>物种属性</div>
-        <table className='advance-table table2'>
-          <tbody>
+                  <tr className='checkbox-row'>
+                    <td>濒危等级(IUCN)</td>
+                    <td>
+                      <Row>
+                        {
+                          ['绝灭(EX)', '野外绝灭(EW)', '极危(CR)', '濒危(EN)', '易危(VU)', '近危(NT)', '无危(LC)', '数据缺乏(DD)', '未予评估(NE)'].map((value) => {
+                            return (
+                              <Col span={12}>
+                                <Checkbox>{value}</Checkbox>
+                              </Col>
+                            )
+                          })
+                        }
+                        <Col span={12}>
+                          <Checkbox defaultChecked>不限</Checkbox>
+                        </Col>
+                      </Row>
+                    </td>
+                  </tr>
 
-            <tr>
-              <td>物种分类</td>
-              <td>
-                <Cascader
-                  style={{ width: '100%' }}
-                  options={this.state.SpeciesOptions}
-                  // onChange={e => this.onChange(e)}
-                  multiple
-                  // maxTagCount="responsive"
-                  dropdownClassName
-                  placeholder='点击选择案件所涉物种的生物学分类（门、纲、目、科、属、种），可多选'
-                />
-              </td>
-            </tr>
-            <tr className='checkbox-row'>
-              <td>保护级别</td>
-              <td>
-                <Checkbox>国家一级保护动物</Checkbox>
-                <Checkbox>国家二级保护动物</Checkbox>
-                <Checkbox>国家“三有”保护动物</Checkbox>
-              </td>
-            </tr>
-            <tr className='checkbox-row'>
-              <td>濒危等级(IUCN)</td>
-              <td>
-                <Checkbox>绝灭(EX)</Checkbox>
-                <Checkbox>野外绝灭(EW)</Checkbox>
-                <Checkbox>极危(CR)</Checkbox>
-                <Checkbox>濒危(EN)</Checkbox>
-                <Checkbox>易危(VU)</Checkbox>
-                <Checkbox>近危(NT)</Checkbox>
-                <Checkbox>无危(LC)</Checkbox>
-                <br />
-                <Checkbox>数据缺乏(DD)</Checkbox>
-                <Checkbox>未予评估(NE)</Checkbox>
-              </td>
-            </tr>
-          </tbody>
+                </tbody>
+              </table>
+            </Card>
 
-        </table>
+            <Card className='advanced-cards' title="关键字" bordered={false}
+              style={{ marginTop: '10px' }}>
+              <table className='advance-table'>
+                <tbody>
+                  <tr>
+                    <td>关键字</td>
+                    <td>
+                      <Input placeholder=""
+                        style={{ hight: '28px' }}
+                        allowClear={true}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </Card>
+          </div>
 
-
-        
-
-        <div className='advance-tip'>
-          <InfoCircleFilled className="info-icon" />
-          提示：以上所有条件均为选填，若未填写则默认为“不限”。
-
-          <a target="_blank" href="http://localhost:3000/search/case_123"> {`👉判决书页样例`}</a>
-          <a target="_blank" href="http://localhost:3000/search/result"> {`👉检索结果页样例`}</a>
         </div>
 
-        <div className="input-group mb-3 quick-search advance-search">
-          <button className="btn btn-outline-secondary"  >
-            <svg viewBox="0 0 1024 1024">
-              <path d="M453.818182 23.272727C704.465455 23.272727 907.636364 226.443636 907.636364 477.090909c0 35.746909-4.142545 70.981818-12.264728 105.192727a46.545455 46.545455 0 0 1-90.577454-21.504c6.469818-27.182545 9.751273-55.202909 9.751273-83.688727C814.545455 277.876364 653.032727 116.363636 453.818182 116.363636 254.603636 116.363636 93.090909 277.876364 93.090909 477.090909 93.090909 676.305455 254.603636 837.818182 453.818182 837.818182c101.003636 0 195.211636-41.658182 262.981818-113.826909a46.545455 46.545455 0 0 1 63.650909-3.979637c2.978909 1.792 5.818182 3.956364 8.401455 6.446546l213.201454 205.684363a45.707636 45.707636 0 0 1 0.581818 65.233455l-0.581818 0.581818a46.545455 46.545455 0 0 1-65.233454 0.581818l-185.390546-178.827636A452.305455 452.305455 0 0 1 453.818182 930.909091C203.170909 930.909091 0 727.738182 0 477.090909S203.170909 23.272727 453.818182 23.272727z m76.613818 179.828364c86.714182 23.598545 147.2 76.078545 177.245091 154.973091a46.545455 46.545455 0 0 1-86.993455 33.140363c-19.176727-50.362182-55.994182-82.315636-114.688-98.280727a46.545455 46.545455 0 1 1 24.436364-89.832727z" fill="#ffffff">
-              </path>
-            </svg>
-            高级检索
-          </button>
-          {/* <Input placeholder="此处输入关键词，多个关键词请用空格分隔" /> */}
+        <div className='advance-bottom'>
+          <div className='advance-tip'>
+            <InfoCircleFilled className="info-icon" />
+            提示：以上条件若未填写，则默认为“不限”
+          </div>
+
+          <div className="quick-search advance-button">
+            <button className="btn btn-outline-secondary"  >
+              <svg viewBox="0 0 1024 1024"><path d="M453.818182 23.272727C704.465455 23.272727 907.636364 226.443636 907.636364 477.090909c0 35.746909-4.142545 70.981818-12.264728 105.192727a46.545455 46.545455 0 0 1-90.577454-21.504c6.469818-27.182545 9.751273-55.202909 9.751273-83.688727C814.545455 277.876364 653.032727 116.363636 453.818182 116.363636 254.603636 116.363636 93.090909 277.876364 93.090909 477.090909 93.090909 676.305455 254.603636 837.818182 453.818182 837.818182c101.003636 0 195.211636-41.658182 262.981818-113.826909a46.545455 46.545455 0 0 1 63.650909-3.979637c2.978909 1.792 5.818182 3.956364 8.401455 6.446546l213.201454 205.684363a45.707636 45.707636 0 0 1 0.581818 65.233455l-0.581818 0.581818a46.545455 46.545455 0 0 1-65.233454 0.581818l-185.390546-178.827636A452.305455 452.305455 0 0 1 453.818182 930.909091C203.170909 930.909091 0 727.738182 0 477.090909S203.170909 23.272727 453.818182 23.272727z m76.613818 179.828364c86.714182 23.598545 147.2 76.078545 177.245091 154.973091a46.545455 46.545455 0 0 1-86.993455 33.140363c-19.176727-50.362182-55.994182-82.315636-114.688-98.280727a46.545455 46.545455 0 1 1 24.436364-89.832727z" fill="#ffffff"></path></svg>
+              高级检索
+            </button>
+          </div>
         </div>
+
+        <div style={{ float: 'right' }}>
+          <a target="_blank" href="http://localhost:3000/search/case_123"> {`👉判决书-样例`}</a>
+          <a target="_blank" href="http://localhost:3000/search/result"> {`👉检索结果-样例`}</a>
+        </div>
+
 
       </div>
     )

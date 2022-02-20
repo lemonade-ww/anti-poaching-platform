@@ -1,5 +1,6 @@
 import { SwapRightOutlined } from '@ant-design/icons/lib/icons'
 import React, { Component } from 'react'
+import { PageHeader } from 'antd';
 import './index.less'
 
 export default class ChartsNav extends Component {
@@ -13,7 +14,12 @@ export default class ChartsNav extends Component {
   render() {
     return (
       <div className='charts-nav-main'>
-
+        <PageHeader
+          className="site-page-header"
+          onBack={() => window.history.back()}
+          title="图表"
+          subTitle="CHARTS"
+        />
         <div className='charts-nav-flex'>
 
           <div className='left' style={{backgroundImage:`url(${this.state.left_img})`}}>
