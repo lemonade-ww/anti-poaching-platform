@@ -300,5 +300,14 @@ https://css-tricks.com/adding-shadows-to-svg-icons-with-css-and-svg-filters/
    - 添加目录导航
    - 尝试使用了AntV G6 plot！！！ 好棒！！！ 终于进入到核心功能了！开心，好有成就感，好好看啊！ 😍🥰🥰
 
+## 2022年2月21日
 
+1. 使用 Ant Design Charts（由AntV G6原团队打造的适用于React开发的图表），替换了昨天做的图表。
+2. 优化了图表样式，添加时间选择器（RangePicker）
+   - moment.js => 一个时间处理库（值得以后认真学一下用法）
+3. 为一些目前无法完成的功能添加了消息弹窗！
+4. Header组件优化：点击路由，会折叠快速搜索
 
+TODO：
+
+热力图。高德地图。地名转坐标。 🤭

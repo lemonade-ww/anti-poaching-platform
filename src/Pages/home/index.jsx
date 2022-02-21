@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {v4} from 'uuid'
-// import store from '../../redux/store'
+import {notification} from 'antd';
 import { connect } from 'react-redux'
 import MyTab from './myTab'
 import './index.css'
@@ -45,19 +45,19 @@ class Home extends Component {
             mytab:[
               {
                 iClass:'bi bi-search',
-                aLink:'#',
+                aLink:'/search',
                 aText:'案件检索',
                 pText:'描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容',
               },
               {
                 iClass:'bi bi-map-fill',
-                aLink:'#',
+                aLink:'/charts/map',
                 aText:'热力图',
                 pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
               },
               {
                 iClass:'bi bi-bar-chart-line-fill',
-                aLink:'#',
+                aLink:'/charts/statistics',
                 aText:'数据统计',
                 pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
               }
@@ -191,7 +191,7 @@ class Home extends Component {
       setTimeout(()=>{
         this.setState({caseInit:0,speicesInit:0})
         let timer = setInterval(()=>{
-          this.setState({caseInit:this.state.caseInit + Number.parseInt(caseTemp/98),
+          this.setState({caseInit:this.state.caseInit + Number.parseInt(caseTemp/64),
                         speicesInit:this.state.speicesInit + Number.parseInt(speciesTemp/112)})
           if (this.state.caseInit >= caseTemp) {
             clearInterval(timer)
@@ -200,6 +200,14 @@ class Home extends Component {
         },20)
       },500)
     }
+
+    openNotificationWithIcon = type => {
+      notification[type]({
+        message: '提示 Notification',
+        description:
+          '后台数据完善中，检索功能暂时无法使用，敬请期待！',
+      });
+    };
   
 
   render() {
@@ -241,8 +249,11 @@ class Home extends Component {
                 </div>
               </div>
               <form className="input-group mb-3 quick-search home-title-search">
-                <input type="text" list="datalistOptions" className="form-control" placeholder="输入物种名或地区，查询野生动物盗猎案件" aria-label="Recipient's username" aria-describedby="button-addon2"/>
-                <button className="btn btn-outline-secondary" type="submit" id="button-addon2">
+                <input 
+                  onFocus={()=>this.openNotificationWithIcon('info')}
+                  type="text" list="datalistOptions" className="form-control" placeholder="输入物种名或地区，查询野生动物盗猎案件" aria-label="Recipient's username" aria-describedby="button-addon2"/>
+                <button 
+                   className="btn btn-outline-secondary" id="button-addon2">
                   <svg viewBox="0 0 1024 1024"><path d="M453.818182 23.272727C704.465455 23.272727 907.636364 226.443636 907.636364 477.090909c0 35.746909-4.142545 70.981818-12.264728 105.192727a46.545455 46.545455 0 0 1-90.577454-21.504c6.469818-27.182545 9.751273-55.202909 9.751273-83.688727C814.545455 277.876364 653.032727 116.363636 453.818182 116.363636 254.603636 116.363636 93.090909 277.876364 93.090909 477.090909 93.090909 676.305455 254.603636 837.818182 453.818182 837.818182c101.003636 0 195.211636-41.658182 262.981818-113.826909a46.545455 46.545455 0 0 1 63.650909-3.979637c2.978909 1.792 5.818182 3.956364 8.401455 6.446546l213.201454 205.684363a45.707636 45.707636 0 0 1 0.581818 65.233455l-0.581818 0.581818a46.545455 46.545455 0 0 1-65.233454 0.581818l-185.390546-178.827636A452.305455 452.305455 0 0 1 453.818182 930.909091C203.170909 930.909091 0 727.738182 0 477.090909S203.170909 23.272727 453.818182 23.272727z m76.613818 179.828364c86.714182 23.598545 147.2 76.078545 177.245091 154.973091a46.545455 46.545455 0 0 1-86.993455 33.140363c-19.176727-50.362182-55.994182-82.315636-114.688-98.280727a46.545455 46.545455 0 1 1 24.436364-89.832727z"  fill="#ffffff"></path></svg>
                   一键检索判决书
                   </button>

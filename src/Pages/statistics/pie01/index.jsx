@@ -1,21 +1,29 @@
 import React, { Component } from 'react'
-import { Pie } from '@antv/g2plot';
+import { Pie } from '@ant-design/plots';
+import moment from 'moment';
 
 import refineFunc from './refine'
-
+import './index.less'
+import { DatePicker } from 'antd';
 
 export default class Pie01 extends Component {
 
-  state = {
-    keyword: this.props.keyword
+  disabledDate = (time) => {
+    // Can not select days before today and today
+    return time < moment().year(2006) || time > moment();
   }
 
-  renderChart = () => {
-    const data = refineFunc(this.state.keyword)
-    console.log(data);
-    const piePlot = new Pie('container', {
+  onChange = (value)=>{
+    // 时间选择变化的回调
+    console.log(value);
+  }
+
+  render() {
+    const { RangePicker } = DatePicker;
+
+    let config = {
       appendPadding: 10,
-      data,
+      data: refineFunc(this.props.keyword),
       angleField: 'value',
       colorField: 'type',
       radius: 0.75,
@@ -25,19 +33,22 @@ export default class Pie01 extends Component {
         content: '{name}\n{percentage}',
       },
       interactions: [{ type: 'element-selected' }, { type: 'element-active' }],
-    });
+    }
 
-    piePlot.render();
-
-  }
-
-  componentDidMount() {
-    this.renderChart()
-  }
-
-  render() {
     return (
-      <div id="container"></div>
+      <div className='pie-main'>
+        <div className='title'>数据总计</div>
+        <div className='range-cont'>
+          <div className='range-title'>年份范围：</div>
+          <RangePicker 
+            picker="year" 
+            disabledDate={this.disabledDate}
+            defaultValue={[moment('2006'), moment('2022')]}
+            onChange={(value)=>this.onChange(value)}
+            />
+        </div>
+        <Pie {...config}/>
+      </div>
     )
   }
 }

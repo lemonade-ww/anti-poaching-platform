@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { PageHeader, Row, Col } from 'antd';
+import { PageHeader, Row, Col, Alert, Button, Space } from 'antd';
 import { Select, Cascader, Slider, Checkbox, Input, Card } from 'antd';
 import { InfoCircleFilled } from '@ant-design/icons/lib/icons';
 import { v4 } from 'uuid';
@@ -63,6 +63,27 @@ export default class index extends Component {
           subTitle="ADVANCED SEARCH"
         />
 
+        <Alert
+          showIcon
+          message="后台数据完善中，检索功能暂时无法使用，敬请期待！"
+          type="warning"
+          // type="info"
+          action={
+            <Space>
+              <Button size="small" type="link" 
+                target="_blank" href="http://localhost:3000/search/result">
+                查看检索结果页
+              </Button>
+              <Button size="small" type="link" 
+                target="_blank" href="http://localhost:3000/search/case_123">
+                查看判决书
+              </Button>
+            </Space>
+          }
+          closable
+          style={{margin:'0 20px 10px'}}
+        />
+
         <div className="advance-container">
 
           <div className='left'>
@@ -107,13 +128,13 @@ export default class index extends Component {
                     <td>
                       <Row>
                         <Col span={8}>
+                          <Checkbox defaultChecked>不限</Checkbox>
+                        </Col>
+                        <Col span={8}>
                           <Checkbox>男</Checkbox>
                         </Col>
                         <Col span={8}>
                           <Checkbox>女</Checkbox>
-                        </Col>
-                        <Col span={8}>
-                          <Checkbox defaultChecked>不限</Checkbox>
                         </Col>
                       </Row>
                     </td>
@@ -131,6 +152,9 @@ export default class index extends Component {
                     <td>文化程度</td>
                     <td>
                       <Row>
+                        <Col span={8}>
+                          <Checkbox defaultChecked>不限</Checkbox>
+                        </Col>
                         <Col span={8}>
                           <Checkbox>文盲</Checkbox>
                         </Col>
@@ -152,9 +176,7 @@ export default class index extends Component {
                         <Col span={8}>
                           <Checkbox>硕士</Checkbox>
                         </Col>
-                        <Col span={8}>
-                          <Checkbox defaultChecked>不限</Checkbox>
-                        </Col>
+                        
                       </Row>
                     </td>
                   </tr>
@@ -202,6 +224,9 @@ export default class index extends Component {
                     <td>
                       <Row>
                         <Col span={24}>
+                          <Checkbox defaultChecked>不限</Checkbox>
+                        </Col>
+                        <Col span={24}>
                           <Checkbox>国家一级保护动物</Checkbox>
                         </Col>
                         <Col span={24}>
@@ -209,9 +234,6 @@ export default class index extends Component {
                         </Col>
                         <Col span={24}>
                           <Checkbox>国家 “三有” 保护动物</Checkbox>
-                        </Col>
-                        <Col span={24}>
-                          <Checkbox defaultChecked>不限</Checkbox>
                         </Col>
                       </Row>
                     </td>
@@ -221,6 +243,9 @@ export default class index extends Component {
                     <td>濒危等级(IUCN)</td>
                     <td>
                       <Row>
+                        <Col span={12}>
+                          <Checkbox defaultChecked>不限</Checkbox>
+                        </Col>
                         {
                           ['绝灭(EX)', '野外绝灭(EW)', '极危(CR)', '濒危(EN)', '易危(VU)', '近危(NT)', '无危(LC)', '数据缺乏(DD)', '未予评估(NE)'].map((value) => {
                             return (
@@ -230,9 +255,6 @@ export default class index extends Component {
                             )
                           })
                         }
-                        <Col span={12}>
-                          <Checkbox defaultChecked>不限</Checkbox>
-                        </Col>
                       </Row>
                     </td>
                   </tr>
@@ -264,7 +286,7 @@ export default class index extends Component {
         <div className='advance-bottom'>
           <div className='advance-tip'>
             <InfoCircleFilled className="info-icon" />
-            提示：以上条件若未填写，则默认为“不限”
+            提示：未填写的条件，默认为“不限”
           </div>
 
           <div className="quick-search advance-button">
@@ -275,10 +297,10 @@ export default class index extends Component {
           </div>
         </div>
 
-        <div style={{ float: 'right' }}>
+        {/* <div style={{ float: 'right' }}>
           <a target="_blank" href="http://localhost:3000/search/case_123"> {`👉判决书-样例`}</a>
           <a target="_blank" href="http://localhost:3000/search/result"> {`👉检索结果-样例`}</a>
-        </div>
+        </div> */}
 
 
       </div>

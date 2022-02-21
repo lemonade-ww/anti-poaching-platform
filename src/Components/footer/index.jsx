@@ -12,15 +12,15 @@ export default class Footer extends Component {
         content:[
           {
             text:'案件检索',
-            url:'#'
+            url:'/search'
           },
           {
             text:'数据统计',
-            url:'#'
+            url:'/charts/statistics'
           },
           {
             text:'热力图',
-            url:'#'
+            url:'/charts/map'
           },
         ]
       },

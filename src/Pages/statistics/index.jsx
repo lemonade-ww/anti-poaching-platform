@@ -1,20 +1,33 @@
 import React, { Component } from 'react'
-import { Menu } from 'antd';
+import { Menu, notification } from 'antd';
 import { AimOutlined, GlobalOutlined, SolutionOutlined } from '@ant-design/icons';
 import Pie01 from './pie01'
-import './index.less'
+import Area01 from './area01'
 
+
+import './index.less'
 
 export default class Statistics extends Component {
 
   state = {
-    keyword : ''
+    keyword : 'gender'
   }
   handleClick = (k)=>{
-    console.log(k.key);
-    console.log(this.state.keyword);
-    this.setState({keyword: k.key})
+    let {key} = k
+    if(Number(key)) this.openNotification('warning')
+    this.setState({keyword: key})
   }
+
+  openNotification = (type) => {
+    notification[type]({
+      message: '提示 Notification',
+      description:
+        '后台数据完善中，敬请期待！',
+      onClick: () => {
+        console.log('Notification Clicked!');
+      },
+    });
+  };
 
   render() {
     const { SubMenu } = Menu;
@@ -23,8 +36,8 @@ export default class Statistics extends Component {
       <div className='statistics-main common-container'>
         <Menu
           onClick={(selectedKeys)=>this.handleClick(selectedKeys)}
-          style={{ width: 256 }}
-          // defaultSelectedKeys={['1']}
+          // style={{ width: 256 }}
+          defaultSelectedKeys={['gender']}
           defaultOpenKeys={['sub1']}
           mode="inline"
           className='left'
@@ -32,7 +45,7 @@ export default class Statistics extends Component {
           <SubMenu key="sub1" icon={<SolutionOutlined />} title="被告人">
             <Menu.Item key="gender">性别</Menu.Item>
             <Menu.Item key="race">民族</Menu.Item>
-            <Menu.Item key="3">教育水平</Menu.Item>
+            <Menu.Item key="education_level">教育水平</Menu.Item>
             <Menu.Item key="4">盗猎目的</Menu.Item>
           </SubMenu>
           <SubMenu key="sub2" icon={<GlobalOutlined />} title="物种">
@@ -52,13 +65,10 @@ export default class Statistics extends Component {
         </Menu>
 
         <div className='right'>
-          <div>
-            <Pie01 keyword={this.state.keyword}></Pie01>
-          </div>
-          <div>
-
-          </div>
+          <Pie01 keyword={this.state.keyword}></Pie01>
+          <Area01></Area01>
         </div>
+
       </div>
 
     )

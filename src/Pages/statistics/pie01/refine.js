@@ -4,7 +4,10 @@ let originList = Object.values(results)
 
 
 let refineFunc = (keyword)=>{
-  // let keyword = 'education_level'
+
+  
+
+
   let mymap = new Map()
   for (let item of originList) {
     if (item.defendant_info) {

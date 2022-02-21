@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import MyLink from './myLink'
+import {notification} from 'antd';
 import './index.css'
 import {connect} from 'react-redux'
 
@@ -9,6 +10,14 @@ class Header extends Component {
     isExpand: false, // 初始状态：未展开
     isclicking: false
   }
+
+  openNotificationWithIcon = type => {
+    notification[type]({
+      message: '提示 Notification',
+      description:
+        '后台数据完善中，检索功能暂时无法使用，敬请期待！',
+    });
+  };
 
   expandSearch = () => {
     const { isExpand, isclicking } = this.state
@@ -24,6 +33,10 @@ class Header extends Component {
       }
       this.setState({ isExpand: !isExpand })
     }
+  }
+
+  onNavClick = ()=>{
+    this.setState({ isExpand: false })
   }
 
   render() {
@@ -49,16 +62,18 @@ class Header extends Component {
               </div>
 
               <nav className='header-nav'>
-                <MyLink className='header-link' to='/' name='主页' />
-                <MyLink className='header-link' to='/charts' name='图表' />
-                <MyLink className='header-link' to='/search' name='高级检索' />
-                <MyLink className='header-link' to='/about' name='关于' />
+                <MyLink onClick={this.onNavClick} className='header-link' to='/' name='主页' />
+                <MyLink onClick={this.onNavClick} className='header-link' to='/charts' name='图表' />
+                <MyLink onClick={this.onNavClick} className='header-link' to='/search' name='高级检索' />
+                <MyLink onClick={this.onNavClick} className='header-link' to='/about' name='关于' />
               </nav>
             </div>
           </div>
 
           <form className='header-main-container header-expand-area'>
-            <input className='header-input' type="text" placeholder='输入物种名、地区等进行快速搜索' ref={c => this.input = c} />
+            <input 
+            onFocus={()=>this.openNotificationWithIcon('info')}
+            className='header-input' type="text" placeholder='输入物种名、地区等进行快速搜索' ref={c => this.input = c} />
             <button className='header-submit' type="submit"></button>
 
             <svg className={isExpand ? "search-icon search-icon-expand" : "search-icon"}
