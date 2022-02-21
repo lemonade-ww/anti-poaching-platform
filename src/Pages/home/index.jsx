@@ -46,20 +46,20 @@ class Home extends Component {
               {
                 iClass:'bi bi-search',
                 aLink:'/search',
-                aText:'案件检索',
-                pText:'描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容描述内容',
+                aText:'高级检索',
+                pText:'一个全面、强大且智能的检索系统，帮您轻松查找案件',
               },
               {
                 iClass:'bi bi-map-fill',
-                aLink:'/charts/map',
-                aText:'热力图',
-                pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
+                aLink:'https://maplab.amap.com/share/mapv/e543d0c93a50c14eaebafad8ea659ade',
+                aText:'案件地图',
+                pText:'基于案件审理地点的地理信息数据，集成的全国野生动物非法盗猎案件分布图，帮您快速掌握盗猎的地理空间特征',
               },
               {
                 iClass:'bi bi-bar-chart-line-fill',
                 aLink:'/charts/statistics',
                 aText:'数据统计',
-                pText:'描述内容描述内容描述内容描述内容描述内容描述内容',
+                pText:'通过统计图呈现案件被告人、涉及物种及判决结果的数据信息',
               }
             ]
           }

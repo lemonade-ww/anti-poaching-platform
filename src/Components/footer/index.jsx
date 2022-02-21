@@ -20,7 +20,7 @@ export default class Footer extends Component {
           },
           {
             text:'热力图',
-            url:'/charts/map'
+            url:'https://maplab.amap.com/share/mapv/e543d0c93a50c14eaebafad8ea659ade'
           },
         ]
       },
@@ -95,7 +95,7 @@ export default class Footer extends Component {
                 <div key={v4()}  className='menu-tab'>
                   <div className='menu-title'>{item.title}</div>
                   {item.content.map(cont => (
-                    <a key={v4()} href={cont.url}>{cont.text}</a>
+                    <a target='_blank' key={v4()} href={cont.url}>{cont.text}</a>
                   ))}
                 </div>
               ))

@@ -65,7 +65,7 @@ export default class index extends Component {
 
         <Alert
           showIcon
-          message="后台数据完善中，检索功能暂时无法使用，敬请期待！"
+          message="后台数据完善中，检索功能暂时无法使用，欢迎点击右侧查看样例页面。"
           type="warning"
           // type="info"
           action={

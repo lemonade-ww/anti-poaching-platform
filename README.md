@@ -311,3 +311,13 @@ https://css-tricks.com/adding-shadows-to-svg-icons-with-css-and-svg-filters/
 TODO：
 
 热力图。高德地图。地名转坐标。 🤭
+
+## 2022年2月22日
+
+1. 利用高德开放平台，完成了“案件地图”功能
+   - 底图： GeoHUB制作
+   - 可视化项目：Map Lab
+
+2. 替换/Charts/map路由，为地图访问外链：
+   - 已知bug：地图标签无法显示大量文字，已返回高德后台
+
