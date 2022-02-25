@@ -5,8 +5,7 @@
 
 主要内容：
 
-1. 确定首页主要外观
-  基本模仿对象：https://www.ala.org.au/
+1. 确定首页主要外观，外观模仿对象：Altas of living Australia `www.ala.org.au`，基于此进行优化改进
 2. 创建react项目
 
 ### 2021年12月15日
