@@ -71,11 +71,11 @@ export default class index extends Component {
           action={
             <Space>
               <Button size="small" type="link" 
-                target="_blank" href="http://localhost:3000/search/result">
+                target="_blank" href="http://162.14.68.4:3000/search/result">
                 查看检索结果页
               </Button>
               <Button size="small" type="link" 
-                target="_blank" href="http://localhost:3000/search/case_123">
+                target="_blank" href="http://162.14.68.4:3000/search/case_123">
                 查看判决书
               </Button>
             </Space>

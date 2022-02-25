@@ -48,7 +48,7 @@ class Header extends Component {
        
         <div className='header-front-interface'>
           <div className='header-main-container'>
-            <a href="http://localhost:3000/" className='header-logo'>
+            <a href="http://162.14.68.4:3000/" className='header-logo'>
               <img className='logo-img' src="/img/盾牌,安全,保护.png" alt="logo" />
               <p>中国野生动物盗猎大数据平台</p>
               <p>antipoach.cn</p>
@@ -56,7 +56,7 @@ class Header extends Component {
 
             <div className='header-menu'>
               <div className='header-login'>
-                <a href="#">联系我们</a>
+                <a href="/about/contact">联系我们</a>
                 <a href="#">注册</a>
                 <a href="#">登陆</a>
               </div>

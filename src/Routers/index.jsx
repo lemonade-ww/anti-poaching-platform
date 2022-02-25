@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {Routes, Route, Navigate} from 'react-router-dom'
-import {Home,Charts,Search,About,Case,Advance,Result, ChartsNav, Statistics, Map} from '../Pages'
+import {Home,Charts,Search,About,Case,Advance,Result, ChartsNav, Statistics, Map,
+        Aboutus, Contact} from '../Pages'
 
 export default class Routers extends Component {
   render() {
@@ -17,8 +18,10 @@ export default class Routers extends Component {
               <Route path="/search/result" element={<Result/>}/>
               <Route path="/search/case_:caseId" element={<Case/>} />
             </Route>
-            <Route path='/about' element={<About/>}></Route>
-            <Route path='/case' element={<About/>}></Route>
+            <Route path='/about' element={<About/>}>
+              <Route index element={<Aboutus/>}/>
+              <Route path='/about/contact' element={<Contact/>}/>
+            </Route>
             <Route path="*" element={<Navigate to="/" />} />
         </Routes>
     )

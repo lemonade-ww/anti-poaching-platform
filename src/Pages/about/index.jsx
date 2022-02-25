@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
+import { Outlet } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 
-
+import './index.less'
 class About extends Component {
 
 
@@ -12,8 +13,8 @@ class About extends Component {
 
   render() {
     return (
-      <div>
-        关于我们介绍：。。。
+      <div className='about-main common-container'>
+        <Outlet></Outlet>
       </div>
     )
   }

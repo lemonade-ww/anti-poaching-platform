@@ -45,16 +45,12 @@ export default class Footer extends Component {
         title:'关于我们',
         content:[
           {
-            text:'网站故事',
-            url:'#'
-          },
-          {
-            text:'加入我们',
-            url:'#'
+            text:'网站介绍',
+            url:'/about'
           },
           {
             text:'联系我们',
-            url:'#'
+            url:'/about/contact'
           },
         ]
       },

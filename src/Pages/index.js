@@ -8,6 +8,8 @@ import Result from './result-page'
 import Statistics from './statistics'
 import Map from './map'
 import ChartsNav from './chartsNav'
+import Aboutus from './aboutus'
+import Contact from './contact'
 
 
 export {
@@ -20,5 +22,7 @@ export {
   Result,
   Statistics,
   Map,
-  ChartsNav
+  ChartsNav,
+  Contact,
+  Aboutus
 }
