@@ -8,7 +8,7 @@ export default class MyTab extends Component {
     return (
       <div className='myTab-container'>
         <i className={iClass}></i>
-        <a target='_blank' href={aLink}>{aText}</a>
+        <a target='_blank' rel="noreferrer" href={aLink}>{aText}</a>
         <p>{pText}</p>
       </div>
     )

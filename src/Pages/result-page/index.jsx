@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Table, Tag, Space, PageHeader } from 'antd';
+import { Table, Tag,  PageHeader } from 'antd';
 import { v4 } from 'uuid';
 
-import { Input } from 'antd';
 
 import results from '../../json/results.json'
 
@@ -22,7 +21,7 @@ export default class Result extends Component {
         dataIndex: 'title',
         // ellipsis: true,
 
-        render: text => <a href='#' className='list-link'>{text}</a>,
+        render: text => <a href=':;javascript' className='list-link'>{text}</a>,
       },
       {
         title: '审理地点',

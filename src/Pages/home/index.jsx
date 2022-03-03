@@ -334,7 +334,7 @@ class Home extends Component {
           <div className='home-feature-container' style={feature.bgImg}>
             <div className='home-feature-title'>
               <div>最新文章</div>
-              <a href="#">查看更多...</a>
+              <a href=":;javascript">查看更多...</a>
             </div>
 
             <div className="home-feature row row-cols-3 g-4">

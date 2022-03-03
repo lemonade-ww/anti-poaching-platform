@@ -57,8 +57,8 @@ class Header extends Component {
             <div className='header-menu'>
               <div className='header-login'>
                 <a href="/about/contact">联系我们</a>
-                <a href="#">注册</a>
-                <a href="#">登陆</a>
+                <a href=":;javascript">注册</a>
+                <a href=":;javascript">登陆</a>
               </div>
 
               <nav className='header-nav'>

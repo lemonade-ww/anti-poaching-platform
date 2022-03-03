@@ -148,7 +148,7 @@ export default function Case() {
 
         </div>
 
-        <Button type="submit" type="primary" size='small' className="related-search-btn">搜索相似案件</Button>
+        <Button type="primary" size='small' className="related-search-btn">搜索相似案件</Button>
       </form>
 
       <div className='case-container'>

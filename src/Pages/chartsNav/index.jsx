@@ -30,7 +30,7 @@ export default class ChartsNav extends Component {
             </a>
           </div>
           <div className='right' style={{backgroundImage:`url(${this.state.right_img})`}}>
-            <a target='_blank' href='https://maplab.amap.com/share/mapv/e543d0c93a50c14eaebafad8ea659ade'>
+            <a target='_blank' rel="noreferrer" href='https://maplab.amap.com/share/mapv/e543d0c93a50c14eaebafad8ea659ade'>
                 <h2>案件地图</h2>
                 <p>基于案件审理地点形成的盗猎案件分布图</p>
                 <SwapRightOutlined className='icon'/>

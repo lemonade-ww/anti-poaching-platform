@@ -81,7 +81,7 @@ export default class Footer extends Component {
             <div className='sponsor-text'>{sponsor}</div>
             <div className='sponsor-logo-area'>
               {logos.map(item => (
-                <img key={v4()} {...item} />
+                <img key={v4()} alt={item.alt} {...item} />
               ))}
             </div>
           </div>
@@ -91,7 +91,7 @@ export default class Footer extends Component {
                 <div key={v4()}  className='menu-tab'>
                   <div className='menu-title'>{item.title}</div>
                   {item.content.map(cont => (
-                    <a target='_blank' key={v4()} href={cont.url}>{cont.text}</a>
+                    <a target='_blank' rel="noreferrer" key={v4()} href={cont.url}>{cont.text}</a>
                   ))}
                 </div>
               ))
@@ -102,8 +102,8 @@ export default class Footer extends Component {
         <div className='copy-right'>
           <div>Copyright © 2022 中国盗猎大数据平台</div>
           <div>
-            <a href="#">京ICP备100**0001号</a>
-            <a href="#">
+            <a href=":;javascript">京ICP备100**0001号</a>
+            <a href=":;javascript">
               <img src="/img/公安.png"/>
               京公网安备1***000000002202号
             </a>

@@ -187,7 +187,7 @@ export default class index extends Component {
                         mode="multiple"
                         showArrow="true"
                         allowClear
-                        mode="tags" style={{ width: '100%' }} placeholder="选择民族，可多选">
+                         style={{ width: '100%' }} placeholder="选择民族，可多选">
                         {this.state.ethnic.map(item => (
                           <Option key={v4()}>{item}</Option>
                         ))}
