@@ -6,7 +6,6 @@ import Case from './case-page'
 import Advance from './advance'
 import Result from './result-page'
 import Statistics from './statistics'
-import Map from './map'
 import ChartsNav from './chartsNav'
 import Aboutus from './aboutus'
 import Contact from './contact'
@@ -21,7 +20,6 @@ export {
   Advance,
   Result,
   Statistics,
-  Map,
   ChartsNav,
   Contact,
   Aboutus

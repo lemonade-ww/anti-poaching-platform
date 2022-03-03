@@ -3,6 +3,7 @@ import {v4} from 'uuid'
 import {notification} from 'antd';
 import { connect } from 'react-redux'
 import MyTab from './myTab'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import './index.css'
 
 class Home extends Component {
@@ -162,15 +163,15 @@ class Home extends Component {
           imgUrl:'/img/news1_400_255.jpg',
           imgAlt:'文章图片介绍',
           title:'这是一个文章标题',
-          text:'这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容',
+          text:'内容摘要：触碰图片区域会有动效，触碰图片区域会有动效，快把鼠标放上去试试看吧！',
           date:'发表于 2022年01月01日 17:00'
         },
         { 
           url:'#',
-          imgUrl:'/img/news3_400_255.jpg',
+          imgUrl:'/img/news2_400_255.jpg',
           imgAlt:'文章图片介绍',
           title:'这是一个文章标题',
-          text:'这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容',
+          text:'内容摘要：这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容',
           date:'发表于 2022年01月01日 17:00'
         },
         { 
@@ -178,7 +179,7 @@ class Home extends Component {
           imgUrl:'/img/news4_400_255.jpg',
           imgAlt:'文章图片介绍',
           title:'这是一个文章标题',
-          text:'这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容',
+          text:'内容摘要：这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容这是文章内容',
           date:'发表于 2022年01月01日 17:00'
         }
       ]
