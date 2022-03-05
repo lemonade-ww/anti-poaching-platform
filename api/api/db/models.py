@@ -9,7 +9,7 @@ from sqlalchemy.sql.schema import Column, ForeignKey, Table
 from sqlalchemy.sql.sqltypes import DateTime
 
 from api.lib import to_snake
-from api.lib.schemas import ConservationStatus, ProtectionClass
+from api.lib.schemas import ConservationStatus, ProtectionClass, SourceCategory
 
 
 class CustomBase(object):
@@ -84,6 +84,19 @@ class Defendant(Base, IdMixin):
     judgment: "Judgment" = relationship("Judgment", back_populates="defendants")
 
 
+class Source(Base, IdMixin):
+    category = Column(Enum(SourceCategory), nullable=False)
+    occasion = Column(String(255))
+    seller = Column(String(255))
+    buyer = Column(String(255))
+    method = Column(String(255))
+    destination = Column(String(255))
+    usage = Column(String(255))
+
+    judgment_id = Column(Integer, ForeignKey("judgment.id"), nullable=False)
+    judgment: "Judgment" = relationship("Judgment", back_populates="sources")
+
+
 class Judgment(Base, IdMixin):
     """
     A complete judgment document with meta data
@@ -91,6 +104,7 @@ class Judgment(Base, IdMixin):
 
     title = Column(String())
 
+    location = Column(String())
     date_released = Column(DateTime)
     date_created = Column(DateTime, server_default=func.now())
 
@@ -101,3 +115,4 @@ class Judgment(Base, IdMixin):
         uselist=True,
     )
     defendants: list[Defendant] = relationship("Defendant", back_populates="judgment")
+    sources: list[Source] = relationship("Source", back_populates="judgment")

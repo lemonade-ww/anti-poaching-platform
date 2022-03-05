@@ -25,6 +25,13 @@ class ProtectionClass(str, Enum):
     II = "II"
 
 
+class SourceCategory(str, Enum):
+    Buy = "收购"
+    Hunt = "猎捕"
+    Sell = "出售"
+    Transport = "运输"
+
+
 class ResponseStatus(str, Enum):
     Success = "success"
     Pending = "pending"
@@ -65,6 +72,17 @@ class Judgment(APIModel):
     title: str
     species: list[Species]
     defendants: list[Defendant]
+
+
+class Source(APIModel):
+    judgment_id: int
+    category: SourceCategory
+    occasion: str | None
+    seller: str | None
+    buyer: str | None
+    method: str | None
+    destination: str | None
+    usage: str | None
 
 
 class ActionResult(APIModel):
