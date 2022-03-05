@@ -9,9 +9,9 @@ services:
         SOURCE_DIR: analytics-cli
         REQUIREMENTS_TXT: analytics-cli/requirements/dev.txt
     environment:
-      TARGET_DIR: /opt/app/analytics-cli
+      TARGET_DIR: /opt/app/analytics
     volumes:
-      - ./analytics/analytics-cli:/opt/app/analytics-cli
+      - ./analytics-cli:/opt/app
 
   api-lint:
     build:
