@@ -43,7 +43,7 @@ def optional_filters(
     query: Query,
     *filters: tuple[
         Column,
-        Literal["=", "~", "<", ">"],
+        Literal["=", "~", "<", ">", "in"],
         str | int | datetime.datetime | Column | None,
     ],
 ) -> Query:
@@ -75,4 +75,6 @@ def optional_filters(
                 query = query.filter(key > value)
             elif operation == "<":
                 query = query.filter(key < value)
+            elif operation == "in":
+                query = query.filter(key.in_(value))
     return query
