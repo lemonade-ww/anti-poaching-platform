@@ -15,7 +15,7 @@ LINT_SERVICES := api-lint analytics-lint
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
 LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 
-IMAGE_REVISION ?= fcc9250
+IMAGE_REVISION ?= bacbd21
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
@@ -102,10 +102,18 @@ bump-revision: update-revision
 run-dev: $(DEV_SECRETS)
 	docker compose $(DEV_COMPOSE_ARGS) up -d --force-recreate $(SERVICES)
 
+.PHONY: run-dev-interactive
+run-dev-interactive: $(DEV_SECRETS)
+	docker compose $(DEV_COMPOSE_ARGS) up api
+
+.PHONY: inspect-dev-db
+inspect-dev-db: $(DEV_SECRETS)
+	docker compose $(DEV_COMPOSE_ARGS) run db bash
+
 .PHONY: run-tests
 run-tests: $(DEV_SECRETS)
 	@echo Preparing tests... Please make sure that the dev services are running
-	@docker compose $(DEV_COMPOSE_ARGS) exec -T $(TEST_SERVICES) pytest
+	docker compose $(DEV_COMPOSE_ARGS) exec $(TEST_SERVICES) pytest
 
 .PHONY: run-prod
 run-prod: $(PROD_SECRETS)
