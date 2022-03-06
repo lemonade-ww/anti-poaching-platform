@@ -30,6 +30,16 @@
 
     make run-tests
 
+更新 Image
+
+    # 更新 Makefile 中的 image revision
+    make update-revision
+    # Build 最新 image 并推送到 Registry
+    make push-latest
+    # 创建更新 Commit
+    make bump-image
+
+
 ## 待办事项
 
 - TODO List: [#2](https://github.com/Henry3510/anti-poaching-platform/issues/2)
