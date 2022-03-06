@@ -33,6 +33,4 @@ def insert_source(db: Session, data: SourceSchema) -> Source:
         usage=data.usage,
         judgment_id=data.judgment_id,
     )
-    db.add(source)
-
     return source

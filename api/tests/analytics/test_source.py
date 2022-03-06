@@ -53,10 +53,12 @@ def test_post_and_get_source(
 
 def test_get_source(client: TestClient, db_session: Session, simple_source: dict):
     judgment = insert_judgment(db_session, "test judgment", [])
+    db_session.add(judgment)
     db_session.flush()
     assert judgment.id is not None
     simple_source["judgment_id"] = judgment.id
-    insert_source(db_session, Source(**simple_source))
+    source = insert_source(db_session, Source(**simple_source))
+    db_session.add(source)
 
     get_result = client.get("/analytics/source", params=[("buyer", "金")])
     assert get_result.status_code == 200

@@ -22,7 +22,8 @@ def get_source(source_filter: SourceFilter = Depends(), db: Session = Depends(ge
 @router.post("", response_model=QueryActionResult[SourceSchema])
 def post_source(source: SourcePost, db: Session = Depends(get_db)):
     new_source = insert_source(db, source)
-    db.flush()
+    db.add(new_source)
+    db.commit()
 
     return QueryActionResult(
         status=ResponseStatus.Success,
