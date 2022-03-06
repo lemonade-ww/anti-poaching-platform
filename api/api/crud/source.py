@@ -1,15 +1,16 @@
 from sqlalchemy.orm.session import Session
 
-from api.analytics.source import SourceFilter
 from api.db.models import Source
 from api.db.utils import optional_filters
 from api.lib.schemas import Source as SourceSchema
+from api.lib.schemas import SourceFilter
 
 
 def query_source(db: Session, source_filter: SourceFilter) -> list[Source]:
     query = db.query(Source)
     result = optional_filters(
         query,
+        (Source.judgment_id, "=", source_filter.judgment_id),
         (Source.category, "=", source_filter.category),
         (Source.seller, "~", source_filter.seller),
         (Source.buyer, "~", source_filter.buyer),
@@ -30,6 +31,7 @@ def insert_source(db: Session, data: SourceSchema) -> Source:
         destination=data.destination,
         method=data.method,
         usage=data.usage,
+        judgment_id=data.judgment_id,
     )
     db.add(source)
 

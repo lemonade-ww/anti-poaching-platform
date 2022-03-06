@@ -1,4 +1,4 @@
-from typing import Any, TypeVar
+from typing import Any
 
 from fastapi import Depends
 from fastapi.routing import APIRouter
@@ -15,30 +15,10 @@ from api.db.models import (
 )
 from api.db.utils import bulk_upsert
 from api.dependencies import get_db
-from api.lib import APIModel, get_unique_attributes, map_attribute
-from api.lib.schemas import Species
+from api.lib import get_unique_attributes, map_attribute
+from api.lib.schemas import Species, SpeciesBulkPatchResult, SpeciesFilter
 
 router = APIRouter(prefix="/analytics/species")
-
-
-class SpeciesBulkPatchResult(APIModel):
-    """
-    The taxons inserted or updated
-    """
-
-    species: list[str] = []
-    genus: list[str] = []
-    family: list[str] = []
-    order: list[str] = []
-    class_: list[str] = []
-
-
-class SpeciesFilter(APIModel):
-    species: str | None
-    genus: str | None
-    family: str | None
-    order: str | None
-    class_: str | None
 
 
 @router.get("", response_model=list[Species])

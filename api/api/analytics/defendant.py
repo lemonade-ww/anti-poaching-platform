@@ -6,29 +6,16 @@ from sqlalchemy.orm.session import Session
 
 from api.crud.defendant import insert_defendant, query_defendant
 from api.dependencies import get_db
-from api.lib import APIModel
 from api.lib.schemas import ActionResult
 from api.lib.schemas import Defendant as DefendantSchema
-from api.lib.schemas import QueryActionResult, ResponseStatus
+from api.lib.schemas import (
+    DefendantFilter,
+    DefendantPost,
+    QueryActionResult,
+    ResponseStatus,
+)
 
 router = APIRouter(prefix="/analytics/defendant")
-
-
-class DefendantFilter(APIModel):
-    judgment_id: int | None
-    name: str | None
-    gender: str | None
-    birth_before: datetime.datetime | None
-    birth_after: datetime.datetime | None
-    education_level: str | None
-
-
-class DefendantPost(APIModel):
-    name: str
-    judgment_id: int
-    gender: str | None
-    birth: datetime.datetime | None
-    education_level: str | None
 
 
 @router.get("", response_model=QueryActionResult[list[DefendantSchema]])

@@ -38,6 +38,7 @@ class ResponseStatus(str, Enum):
     Error = "error"
 
 
+# Schema definitions for /analytics/species
 class Species(APIModel):
     """
     Defines a species catagorized by the taxonomy ranks
@@ -53,6 +54,27 @@ class Species(APIModel):
     __slots__ = "__weakref__"
 
 
+class SpeciesBulkPatchResult(APIModel):
+    """
+    The taxons inserted or updated
+    """
+
+    species: list[str] = []
+    genus: list[str] = []
+    family: list[str] = []
+    order: list[str] = []
+    class_: list[str] = []
+
+
+class SpeciesFilter(APIModel):
+    species: str | None
+    genus: str | None
+    family: str | None
+    order: str | None
+    class_: str | None
+
+
+# Schema definitions for /analytics/defendant
 class Defendant(APIModel):
     """
     Basic information of a defendant
@@ -64,6 +86,52 @@ class Defendant(APIModel):
     education_level: str | None
 
 
+class BaseDefendantFilter(APIModel):
+    name: str | None
+    gender: str | None
+    birth_before: datetime.datetime | None
+    birth_after: datetime.datetime | None
+    education_level: str | None
+
+
+class DefendantFilter(BaseDefendantFilter):
+    judgment_id: int | None
+
+
+class DefendantPost(APIModel):
+    name: str
+    judgment_id: int
+    gender: str | None
+    birth: datetime.datetime | None
+    education_level: str | None
+
+
+# Schema definitions for /analytics/source
+class Source(APIModel):
+    judgment_id: int
+    category: SourceCategory
+    occasion: str | None
+    seller: str | None
+    buyer: str | None
+    method: str | None
+    destination: str | None
+    usage: str | None
+
+
+class SourceFilter(APIModel):
+    judgment_id: int | None
+    category: SourceCategory | None
+    occasion: str | None
+    seller: str | None
+    buyer: str | None
+    method: str | None
+    destination: str | None
+    usage: str | None
+
+
+SourcePost = Source
+
+# Schema definitions for /analytics/judgment
 class Judgment(APIModel):
     """
     The judgment document
@@ -74,15 +142,19 @@ class Judgment(APIModel):
     defendants: list[Defendant]
 
 
-class Source(APIModel):
-    judgment_id: int
-    category: SourceCategory
-    occasion: str | None
-    seller: str | None
-    buyer: str | None
-    method: str | None
-    destination: str | None
-    usage: str | None
+class JudgmentFilter(APIModel):
+    title: str | None
+    location: str | None
+    year: datetime.datetime | None
+    defendant_filter: BaseDefendantFilter | None
+    species_filter: SpeciesFilter | None
+    sources_filter: SourceFilter | None
+
+
+class JudgmentPost(APIModel):
+    title: str
+    species_names: list[str]
+    defendants: list[Defendant] = []
 
 
 class ActionResult(APIModel):

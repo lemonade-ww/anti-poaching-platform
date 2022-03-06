@@ -5,30 +5,23 @@ from sqlalchemy.orm.session import Session
 from api.crud.defendant import insert_defendant
 from api.crud.judgment import insert_judgment, query_judgment
 from api.dependencies import get_db
-from api.lib import APIModel
 from api.lib.schemas import ActionResult
-from api.lib.schemas import Defendant as DefendantSchema
 from api.lib.schemas import Judgment as JudgmentSchema
-from api.lib.schemas import QueryActionResult, ResponseStatus
+from api.lib.schemas import (
+    JudgmentFilter,
+    JudgmentPost,
+    QueryActionResult,
+    ResponseStatus,
+)
 
 router = APIRouter(prefix="/analytics/judgment")
-
-
-class JudgmentFilter(APIModel):
-    title: str | None
-
-
-class JudgmentPost(APIModel):
-    title: str
-    species_names: list[str]
-    defendants: list[DefendantSchema] = []
 
 
 @router.get("", response_model=QueryActionResult[list[JudgmentSchema]])
 def get_judgment(
     judgment_filter: JudgmentFilter = Depends(), db: Session = Depends(get_db)
 ):
-    result = query_judgment(db, judgment_filter.title)
+    result = query_judgment(db, judgment_filter)
     return QueryActionResult(
         status=ResponseStatus.Success,
         result=result,
