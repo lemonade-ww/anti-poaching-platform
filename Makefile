@@ -115,6 +115,11 @@ run-tests: $(DEV_SECRETS)
 	@echo Preparing tests... Please make sure that the dev services are running
 	docker compose $(DEV_COMPOSE_ARGS) exec $(TEST_SERVICES) pytest
 
+.PHONY: run-tests-no-tty
+run-tests-no-tty: $(DEV_SECRETS)
+	@echo Preparing tests... Please make sure that the dev services are running
+	docker compose $(DEV_COMPOSE_ARGS) exec -T $(TEST_SERVICES) pytest
+
 .PHONY: run-prod
 run-prod: $(PROD_SECRETS)
 	docker compose $(PROD_COMPOSE_ARGS) up -d $(SERVICES)

@@ -15,4 +15,4 @@ jobs:
         run: make run-lint
 
       - name: Run tests
-        run: make run-tests
+        run: make run-tests-no-tty
