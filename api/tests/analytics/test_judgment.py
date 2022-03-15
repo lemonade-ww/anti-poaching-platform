@@ -28,17 +28,15 @@ def test_post_and_get_judgment(
     assert result.status_code == 200
     assert result.json()["status"] == ResponseStatus.Success
 
-    result = (
+    judgment: Judgment | None = (
         db_session.query(Judgment)
         .filter(Judgment.title == simple_judgment["title"])
         .first()
     )
-    assert result is not None
+    assert judgment is not None
 
-    result = client.get("/analytics/judgment")
+    result = client.get("/analytics/judgment", params=[("species", "Emberiza aureola")])
     assert result.status_code == 200
+    assert len(result.json()["result"]) == 1
     assert result.json()["result"][0]["title"] == simple_judgment["title"]
-    assert (
-        result.json()["result"][0]["species"][0]["name"]
-        == simple_judgment["speciesNames"][0]
-    )
+    assert result.json()["result"][0]["id"] == judgment.id

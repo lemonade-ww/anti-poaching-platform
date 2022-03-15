@@ -10,7 +10,7 @@ def from_source_filter(source_filter: SourceFilter) -> list[QueryFilter]:
     """Convert a filter object to a QueryFilter
 
     Args:
-        f (SpeciesFilter): The filter object to be converted
+        source_filter (SourceFilter): The filter object to be converted
 
     Returns:
         list[QueryFilter]: A list of query filters

@@ -1,5 +1,5 @@
 import datetime
-from typing import Any, Container, Iterable, List, Literal, NewType, TypeAlias
+from typing import Any, Container, Iterable, Literal, TypeAlias
 
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.engine.result import Result

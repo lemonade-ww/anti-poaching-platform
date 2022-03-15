@@ -10,7 +10,7 @@ def from_species_filter(species_filter: SpeciesFilter) -> list[QueryFilter]:
     """Convert a filter object to a QueryFilter
 
     Args:
-        f (SpeciesFilter): The filter object to be converted
+        species_filter (SpeciesFilter): The filter object to be converted
 
     Returns:
         list[QueryFilter]: A list of query filters
@@ -21,10 +21,8 @@ def from_species_filter(species_filter: SpeciesFilter) -> list[QueryFilter]:
         (TaxonFamily.name, "~", species_filter.family),
         (TaxonOrder.name, "~", species_filter.order),
         (TaxonClass.name, "~", species_filter.class_),
-        (TaxonGenus.id, "=", TaxonSpecies.genus_id),
-        (TaxonFamily.id, "=", TaxonGenus.family_id),
-        (TaxonOrder.id, "=", TaxonFamily.order_id),
-        (TaxonClass.id, "=", TaxonOrder.class_id),
+        (TaxonSpecies.protection_class, "=", species_filter.protection_class),
+        (TaxonSpecies.conservation_status, "=", species_filter.conservation_status),
     )
 
 
@@ -33,11 +31,7 @@ def query_species(db: Session, species_filter: SpeciesFilter) -> list[Species]:
 
     Args:
         db (Session): The database session
-        species (str | None): The name of the species
-        genus (str | None): The name of the genus
-        family (str | None): The name of the family
-        order (str | None): The name of the order
-        class_ (str | None): The name of the class_
+        species_filter (SpeciesFilter): The filter to apply
 
     Returns:
         list[Species]: a list of species satisfying all the filtering constraints (None filters are ignored)
@@ -50,6 +44,16 @@ def query_species(db: Session, species_filter: SpeciesFilter) -> list[Species]:
         TaxonClass.name.label("class_"),
         TaxonSpecies.protection_class,
         TaxonSpecies.conservation_status,
+    )
+
+    query = apply_filters(
+        query,
+        optional_filters(
+            (TaxonGenus.id, "=", TaxonSpecies.genus_id),
+            (TaxonFamily.id, "=", TaxonGenus.family_id),
+            (TaxonOrder.id, "=", TaxonFamily.order_id),
+            (TaxonClass.id, "=", TaxonOrder.class_id),
+        ),
     )
 
     result: list[Row] = apply_filters(

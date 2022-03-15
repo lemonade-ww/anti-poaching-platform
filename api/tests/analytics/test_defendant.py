@@ -8,7 +8,13 @@ from api.crud.defendant import insert_defendant, query_defendant
 from api.crud.judgment import query_judgment
 from api.db.models import Judgment
 from api.lib.errors import check_not_none
-from api.lib.schemas import DefendantFilter, JudgmentFilter, ResponseStatus
+from api.lib.schemas import (
+    DefendantFilter,
+    JudgmentFilter,
+    ResponseStatus,
+    SourceFilter,
+    SpeciesFilter,
+)
 
 
 @pytest.fixture
@@ -31,11 +37,19 @@ def test_get_defendant(
     db_session: Session,
     simple_judgment: dict,
 ):
+    # Insert the simple judgment first
     result = client.post("/analytics/judgment", json=simple_judgment)
     assert result.status_code == 200
 
+    # Ensure that the judgment is inserted
     judgments: list[Judgment] = query_judgment(
-        db_session, JudgmentFilter(title=simple_judgment["title"])
+        db_session,
+        JudgmentFilter(
+            title=simple_judgment["title"],
+            defendant_filter=DefendantFilter(),
+            species_filter=SpeciesFilter(),
+            source_filter=SourceFilter(),
+        ),
     )
 
     assert len(judgments) > 0

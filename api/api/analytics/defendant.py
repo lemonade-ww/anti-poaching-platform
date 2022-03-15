@@ -1,6 +1,3 @@
-import datetime
-from unittest import result
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm.session import Session
 

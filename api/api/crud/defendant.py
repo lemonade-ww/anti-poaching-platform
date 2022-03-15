@@ -13,7 +13,7 @@ def from_defendant_filter(defendant_filter: BaseDefendantFilter) -> list[QueryFi
     """Convert a filter object to a QueryFilter
 
     Args:
-        f (SpeciesFilter): The filter object to be converted
+        defendant_filter (BaseDefendantFilter): The filter object to be converted
 
     Returns:
         list[QueryFilter]: A list of query filters

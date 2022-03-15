@@ -19,7 +19,8 @@ router = APIRouter(prefix="/analytics/judgment")
 
 @router.get("", response_model=QueryActionResult[list[JudgmentSchema]])
 def get_judgment(
-    judgment_filter: JudgmentFilter = Depends(), db: Session = Depends(get_db)
+    judgment_filter: JudgmentFilter = Depends(),
+    db: Session = Depends(get_db),
 ):
     result = query_judgment(db, judgment_filter)
     return QueryActionResult(

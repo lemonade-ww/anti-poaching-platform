@@ -2,6 +2,8 @@ import datetime
 from enum import Enum
 from typing import Generic, TypeVar
 
+from fastapi import Depends
+
 from api.lib import APIModel
 
 ResultT = TypeVar("ResultT")
@@ -67,11 +69,18 @@ class SpeciesBulkPatchResult(APIModel):
 
 
 class SpeciesFilter(APIModel):
+    """
+    All the constraints need to be satisfied at the same time except fields
+    that are unspecified
+    """
+
     species: str | None
     genus: str | None
     family: str | None
     order: str | None
     class_: str | None
+    protection_class: ProtectionClass | None
+    conservation_status: ConservationStatus | None
 
 
 # Schema definitions for /analytics/defendant
@@ -143,12 +152,14 @@ class Judgment(APIModel):
 
 
 class JudgmentFilter(APIModel):
+    judgment_id: int | None
     title: str | None
     location: str | None
-    year: datetime.datetime | None
-    defendant_filter: BaseDefendantFilter | None
-    species_filter: SpeciesFilter | None
-    sources_filter: SourceFilter | None
+    date_before: datetime.datetime | None
+    date_after: datetime.datetime | None
+    defendant_filter: BaseDefendantFilter = Depends()
+    species_filter: SpeciesFilter = Depends()
+    source_filter: SourceFilter = Depends()
 
 
 class JudgmentPost(APIModel):
