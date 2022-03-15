@@ -8,7 +8,7 @@ from api.crud.defendant import insert_defendant, query_defendant
 from api.crud.judgment import query_judgment
 from api.db.models import Judgment
 from api.lib.errors import check_not_none
-from api.lib.schemas import JudgmentFilter, ResponseStatus
+from api.lib.schemas import DefendantFilter, JudgmentFilter, ResponseStatus
 
 
 @pytest.fixture
@@ -69,7 +69,7 @@ def test_add_defendant_through_post_judgment(
     assert result.status_code == 200
     assert result.json()["status"] == ResponseStatus.Success
 
-    defendants = query_defendant(db_session, name="ASD")
+    defendants = query_defendant(db_session, DefendantFilter(name="ASD"))
     assert len(defendants) > 0
     assert defendants is not None
 

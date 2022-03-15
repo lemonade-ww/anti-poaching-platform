@@ -1,13 +1,16 @@
 import datetime
-from typing import Any, Iterable, Literal
+from typing import Any, Container, Iterable, List, Literal, NewType, TypeAlias
 
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.engine.result import Result
 from sqlalchemy.orm.query import Query
 from sqlalchemy.orm.session import Session
+from sqlalchemy.sql import and_, or_
 from sqlalchemy.sql.schema import Column
 
 from api.db.models import ModelT
+
+QueryFilter: TypeAlias = Any
 
 
 def bulk_upsert(
@@ -39,18 +42,28 @@ def bulk_upsert(
     return result
 
 
+def apply_filters(
+    query: Query, filters: list[QueryFilter], use_or: bool = False
+) -> Query:
+    if len(filters) == 0:
+        return query
+    if use_or:
+        return query.filter(or_(*filters))
+    else:
+        return query.filter(and_(*filters))
+
+
 def optional_filters(
-    query: Query,
     *filters: tuple[
         Column,
-        Literal["=", "~", "<", ">", "in"],
+        Literal["=", "~", "<", ">"],
         str | int | datetime.datetime | Column | None,
-    ],
-) -> Query:
+    ]
+    | tuple[Column, Literal["in"], Container | None],
+) -> list[QueryFilter]:
     """Generate a series of optional filters to the query
 
     Args:
-        query (Query): The query to be modified
         filters: A dict with the columns to be filtered as the key,
         a tuple of (filter operation, the value to be matched).
         Possible operations are:
@@ -61,20 +74,21 @@ def optional_filters(
         - < smaller than
 
     Returns:
-        Query: [description]
+        A list of column elements that can be applied to `query.filter`
     """
+    result = []
     for key, operation, value in filters:
         if value is not None:
             if operation == "=":
-                query = query.filter(key == value)
+                result.append(key == value)
             elif operation == "~":
                 if isinstance(value, Column):
                     raise NotImplementedError("ilike between columns is not supported")
-                query = query.filter(key.ilike(f"%{value}%"))
+                result.append(key.ilike(f"%{value}%"))
             elif operation == ">":
-                query = query.filter(key > value)
+                result.append(key > value)
             elif operation == "<":
-                query = query.filter(key < value)
+                result.append(key < value)
             elif operation == "in":
-                query = query.filter(key.in_(value))
-    return query
+                result.append(key.in_(value))
+    return result

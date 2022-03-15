@@ -22,14 +22,7 @@ router = APIRouter(prefix="/analytics/defendant")
 def get_defendant(
     defendant_filter: DefendantFilter = Depends(), db: Session = Depends(get_db)
 ):
-    defendants = query_defendant(
-        db,
-        name=defendant_filter.name,
-        judgment_id=defendant_filter.judgment_id,
-        birth_before=defendant_filter.birth_before,
-        birth_after=defendant_filter.birth_after,
-        education_level=defendant_filter.education_level,
-    )
+    defendants = query_defendant(db, defendant_filter=defendant_filter)
 
     return QueryActionResult(status=ResponseStatus.Success, result=defendants)
 

@@ -37,14 +37,7 @@ def get_species(
     """
 
     # Retrieve records of species from the database
-    result = query_species(
-        db,
-        species=species_filter.species,
-        genus=species_filter.genus,
-        family=species_filter.family,
-        order=species_filter.order,
-        class_=species_filter.class_,
-    )
+    result = query_species(db, species_filter)
 
     return result
 
