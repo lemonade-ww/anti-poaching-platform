@@ -1,4 +1,3 @@
-from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.session import Session
 
 from api.crud.defendant import from_defendant_filter
@@ -6,7 +5,7 @@ from api.crud.source import from_source_filter
 from api.crud.species import from_species_filter
 from api.db.models import Judgment, TaxonSpecies
 from api.db.utils import QueryFilter, apply_filters, optional_filters
-from api.lib.schemas import JudgmentFilter
+from api.lib.schemas import JudgmentFilter, JudgmentPost
 
 
 def from_judgment_filter(judgment_filter: JudgmentFilter) -> list[QueryFilter]:
@@ -58,9 +57,9 @@ def query_judgment(
     return res
 
 
-def insert_judgment(db: Session, title: str, species_names: list[str]) -> Judgment:
+def insert_judgment(db: Session, data: JudgmentPost) -> Judgment:
     species: list[TaxonSpecies] = (
-        db.query(TaxonSpecies).filter(TaxonSpecies.name.in_(species_names)).all()
+        db.query(TaxonSpecies).filter(TaxonSpecies.name.in_(data.species_names)).all()
     )
-    judgment = Judgment(title=title, species=species)
+    judgment = Judgment(title=data.title, species=species)
     return judgment

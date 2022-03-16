@@ -35,8 +35,10 @@ def post_judgment(judgment: JudgmentPost, db: Session = Depends(get_db)):
     # Flush but do not commit
     judgment_inserted = insert_judgment(
         db,
-        title=judgment.title,
-        species_names=judgment.species_names,
+        JudgmentPost(
+            title=judgment.title,
+            species_names=judgment.species_names,
+        ),
     )
     db.add(judgment_inserted)
     db.flush()

@@ -164,7 +164,7 @@ class JudgmentFilter(APIModel):
 
 class JudgmentPost(APIModel):
     title: str
-    species_names: list[str]
+    species_names: list[str] = []
     defendants: list[Defendant] = []
 
 

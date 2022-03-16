@@ -5,7 +5,7 @@ from sqlalchemy.orm.session import Session
 from api.crud.judgment import insert_judgment
 from api.crud.source import insert_source
 from api.db.models import Judgment
-from api.lib.schemas import ResponseStatus, Source, SourceCategory
+from api.lib.schemas import JudgmentPost, ResponseStatus, Source, SourceCategory
 from tests.analytics.test_judgment import simple_judgment
 from tests.analytics.test_taxon import simple_species
 
@@ -52,7 +52,7 @@ def test_post_and_get_source(
 
 
 def test_get_source(client: TestClient, db_session: Session, simple_source: dict):
-    judgment = insert_judgment(db_session, "test judgment", [])
+    judgment = insert_judgment(db_session, JudgmentPost(title="test judgment"))
     db_session.add(judgment)
     db_session.flush()
     assert judgment.id is not None
