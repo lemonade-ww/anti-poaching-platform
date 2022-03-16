@@ -1,5 +1,6 @@
 from fastapi.param_functions import Depends
 from fastapi.routing import APIRouter
+from pydantic import parse_obj_as
 from sqlalchemy.orm.session import Session
 
 from api.crud.defendant import insert_defendant
@@ -25,7 +26,7 @@ def get_judgment(
     result = query_judgment(db, judgment_filter)
     return QueryActionResult(
         status=ResponseStatus.Success,
-        result=result,
+        result=parse_obj_as(list[JudgmentSchema], result),
     )
 
 
