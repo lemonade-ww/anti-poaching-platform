@@ -56,6 +56,16 @@ class Species(APIModel):
     __slots__ = "__weakref__"
 
 
+class SpeciesShort(APIModel):
+    """
+    Species information without taxonomy ranks higher than species
+    """
+
+    name: str
+    protection_class: ProtectionClass | None = None
+    conservation_status: ConservationStatus | None = None
+
+
 class SpeciesBulkPatchResult(APIModel):
     """
     The taxons inserted or updated
@@ -146,8 +156,10 @@ class Judgment(APIModel):
     The judgment document
     """
 
+    id: int
     title: str
-    species: list[Species]
+    content: str | None
+    species: list[SpeciesShort]
     defendants: list[Defendant]
 
 

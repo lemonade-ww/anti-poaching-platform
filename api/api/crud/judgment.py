@@ -3,7 +3,13 @@ from sqlalchemy.orm.session import Session
 from api.crud.defendant import from_defendant_filter
 from api.crud.source import from_source_filter
 from api.crud.species import from_species_filter
-from api.db.models import Judgment, TaxonSpecies
+from api.db.models import (
+    Judgment,
+    TaxonFamily,
+    TaxonGenus,
+    TaxonOrder,
+    TaxonSpecies,
+)
 from api.db.utils import QueryFilter, apply_filters, optional_filters
 from api.lib.schemas import JudgmentFilter, JudgmentPost
 
@@ -30,7 +36,6 @@ def query_judgment(
     db: Session,
     judgment_filter: JudgmentFilter,
 ) -> list[Judgment]:
-    print(judgment_filter.json())
     # Process the filters that do not require joining first
     query = db.query(Judgment)
     query = apply_filters(query, from_judgment_filter(judgment_filter))
@@ -40,7 +45,13 @@ def query_judgment(
     species_query_filters = from_species_filter(judgment_filter.species_filter)
     if len(species_query_filters) > 0:
         # Only join the relationship and apply the filter if there is any
-        query = query.join(Judgment.species)
+        query = (
+            query.join(Judgment.species)
+            .join(TaxonSpecies.genus)
+            .join(TaxonGenus.family)
+            .join(TaxonFamily.order)
+            .join(TaxonOrder.class_)
+        )
         query = apply_filters(query, species_query_filters)
 
     defendant_query_filters = from_defendant_filter(judgment_filter.defendant_filter)

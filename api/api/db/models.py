@@ -1,6 +1,6 @@
 from typing import List, Type, TypeVar
 
-from sqlalchemy import Date, Enum, Integer, String
+from sqlalchemy import Date, Enum, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm.decl_api import declared_attr
@@ -30,28 +30,31 @@ ModelT = Type[BaseT]
 class TaxonClass(Base, IdMixin):
     name = Column(String(255), nullable=False, unique=True)
 
-    orders: List["TaxonOrder"] = relationship("TaxonOrder", backref="class_")
+    orders: List["TaxonOrder"] = relationship("TaxonOrder", back_populates="class_")
 
 
 class TaxonOrder(Base, IdMixin):
     name = Column(String(255), nullable=False, unique=True)
     class_id = Column(Integer, ForeignKey(TaxonClass.id), nullable=False)
 
-    families: List["TaxonFamily"] = relationship("TaxonFamily", backref="order")
+    families: List["TaxonFamily"] = relationship("TaxonFamily", back_populates="order")
+    class_: TaxonClass = relationship(TaxonClass, back_populates="orders")
 
 
 class TaxonFamily(Base, IdMixin):
     name = Column(String(255), nullable=False, unique=True)
     order_id = Column(Integer, ForeignKey(TaxonOrder.id), nullable=False)
 
-    genuses: List["TaxonGenus"] = relationship("TaxonGenus", backref="family")
+    genuses: List["TaxonGenus"] = relationship("TaxonGenus", back_populates="family")
+    order: TaxonOrder = relationship(TaxonOrder, back_populates="families")
 
 
 class TaxonGenus(Base, IdMixin):
     name = Column(String(255), nullable=False, unique=True)
     family_id = Column(Integer, ForeignKey(TaxonFamily.id), nullable=False)
 
-    species: List["TaxonSpecies"] = relationship("TaxonSpecies", backref="genus")
+    species: List["TaxonSpecies"] = relationship("TaxonSpecies", back_populates="genus")
+    family: TaxonFamily = relationship(TaxonFamily, back_populates="genuses")
 
 
 judgment_species = Table(
@@ -72,6 +75,7 @@ class TaxonSpecies(Base, IdMixin):
     judgments: list["Judgment"] = relationship(
         "Judgment", secondary=judgment_species, back_populates="species"
     )
+    genus: TaxonGenus = relationship(TaxonGenus, back_populates="species")
 
 
 class Defendant(Base, IdMixin):
@@ -103,10 +107,12 @@ class Judgment(Base, IdMixin):
     """
 
     title = Column(String())
+    case_number = Column(String())  # 案号
 
     location = Column(String())
     date_released = Column(DateTime)
     date_created = Column(DateTime, server_default=func.now())
+    content = Column(Text())
 
     species: list[TaxonSpecies] = relationship(
         TaxonSpecies,
