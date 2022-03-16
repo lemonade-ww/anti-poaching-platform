@@ -17,35 +17,20 @@ from api.lib.schemas import (
 )
 
 
-@pytest.fixture
-def simple_judgment():
-    return {
-        "title": "A test judgment foo bar with a defendant",
-        "speciesNames": [],
-        "defendants": [
-            {
-                "name": "ASD",
-                "gender": "男",
-                "education_level": "高中",
-            }
-        ],
-    }
-
-
 def test_get_defendant(
     client: TestClient,
     db_session: Session,
-    simple_judgment: dict,
+    simple_judgment_defendant: dict,
 ):
     # Insert the simple judgment first
-    result = client.post("/analytics/judgment", json=simple_judgment)
+    result = client.post("/analytics/judgment", json=simple_judgment_defendant)
     assert result.status_code == 200
 
     # Ensure that the judgment is inserted
     judgments: list[Judgment] = query_judgment(
         db_session,
         JudgmentFilter(
-            title=simple_judgment["title"],
+            title=simple_judgment_defendant["title"],
             defendant_filter=DefendantFilter(),
             species_filter=SpeciesFilter(),
             source_filter=SourceFilter(),
@@ -77,9 +62,9 @@ def test_get_defendant(
 def test_add_defendant_through_post_judgment(
     client: TestClient,
     db_session: Session,
-    simple_judgment: dict,
+    simple_judgment_defendant: dict,
 ):
-    result = client.post("/analytics/judgment", json=simple_judgment)
+    result = client.post("/analytics/judgment", json=simple_judgment_defendant)
     assert result.status_code == 200
     assert result.json()["status"] == ResponseStatus.Success
 
@@ -88,7 +73,7 @@ def test_add_defendant_through_post_judgment(
     assert defendants is not None
 
     result = client.get("/analytics/defendant")
-    expected_defendant = simple_judgment["defendants"][0]
+    expected_defendant = simple_judgment_defendant["defendants"][0]
     assert result.status_code == 200
     assert result.json()["result"][0]["name"] == expected_defendant["name"]
     assert (

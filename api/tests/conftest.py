@@ -11,6 +11,8 @@ from api.db.session import SessionLocal
 from api.dependencies import get_db
 from api.main import app
 
+from .fixtures import *
+
 
 @pytest.fixture(scope="session", autouse=True)
 def settings():

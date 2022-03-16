@@ -6,36 +6,21 @@ from api.crud.judgment import insert_judgment
 from api.crud.source import insert_source
 from api.db.models import Judgment
 from api.lib.schemas import JudgmentPost, ResponseStatus, Source, SourceCategory
-from tests.analytics.test_judgment import simple_judgment
-from tests.analytics.test_taxon import simple_species
-
-
-@pytest.fixture
-def simple_source():
-    return {
-        "category": SourceCategory.Buy,
-        "seller": "王某某",
-        "buyer": "金某某",
-        "occasion": "菜市",
-        "destination": None,
-        "method": None,
-        "usage": "食用",
-    }
 
 
 def test_post_and_get_source(
     client: TestClient,
     db_session: Session,
-    simple_judgment: dict,
+    simple_judgment_species: dict,
     simple_source: dict,
 ):
-    result = client.post("/analytics/judgment", json=simple_judgment)
+    result = client.post("/analytics/judgment", json=simple_judgment_species)
     assert result.status_code == 200
     assert result.json()["status"] == ResponseStatus.Success
 
     judgment = (
         db_session.query(Judgment)
-        .filter(Judgment.title == simple_judgment["title"])
+        .filter(Judgment.title == simple_judgment_species["title"])
         .first()
     )
     assert judgment is not None
