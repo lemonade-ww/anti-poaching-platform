@@ -4,6 +4,7 @@
 
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Docker](https://badgen.net/badge/icon/docker?icon=docker&label)](https://https://docker.com/)
+![CI](https://github.com/Henry3510/anti-poaching-platform/actions/workflows/push.yml/badge.svg)
 
 项目使用Python开发, 通过Docker Compose进行部署
 
