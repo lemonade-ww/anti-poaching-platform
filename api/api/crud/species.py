@@ -16,13 +16,13 @@ def from_species_filter(species_filter: SpeciesFilter) -> list[QueryFilter]:
         list[QueryFilter]: A list of query filters
     """
     return optional_filters(
-        (TaxonSpecies.name, "~", species_filter.species),
-        (TaxonGenus.name, "~", species_filter.genus),
-        (TaxonFamily.name, "~", species_filter.family),
-        (TaxonOrder.name, "~", species_filter.order),
-        (TaxonClass.name, "~", species_filter.class_),
-        (TaxonSpecies.protection_class, "=", species_filter.protection_class),
-        (TaxonSpecies.conservation_status, "=", species_filter.conservation_status),
+        (TaxonSpecies.name, "in", species_filter.species),
+        (TaxonGenus.name, "in", species_filter.genus),
+        (TaxonFamily.name, "in", species_filter.family),
+        (TaxonOrder.name, "in", species_filter.order),
+        (TaxonClass.name, "in", species_filter.class_),
+        (TaxonSpecies.protection_class, "in", species_filter.protection_class),
+        (TaxonSpecies.conservation_status, "in", species_filter.conservation_status),
     )
 
 

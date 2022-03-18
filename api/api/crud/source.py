@@ -17,13 +17,13 @@ def from_source_filter(source_filter: SourceFilter) -> list[QueryFilter]:
     """
     return optional_filters(
         (Source.judgment_id, "=", source_filter.judgment_id),
-        (Source.category, "=", source_filter.category),
-        (Source.seller, "~", source_filter.seller),
-        (Source.buyer, "~", source_filter.buyer),
-        (Source.occasion, "~", source_filter.occasion),
-        (Source.destination, "~", source_filter.destination),
-        (Source.method, "~", source_filter.method),
-        (Source.usage, "~", source_filter.usage),
+        (Source.category, "in", source_filter.category),
+        (Source.seller, "in", source_filter.seller),
+        (Source.buyer, "in", source_filter.buyer),
+        (Source.occasion, "in", source_filter.occasion),
+        (Source.destination, "in", source_filter.destination),
+        (Source.method, "in", source_filter.method),
+        (Source.usage, "in", source_filter.usage),
     )
 
 

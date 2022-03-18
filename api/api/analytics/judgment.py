@@ -6,6 +6,7 @@ from sqlalchemy.orm.session import Session
 from api.crud.defendant import insert_defendant
 from api.crud.judgment import insert_judgment, query_judgment
 from api.dependencies import get_db
+from api.lib import has_query_params
 from api.lib.schemas import ActionResult
 from api.lib.schemas import Judgment as JudgmentSchema
 from api.lib.schemas import (
@@ -20,7 +21,7 @@ router = APIRouter(prefix="/analytics/judgment")
 
 @router.get("", response_model=QueryActionResult[list[JudgmentSchema]])
 def get_judgment(
-    judgment_filter: JudgmentFilter = Depends(),
+    judgment_filter: JudgmentFilter = Depends(has_query_params(JudgmentFilter)),
     db: Session = Depends(get_db),
 ):
     result = query_judgment(db, judgment_filter)

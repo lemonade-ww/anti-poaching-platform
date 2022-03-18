@@ -68,7 +68,7 @@ def test_add_defendant_through_post_judgment(
     assert result.status_code == 200
     assert result.json()["status"] == ResponseStatus.Success
 
-    defendants = query_defendant(db_session, DefendantFilter(name="ASD"))
+    defendants = query_defendant(db_session, DefendantFilter(name=["ASD"]))
     assert len(defendants) > 0
     assert defendants is not None
 
@@ -77,6 +77,6 @@ def test_add_defendant_through_post_judgment(
     assert result.status_code == 200
     assert result.json()["result"][0]["name"] == expected_defendant["name"]
     assert (
-        result.json()["result"][0]["education_level"]
-        == expected_defendant["education_level"]
+        result.json()["result"][0]["educationLevel"]
+        == expected_defendant["educationLevel"]
     )

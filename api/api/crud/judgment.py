@@ -3,13 +3,7 @@ from sqlalchemy.orm.session import Session
 from api.crud.defendant import from_defendant_filter
 from api.crud.source import from_source_filter
 from api.crud.species import from_species_filter
-from api.db.models import (
-    Judgment,
-    TaxonFamily,
-    TaxonGenus,
-    TaxonOrder,
-    TaxonSpecies,
-)
+from api.db.models import Judgment, TaxonFamily, TaxonGenus, TaxonOrder, TaxonSpecies
 from api.db.utils import QueryFilter, apply_filters, optional_filters
 from api.lib.schemas import JudgmentFilter, JudgmentPost
 

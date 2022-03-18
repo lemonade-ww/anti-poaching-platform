@@ -19,11 +19,11 @@ def from_defendant_filter(defendant_filter: BaseDefendantFilter) -> list[QueryFi
         list[QueryFilter]: A list of query filters
     """
     return optional_filters(
-        (Defendant.name, "~", defendant_filter.name),
-        (Defendant.gender, "=", defendant_filter.gender),
+        (Defendant.name, "in", defendant_filter.name),
+        (Defendant.gender, "in", defendant_filter.gender),
         (Defendant.birth, ">", defendant_filter.birth_after),
         (Defendant.birth, "<", defendant_filter.birth_before),
-        (Defendant.education_level, "=", defendant_filter.education_level),
+        (Defendant.education_level, "in", defendant_filter.education_level),
         (
             Defendant.judgment_id,
             "=",
@@ -51,7 +51,7 @@ def insert_defendant(
     judgment_id: int,
     name: str,
     gender: str = None,
-    birth: datetime.datetime = None,
+    birth: datetime.date = None,
     education_level: str = None,
 ):
     judgment: Judgment = check_not_none(

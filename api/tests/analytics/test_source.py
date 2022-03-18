@@ -45,7 +45,9 @@ def test_get_source(client: TestClient, db_session: Session, simple_source: dict
     source = insert_source(db_session, Source(**simple_source))
     db_session.add(source)
 
-    get_result = client.get("/analytics/source", params=[("buyer", "金")])
+    get_result = client.get(
+        "/analytics/source", params=[("buyer", simple_source["buyer"])]
+    )
     assert get_result.status_code == 200
     assert get_result.json()["result"][0]["buyer"] == simple_source["buyer"]
 

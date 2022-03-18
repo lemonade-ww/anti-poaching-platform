@@ -16,7 +16,7 @@ from api.db.models import (
 )
 from api.db.utils import bulk_upsert
 from api.dependencies import get_db
-from api.lib import get_unique_attributes, map_attribute
+from api.lib import get_unique_attributes, has_query_params, map_attribute
 from api.lib.schemas import (
     QueryActionResult,
     ResponseStatus,
@@ -30,7 +30,7 @@ router = APIRouter(prefix="/analytics/species")
 
 @router.get("", response_model=QueryActionResult[list[Species]])
 def get_species(
-    species_filter: SpeciesFilter = Depends(SpeciesFilter),
+    species_filter: SpeciesFilter = Depends(has_query_params(SpeciesFilter)),
     db: Session = Depends(get_db),
 ):
     """Get a list of species with the given filters

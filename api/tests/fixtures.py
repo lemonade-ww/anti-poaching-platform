@@ -34,7 +34,7 @@ def simple_judgment_defendant():
             {
                 "name": "ASD",
                 "gender": "男",
-                "education_level": "高中",
+                "educationLevel": "高中",
             }
         ],
     }

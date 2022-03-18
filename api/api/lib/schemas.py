@@ -4,7 +4,7 @@ from typing import Generic, TypeVar
 
 from fastapi import Depends
 
-from api.lib import APIModel
+from api.lib import APIModel, has_query_params
 
 ResultT = TypeVar("ResultT")
 
@@ -84,13 +84,13 @@ class SpeciesFilter(APIModel):
     that are unspecified
     """
 
-    species: str | None
-    genus: str | None
-    family: str | None
-    order: str | None
-    class_: str | None
-    protection_class: ProtectionClass | None
-    conservation_status: ConservationStatus | None
+    species: list[str] | None
+    genus: list[str] | None
+    family: list[str] | None
+    order: list[str] | None
+    class_: list[str] | None
+    protection_class: list[ProtectionClass] | None
+    conservation_status: list[ConservationStatus] | None
 
 
 # Schema definitions for /analytics/defendant
@@ -101,16 +101,16 @@ class Defendant(APIModel):
 
     name: str
     gender: str | None
-    birth: datetime.datetime | None
+    birth: datetime.date | None
     education_level: str | None
 
 
 class BaseDefendantFilter(APIModel):
-    name: str | None
-    gender: str | None
+    name: list[str] | None
+    gender: list[str] | None
     birth_before: datetime.datetime | None
     birth_after: datetime.datetime | None
-    education_level: str | None
+    education_level: list[str] | None
 
 
 class DefendantFilter(BaseDefendantFilter):
@@ -139,13 +139,13 @@ class Source(APIModel):
 
 class SourceFilter(APIModel):
     judgment_id: int | None
-    category: SourceCategory | None
-    occasion: str | None
-    seller: str | None
-    buyer: str | None
-    method: str | None
-    destination: str | None
-    usage: str | None
+    category: list[SourceCategory] | None
+    occasion: list[str] | None
+    seller: list[str] | None
+    buyer: list[str] | None
+    method: list[str] | None
+    destination: list[str] | None
+    usage: list[str] | None
 
 
 SourcePost = Source
@@ -161,6 +161,7 @@ class Judgment(APIModel):
     content: str | None
     species: list[SpeciesShort]
     defendants: list[Defendant]
+    sources: list[Source]
 
 
 class JudgmentFilter(APIModel):
@@ -169,9 +170,11 @@ class JudgmentFilter(APIModel):
     location: str | None
     date_before: datetime.datetime | None
     date_after: datetime.datetime | None
-    defendant_filter: BaseDefendantFilter = Depends()
-    species_filter: SpeciesFilter = Depends()
-    source_filter: SourceFilter = Depends()
+    defendant_filter: BaseDefendantFilter = Depends(
+        has_query_params(BaseDefendantFilter)
+    )
+    species_filter: SpeciesFilter = Depends(has_query_params(SpeciesFilter))
+    source_filter: SourceFilter = Depends(has_query_params(SourceFilter))
 
 
 class JudgmentPost(APIModel):
