@@ -1,6 +1,9 @@
-from typing import Any, Iterable, OrderedDict, TypeVar
+from functools import wraps
+from inspect import Parameter, signature
+from typing import Any, Callable, Iterable, List, OrderedDict, Type, TypeVar, get_origin
 from weakref import WeakValueDictionary
 
+from fastapi import Query
 from pydantic.main import BaseModel
 
 T = TypeVar("T")
@@ -77,3 +80,49 @@ def map_attribute(
         dict[str, Any]: The mapped dictionary
     """
     return {getattr(obj, source_key): getattr(obj, value_key) for obj in objects}
+
+
+ModelT = TypeVar("ModelT", bound=APIModel)
+
+
+def has_query_params(model: Type[ModelT]) -> Callable[..., ModelT]:
+    """Autogenerate a function for APIModel with list fields default to Query(None)
+    The motive behind this function is to allow the use of lists in query parameters with a Pydantic model,
+    which is otherwise considered a part of the request body by FastAPI.
+
+    Args:
+        model (ModelT): The original model that contains lists
+
+    Returns:
+        Callable[..., ModelT]: A function that has all the fields of the model as arguments and returns ModelT
+    """
+
+    @wraps(model.__new__)
+    def wrapper(*args, **kwargs) -> ModelT:
+        return model.__new__(*args, **kwargs)
+
+    # Grab the signature of the original function
+    sig = signature(model)
+    params = []
+    for _, field in model.__fields__.items():
+        # We need to origin to determine if the field is a list or not
+        origin = get_origin(field.outer_type_)
+        if origin is not None and issubclass(origin, List):
+            if not field.allow_none and field.default is None:
+                # Pydantic should handle a mutable list as the default value correctly
+                default = Query(origin())
+            else:
+                default = Query(field.default)
+        else:
+            default = field.default
+        # Add the new parameter with the default value replaced
+        param = Parameter(
+            field.alias,
+            Parameter.KEYWORD_ONLY,
+            default=default,
+            annotation=field.outer_type_,
+        )
+        params.append(param)
+    # Override the signature of the wrapper function using the new parameters
+    setattr(wrapper, "__signature__", sig.replace(parameters=params))
+    return wrapper
