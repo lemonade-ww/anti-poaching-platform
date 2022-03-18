@@ -90,6 +90,9 @@ def has_query_params(model: Type[ModelT]) -> Callable[..., ModelT]:
     The motive behind this function is to allow the use of lists in query parameters with a Pydantic model,
     which is otherwise considered a part of the request body by FastAPI.
 
+    Note that this will not attempt to resolve dependencies.
+    In nested APIModel for query parameters, use Depends(has_query_params(SomeModel)) instead of Depends(SomeModel).
+
     Args:
         model (ModelT): The original model that contains lists
 
@@ -97,13 +100,10 @@ def has_query_params(model: Type[ModelT]) -> Callable[..., ModelT]:
         Callable[..., ModelT]: A function that has all the fields of the model as arguments and returns ModelT
     """
 
-    @wraps(model.__new__)
-    def wrapper(*args, **kwargs) -> ModelT:
-        return model.__new__(*args, **kwargs)
-
     # Grab the signature of the original function
     sig = signature(model)
     params = []
+    defaults = {}
     for _, field in model.__fields__.items():
         # We need to origin to determine if the field is a list or not
         origin = get_origin(field.outer_type_)
@@ -122,7 +122,12 @@ def has_query_params(model: Type[ModelT]) -> Callable[..., ModelT]:
             default=default,
             annotation=field.outer_type_,
         )
+        defaults[field.alias] = default
         params.append(param)
+
     # Override the signature of the wrapper function using the new parameters
+    def wrapper(*args, **kwargs) -> ModelT:
+        return model(*args, **kwargs)
+
     setattr(wrapper, "__signature__", sig.replace(parameters=params))
     return wrapper

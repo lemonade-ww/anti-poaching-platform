@@ -40,3 +40,13 @@ def test_has_query_params():
         repr(new_sig)
         == "<Signature (*, regular: str = None, strList: list[str] = Query([]), strListAllowNone: list[str] = Query(None), strAllowNone: str = None, strListDefault: list[str] = Query(['test']))>"
     )
+
+    model = wrapped(
+        regular="",
+        str_list=["A"],
+    )
+    expected_model = TestModel(
+        regular="",
+        str_list=["A"],
+    )
+    assert model == expected_model
