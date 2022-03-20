@@ -1,6 +1,6 @@
 import datetime
 from enum import Enum
-from typing import Generic, TypeVar
+from typing import Any, Generic, TypeVar
 
 from fastapi import Depends
 
@@ -175,6 +175,15 @@ class JudgmentFilter(APIModel):
     )
     species_filter: SpeciesFilter = Depends(has_query_params(SpeciesFilter))
     source_filter: SourceFilter = Depends(has_query_params(SourceFilter))
+
+    @staticmethod
+    def no_depends(**kwargs: Any) -> "JudgmentFilter":
+        return JudgmentFilter(
+            defendant_filter=BaseDefendantFilter(),
+            species_filter=SpeciesFilter(),
+            source_filter=SourceFilter(),
+            **kwargs,
+        )
 
 
 class JudgmentPost(APIModel):

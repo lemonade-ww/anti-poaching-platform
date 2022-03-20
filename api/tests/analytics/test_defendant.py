@@ -12,8 +12,6 @@ from api.lib.schemas import (
     DefendantFilter,
     JudgmentFilter,
     ResponseStatus,
-    SourceFilter,
-    SpeciesFilter,
 )
 
 
@@ -29,11 +27,8 @@ def test_get_defendant(
     # Ensure that the judgment is inserted
     judgments: list[Judgment] = query_judgment(
         db_session,
-        JudgmentFilter(
+        JudgmentFilter.no_depends(
             title=simple_judgment_defendant["title"],
-            defendant_filter=DefendantFilter(),
-            species_filter=SpeciesFilter(),
-            source_filter=SourceFilter(),
         ),
     )
 
