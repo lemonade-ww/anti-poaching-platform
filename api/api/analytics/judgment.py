@@ -1,3 +1,4 @@
+from fastapi.exceptions import HTTPException
 from fastapi.param_functions import Depends
 from fastapi.routing import APIRouter
 from pydantic import parse_obj_as
@@ -20,7 +21,7 @@ router = APIRouter(prefix="/analytics/judgment")
 
 
 @router.get("", response_model=QueryActionResult[list[JudgmentSchema]])
-def get_judgment(
+def search_judgments(
     judgment_filter: JudgmentFilter = Depends(has_query_params(JudgmentFilter)),
     db: Session = Depends(get_db),
 ):
@@ -29,6 +30,21 @@ def get_judgment(
         status=ResponseStatus.Success,
         result=parse_obj_as(list[JudgmentSchema], result),
     )
+
+
+@router.get("/{id}", response_model=QueryActionResult[JudgmentSchema])
+def get_judgment(id: int, db: Session = Depends(get_db)):
+    result = query_judgment(
+        db, judgment_filter=JudgmentFilter.no_depends(judgment_id=id)
+    )
+
+    if len(result) == 0:
+        raise HTTPException(status_code=404, detail=f"Judgment does not exist")
+    else:
+        return QueryActionResult(
+            status=ResponseStatus.Success,
+            result=parse_obj_as(JudgmentSchema, result[0]),
+        )
 
 
 @router.post("", response_model=ActionResult)
