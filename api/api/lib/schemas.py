@@ -34,12 +34,6 @@ class SourceCategory(str, Enum):
     Transport = "运输"
 
 
-class ResponseStatus(str, Enum):
-    Success = "success"
-    Pending = "pending"
-    Error = "error"
-
-
 # Schema definitions for /analytics/species
 class Species(APIModel):
     """
@@ -190,16 +184,3 @@ class JudgmentPost(APIModel):
     title: str
     species_names: list[str] = []
     defendants: list[Defendant] = []
-
-
-class ActionResult(APIModel):
-    """
-    The result of the current action
-    """
-
-    status: ResponseStatus
-    message: str | None
-
-
-class QueryActionResult(ActionResult, Generic[ResultT]):
-    result: ResultT

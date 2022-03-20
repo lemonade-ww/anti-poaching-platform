@@ -35,6 +35,7 @@ def simple_judgment_defendant():
                 "name": "ASD",
                 "gender": "男",
                 "educationLevel": "高中",
+                "birth": "1980-01-01",
             }
         ],
     }

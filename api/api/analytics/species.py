@@ -2,7 +2,6 @@ from typing import Any
 
 from fastapi import Depends
 from fastapi.routing import APIRouter
-from pydantic import parse_obj_as
 from sqlalchemy.orm.session import Session
 
 from api.crud.species import query_species
@@ -17,18 +16,12 @@ from api.db.models import (
 from api.db.utils import bulk_upsert
 from api.dependencies import get_db
 from api.lib import get_unique_attributes, has_query_params, map_attribute
-from api.lib.schemas import (
-    QueryActionResult,
-    ResponseStatus,
-    Species,
-    SpeciesBulkPatchResult,
-    SpeciesFilter,
-)
+from api.lib.schemas import Species, SpeciesBulkPatchResult, SpeciesFilter
 
 router = APIRouter(prefix="/analytics/species")
 
 
-@router.get("", response_model=QueryActionResult[list[Species]])
+@router.get("", response_model=list[Species])
 def get_species(
     species_filter: SpeciesFilter = Depends(has_query_params(SpeciesFilter)),
     db: Session = Depends(get_db),
@@ -44,12 +37,9 @@ def get_species(
     """
 
     # Retrieve records of species from the database
-    result = query_species(db, species_filter)
+    species = query_species(db, species_filter)
 
-    return QueryActionResult(
-        status=ResponseStatus.Success,
-        result=parse_obj_as(list[Species], result),
-    )
+    return species
 
 
 @router.patch("", response_model=SpeciesBulkPatchResult)

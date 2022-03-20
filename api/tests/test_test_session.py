@@ -41,12 +41,12 @@ def check_side_effect_client(client: TestClient, name: str):
             "speciesNames": [],
         },
     )
-    assert result.status_code == 200
+    assert result.status_code == 201
 
     get_result = client.get("analytics/judgment")
     assert get_result.status_code == 200
-    assert len(get_result.json()["result"]) == 1
-    assert get_result.json()["result"][0]["title"] == name
+    assert len(get_result.json()) == 1
+    assert get_result.json()[0]["title"] == name
 
 
 def test_side_effect_crud_a(db_session: Session):

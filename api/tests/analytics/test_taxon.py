@@ -20,4 +20,4 @@ def test_get_taxon(client: TestClient, simple_species: dict):
 
     get_result = client.get("/analytics/species")
     assert get_result.status_code == 200
-    assert get_result.json()["result"][0] == simple_species
+    assert get_result.json()[0] == simple_species

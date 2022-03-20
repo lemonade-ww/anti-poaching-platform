@@ -3,7 +3,16 @@ from sqlalchemy.orm.session import Session
 
 from api.crud.judgment import insert_judgment
 from api.db.models import Judgment
-from api.lib.schemas import JudgmentPost, ResponseStatus
+from api.lib.schemas import JudgmentPost
+
+
+def test_post_judgment(client: TestClient, simple_judgment_defendant: dict):
+    result = client.post("/analytics/judgment", json=simple_judgment_defendant)
+    assert result.status_code == 201
+    assert "id" in result.json()
+
+    result = client.get(f'/analytics/judgment/{result.json()["id"]}')
+    assert result.json()["defendants"][0] == simple_judgment_defendant["defendants"][0]
 
 
 def test_post_and_get_judgment(
@@ -16,8 +25,7 @@ def test_post_and_get_judgment(
     assert result.status_code == 200
 
     result = client.post("/analytics/judgment", json=simple_judgment_species)
-    assert result.status_code == 200
-    assert result.json()["status"] == ResponseStatus.Success
+    assert result.status_code == 201
 
     judgment: Judgment | None = (
         db_session.query(Judgment)
@@ -28,9 +36,9 @@ def test_post_and_get_judgment(
 
     result = client.get("/analytics/judgment", params=[("species", "Emberiza aureola")])
     assert result.status_code == 200
-    assert len(result.json()["result"]) == 1
-    assert result.json()["result"][0]["title"] == simple_judgment_species["title"]
-    assert result.json()["result"][0]["id"] == judgment.id
+    assert len(result.json()) == 1
+    assert result.json()[0]["title"] == simple_judgment_species["title"]
+    assert result.json()[0]["id"] == judgment.id
 
 
 def test_get_single_judgment(
@@ -46,8 +54,8 @@ def test_get_single_judgment(
 
     result = client.get(f"/analytics/judgment/{judgment.id}")
     assert result.status_code == 200
-    assert result.json()["result"]["title"] == simple_judgment_defendant["title"]
-    assert result.json()["result"]["id"] == judgment.id
+    assert result.json()["title"] == simple_judgment_defendant["title"]
+    assert result.json()["id"] == judgment.id
 
 
 def test_get_nonexistent_judgment(
