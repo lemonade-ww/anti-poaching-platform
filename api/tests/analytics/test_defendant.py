@@ -7,7 +7,7 @@ from api.crud.defendant import insert_defendant, query_defendant
 from api.crud.judgment import query_judgment
 from api.db.models import Judgment
 from api.lib.errors import check_not_none
-from api.lib.schemas import DefendantFilter, JudgmentFilter
+from api.lib.schemas import DefendantFilter, DefendantPost, JudgmentFilter
 
 
 def test_get_defendant(
@@ -66,3 +66,13 @@ def test_add_defendant_through_post_judgment(
     assert result.status_code == 200
     assert result.json()[0]["name"] == expected_defendant["name"]
     assert result.json()[0]["educationLevel"] == expected_defendant["educationLevel"]
+
+
+def test_add_defendant_to_nonexistent_judgment(
+    client: TestClient,
+    simple_defendant: dict,
+):
+    simple_defendant["judgment_id"] = 1
+    result = client.post("/analytics/defendant", json=simple_defendant)
+    assert result.status_code == 422
+    assert result.json()["detail"] == "Resource does not exist: judgment 1"

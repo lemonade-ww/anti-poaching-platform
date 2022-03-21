@@ -12,7 +12,11 @@ def test_post_and_get_source(
     db_session: Session,
     simple_judgment_species: dict,
     simple_source: dict,
+    simple_species: dict,
 ):
+    result = client.patch("/analytics/species", json=[simple_species])
+    assert result.status_code == 200
+
     result = client.post("/analytics/judgment", json=simple_judgment_species)
     assert result.status_code == 201
 

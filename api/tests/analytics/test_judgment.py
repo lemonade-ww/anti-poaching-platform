@@ -15,6 +15,17 @@ def test_post_judgment(client: TestClient, simple_judgment_defendant: dict):
     assert result.json()["defendants"][0] == simple_judgment_defendant["defendants"][0]
 
 
+def test_post_judgment_with_non_existent_species(
+    client: TestClient, simple_judgment_species: dict
+):
+    result = client.post("/analytics/judgment", json=simple_judgment_species)
+    assert result.status_code == 422
+    assert (
+        result.json()["detail"]
+        == f'Resource does not exist: species {simple_judgment_species["speciesNames"][0]}'
+    )
+
+
 def test_post_and_get_judgment(
     client: TestClient,
     db_session: Session,
@@ -63,4 +74,4 @@ def test_get_nonexistent_judgment(
 ):
     result = client.get("/analytics/judgment/100")
     assert result.status_code == 404
-    assert result.json()["detail"] == "Judgment does not exist"
+    assert result.json()["detail"] == "Resource does not exist: judgment 100"

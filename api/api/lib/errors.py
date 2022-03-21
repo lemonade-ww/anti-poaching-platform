@@ -1,43 +1,32 @@
-from enum import Enum
 from typing import TypeVar
 
-from fastapi import Request
-from fastapi.responses import JSONResponse
+from fastapi import HTTPException
 
 T = TypeVar("T")
 
 
-class Reason(str, Enum):
-    ResourceDoesNotExist = "resource_does_not_exist"
-
-
-class ResponseError(Exception):
-    status_code: int = 400
-
-    def __init__(self, msg: str, reason: Reason) -> None:
-        self.msg = msg
-        self.reason = reason
-
-
-class NoneError(ResponseError):
-    def __init__(self, name: str) -> None:
+class NoneException(HTTPException):
+    def __init__(self, name: str, status_code: int = 422) -> None:
         super().__init__(
-            f"Resource does not exist: {name}",
-            reason=Reason.ResourceDoesNotExist,
+            status_code=status_code,
+            detail=f"Resource does not exist: {name}",
         )
 
 
-def response_error_handler(request: Request, exc: ResponseError):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={
-            "message": exc.msg,
-            "reason": exc.reason,
-        },
-    )
-
-
 def check_not_none(to_check: T | None, name: str) -> T:
+    """Check if `to_check` is `None`. Raise NoneException if it is None.
+    This should only be used in a FastAPI path operation.
+
+    Args:
+        to_check (T | None): The Noneable variable to check
+        name (str): The name of the missing resource that will be used in the error
+
+    Raises:
+        NoneException
+
+    Returns:
+        T: The original variable
+    """
     if to_check is None:
-        raise NoneError(name)
+        raise NoneException(name)
     return to_check

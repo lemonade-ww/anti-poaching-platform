@@ -7,6 +7,7 @@ from api.crud.defendant import insert_defendant
 from api.crud.judgment import insert_judgment, query_judgment
 from api.dependencies import get_db
 from api.lib import has_query_params
+from api.lib.errors import NoneException
 from api.lib.schemas import Judgment as JudgmentSchema
 from api.lib.schemas import JudgmentFilter, JudgmentPost
 
@@ -30,7 +31,10 @@ def get_judgment(id: int, db: Session = Depends(get_db)):
     )
 
     if len(judgments) == 0:
-        raise HTTPException(status_code=404, detail=f"Judgment does not exist")
+        raise NoneException(
+            name=f"judgment {id}",
+            status_code=404,
+        )
     else:
         return judgments[0]
 
