@@ -1,14 +1,11 @@
 from fastapi import FastAPI
 
-from api.analytics import defendant, judgment, source, species
+from api import analytics
 from api.db.engine import bind_session
 from api.db.session import SessionLocal
 
 app = FastAPI()
-app.include_router(species.router)
-app.include_router(judgment.router)
-app.include_router(defendant.router)
-app.include_router(source.router)
+app.include_router(analytics.router)
 bind_session(SessionLocal)
 
 

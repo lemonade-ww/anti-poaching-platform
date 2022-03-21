@@ -1,6 +1,6 @@
 import datetime
 from enum import Enum
-from typing import Any, Generic, TypeVar
+from typing import Any, TypeVar
 
 from fastapi import Depends
 
@@ -99,7 +99,7 @@ class Defendant(APIModel):
     education_level: str | None
 
 
-class BaseDefendantFilter(APIModel):
+class DefendantFilter(APIModel):
     name: list[str] | None
     gender: list[str] | None
     birth_before: datetime.date | None
@@ -107,21 +107,15 @@ class BaseDefendantFilter(APIModel):
     education_level: list[str] | None
 
 
-class DefendantFilter(BaseDefendantFilter):
-    judgment_id: int | None
-
-
 class DefendantPost(APIModel):
     name: str
-    judgment_id: int
     gender: str | None
     birth: datetime.date | None
     education_level: str | None
 
 
 # Schema definitions for /analytics/source
-class Source(APIModel):
-    judgment_id: int
+class SourcePost(APIModel):
     category: SourceCategory
     occasion: str | None
     seller: str | None
@@ -129,6 +123,10 @@ class Source(APIModel):
     method: str | None
     destination: str | None
     usage: str | None
+
+
+class Source(SourcePost):
+    judgment_id: int
 
 
 class SourceFilter(APIModel):
@@ -141,8 +139,6 @@ class SourceFilter(APIModel):
     destination: list[str] | None
     usage: list[str] | None
 
-
-SourcePost = Source
 
 # Schema definitions for /analytics/judgment
 class Judgment(APIModel):
@@ -164,16 +160,14 @@ class JudgmentFilter(APIModel):
     location: str | None
     date_before: datetime.datetime | None
     date_after: datetime.datetime | None
-    defendant_filter: BaseDefendantFilter = Depends(
-        has_query_params(BaseDefendantFilter)
-    )
+    defendant_filter: DefendantFilter = Depends(has_query_params(DefendantFilter))
     species_filter: SpeciesFilter = Depends(has_query_params(SpeciesFilter))
     source_filter: SourceFilter = Depends(has_query_params(SourceFilter))
 
     @staticmethod
     def no_depends(**kwargs: Any) -> "JudgmentFilter":
         return JudgmentFilter(
-            defendant_filter=BaseDefendantFilter(),
+            defendant_filter=DefendantFilter(),
             species_filter=SpeciesFilter(),
             source_filter=SourceFilter(),
             **kwargs,

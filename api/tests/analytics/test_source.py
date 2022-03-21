@@ -4,7 +4,7 @@ from sqlalchemy.orm.session import Session
 from api.crud.judgment import insert_judgment
 from api.crud.source import insert_source
 from api.db.models import Judgment
-from api.lib.schemas import JudgmentPost, Source
+from api.lib.schemas import JudgmentPost, SourcePost
 
 
 def test_post_and_get_source(
@@ -26,13 +26,13 @@ def test_post_and_get_source(
         .first()
     )
     assert judgment is not None
-
-    simple_source["judgmentId"] = judgment.id
     assert judgment.id is not None
-    post_result = client.post("/analytics/source", json=simple_source)
+    post_result = client.post(
+        f"/analytics/judgment/source/{judgment.id}", json=simple_source
+    )
     assert post_result.status_code == 201
 
-    get_result = client.get("/analytics/source")
+    get_result = client.get("/analytics/judgment/source")
     assert get_result.status_code == 200
     assert get_result.json()[0]["buyer"] == simple_source["buyer"]
     assert get_result.json()[0]["method"] == simple_source["method"]
@@ -43,16 +43,15 @@ def test_get_source(client: TestClient, db_session: Session, simple_source: dict
     db_session.add(judgment)
     db_session.flush()
     assert judgment.id is not None
-    simple_source["judgment_id"] = judgment.id
-    source = insert_source(db_session, Source(**simple_source))
+    source = insert_source(db_session, judgment.id, SourcePost(**simple_source))
     db_session.add(source)
 
     get_result = client.get(
-        "/analytics/source", params=[("buyer", simple_source["buyer"])]
+        "/analytics/judgment/source", params=[("buyer", simple_source["buyer"])]
     )
     assert get_result.status_code == 200
     assert get_result.json()[0]["buyer"] == simple_source["buyer"]
 
-    get_result = client.get("/analytics/source", params=[("buyer", "asd")])
+    get_result = client.get("/analytics/judgment/source", params=[("buyer", "asd")])
     assert get_result.status_code == 200
     assert len(get_result.json()) == 0
