@@ -15,7 +15,7 @@ LINT_SERVICES := api-lint analytics-lint
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
 LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 
-IMAGE_REVISION ?= 67caa7d
+IMAGE_REVISION ?= e309ede
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
