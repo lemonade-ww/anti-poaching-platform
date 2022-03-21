@@ -5,6 +5,7 @@ from api.crud.source import from_source_filter
 from api.crud.species import from_species_filter
 from api.db.models import Judgment, TaxonFamily, TaxonGenus, TaxonOrder, TaxonSpecies
 from api.db.utils import QueryFilter, apply_filters, optional_filters
+from api.lib.errors import NoneException
 from api.lib.schemas import JudgmentFilter, JudgmentPost
 
 
@@ -66,5 +67,12 @@ def insert_judgment(db: Session, data: JudgmentPost) -> Judgment:
     species: list[TaxonSpecies] = (
         db.query(TaxonSpecies).filter(TaxonSpecies.name.in_(data.species_names)).all()
     )
+
+    # Raise an exception if any of the species does not exist
+    existing_species_names = [s.name for s in species]
+    for name in data.species_names:
+        if name not in existing_species_names:
+            raise NoneException(f"species {name}")
+
     judgment = Judgment(title=data.title, species=species)
     return judgment

@@ -57,7 +57,7 @@ def optional_filters(
     *filters: tuple[
         Column,
         Literal["=", "~", "<", ">"],
-        str | int | datetime.datetime | Column | None,
+        str | int | datetime.datetime | datetime.date | Column | None,
     ]
     | tuple[Column, Literal["in"], Container | None],
 ) -> list[QueryFilter]:

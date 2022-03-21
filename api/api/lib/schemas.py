@@ -102,8 +102,8 @@ class Defendant(APIModel):
 class BaseDefendantFilter(APIModel):
     name: list[str] | None
     gender: list[str] | None
-    birth_before: datetime.datetime | None
-    birth_after: datetime.datetime | None
+    birth_before: datetime.date | None
+    birth_after: datetime.date | None
     education_level: list[str] | None
 
 
@@ -115,7 +115,7 @@ class DefendantPost(APIModel):
     name: str
     judgment_id: int
     gender: str | None
-    birth: datetime.datetime | None
+    birth: datetime.date | None
     education_level: str | None
 
 

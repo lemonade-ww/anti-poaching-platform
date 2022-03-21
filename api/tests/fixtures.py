@@ -52,3 +52,13 @@ def simple_source():
         "method": None,
         "usage": "食用",
     }
+
+
+@pytest.fixture
+def simple_defendant():
+    return {
+        "name": "Somebody",
+        "gender": "女",
+        "educationLevel": "大学",
+        "birth": "1980-01-01",
+    }
