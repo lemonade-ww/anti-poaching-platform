@@ -7,7 +7,7 @@ from api.lib import has_query_params
 from api.lib.schemas import Source as SourceSchema
 from api.lib.schemas import SourceFilter, SourcePost
 
-router = APIRouter(prefix="/analytics/source")
+router = APIRouter(prefix="/source")
 
 
 @router.get("", response_model=list[SourceSchema])
@@ -20,9 +20,9 @@ def get_sources(
     return sources
 
 
-@router.post("", response_model=SourceSchema, status_code=201)
-def post_source(source: SourcePost, db: Session = Depends(get_db)):
-    new_source = insert_source(db, source)
+@router.post("/{judgment_id}", response_model=SourceSchema, status_code=201)
+def post_source(judgment_id: int, source: SourcePost, db: Session = Depends(get_db)):
+    new_source = insert_source(db, judgment_id, source)
     db.add(new_source)
     db.commit()
 

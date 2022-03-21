@@ -3,8 +3,7 @@ from sqlalchemy.orm.session import Session
 from api.db.models import Judgment, Source
 from api.db.utils import QueryFilter, apply_filters, optional_filters
 from api.lib.errors import check_not_none
-from api.lib.schemas import Source as SourceSchema
-from api.lib.schemas import SourceFilter
+from api.lib.schemas import SourceFilter, SourcePost
 
 
 def from_source_filter(source_filter: SourceFilter) -> list[QueryFilter]:
@@ -37,10 +36,10 @@ def query_source(db: Session, source_filter: SourceFilter) -> list[Source]:
     return result
 
 
-def insert_source(db: Session, data: SourceSchema) -> Source:
+def insert_source(db: Session, judgment_id: int, data: SourcePost) -> Source:
     judgment: Judgment = check_not_none(
-        db.query(Judgment).filter(Judgment.id == data.judgment_id).first(),
-        f"judgment {data.judgment_id}",
+        db.query(Judgment).filter(Judgment.id == judgment_id).first(),
+        f"judgment {judgment_id}",
     )
 
     source = Source(

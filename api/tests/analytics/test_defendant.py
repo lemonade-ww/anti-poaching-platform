@@ -39,7 +39,7 @@ def test_get_defendant(
     )
 
     result = client.get(
-        "/analytics/defendant",
+        "/analytics/judgment/defendant",
         params={
             "name": "Test",
         },
@@ -47,6 +47,27 @@ def test_get_defendant(
     assert result.status_code == 200
     assert len(result.json()) > 0
     assert result.json()[0]["gender"] == "M"
+
+
+def test_post_defendant(
+    client: TestClient,
+    simple_judgment_species: dict,
+    simple_species: dict,
+    simple_defendant: dict,
+):
+    result = client.patch("/analytics/species", json=[simple_species])
+    assert result.status_code == 200
+
+    result = client.post("/analytics/judgment", json=simple_judgment_species)
+    assert result.status_code == 201
+    judgment_id = result.json()["id"]
+    assert judgment_id is not None
+
+    result = client.post(
+        f"/analytics/judgment/defendant/{judgment_id}", json=simple_defendant
+    )
+    assert result.json() == simple_defendant
+    assert result.status_code == 201
 
 
 def test_add_defendant_through_post_judgment(
@@ -61,7 +82,7 @@ def test_add_defendant_through_post_judgment(
     assert len(defendants) > 0
     assert defendants is not None
 
-    result = client.get("/analytics/defendant")
+    result = client.get("/analytics/judgment/defendant")
     expected_defendant = simple_judgment_defendant["defendants"][0]
     assert result.status_code == 200
     assert result.json()[0]["name"] == expected_defendant["name"]
@@ -72,7 +93,6 @@ def test_add_defendant_to_nonexistent_judgment(
     client: TestClient,
     simple_defendant: dict,
 ):
-    simple_defendant["judgment_id"] = 1
-    result = client.post("/analytics/defendant", json=simple_defendant)
+    result = client.post("/analytics/judgment/defendant/1", json=simple_defendant)
     assert result.status_code == 422
     assert result.json()["detail"] == "Resource does not exist: judgment 1"

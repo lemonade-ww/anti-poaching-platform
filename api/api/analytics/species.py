@@ -18,7 +18,7 @@ from api.dependencies import get_db
 from api.lib import get_unique_attributes, has_query_params, map_attribute
 from api.lib.schemas import Species, SpeciesBulkPatchResult, SpeciesFilter
 
-router = APIRouter(prefix="/analytics/species")
+router = APIRouter(prefix="/species")
 
 
 @router.get("", response_model=list[Species])

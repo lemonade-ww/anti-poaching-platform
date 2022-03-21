@@ -6,14 +6,16 @@ from sqlalchemy.orm.session import Session
 from api.db.models import Defendant, Judgment
 from api.db.utils import QueryFilter, apply_filters, optional_filters
 from api.lib.errors import check_not_none
-from api.lib.schemas import BaseDefendantFilter, DefendantFilter
+from api.lib.schemas import DefendantFilter
 
 
-def from_defendant_filter(defendant_filter: BaseDefendantFilter) -> list[QueryFilter]:
+def from_defendant_filter(
+    defendant_filter: DefendantFilter, judgment_id: int | None = None
+) -> list[QueryFilter]:
     """Convert a filter object to a QueryFilter
 
     Args:
-        defendant_filter (BaseDefendantFilter): The filter object to be converted
+        defendant_filter (DefendantFilter): The filter object to be converted
 
     Returns:
         list[QueryFilter]: A list of query filters
@@ -24,24 +26,19 @@ def from_defendant_filter(defendant_filter: BaseDefendantFilter) -> list[QueryFi
         (Defendant.birth, ">", defendant_filter.birth_after),
         (Defendant.birth, "<", defendant_filter.birth_before),
         (Defendant.education_level, "in", defendant_filter.education_level),
-        (
-            Defendant.judgment_id,
-            "=",
-            defendant_filter.judgment_id
-            if isinstance(defendant_filter, DefendantFilter)
-            else None,
-        ),
+        (Defendant.judgment_id, "=", judgment_id),
     )
 
 
 def query_defendant(
     db: Session,
-    defendant_filter: BaseDefendantFilter,
+    defendant_filter: DefendantFilter,
+    judgment_id: int | None = None,
 ) -> list[Defendant]:
     query = db.query(Defendant).options(joinedload(Defendant.judgment))
     result = apply_filters(
         query,
-        from_defendant_filter(defendant_filter),
+        from_defendant_filter(defendant_filter, judgment_id),
     ).all()
     return result
 
