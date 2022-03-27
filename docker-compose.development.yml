@@ -6,3 +6,12 @@ services:
       - db-test
     volumes:
       - ./api:/opt/app
+
+  client:
+    build:
+      context: .
+      dockerfile: shared/client.Dockerfile
+    volumes:
+      - ./client:/client/home
+    depends_on:
+      - api

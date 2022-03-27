@@ -14,6 +14,7 @@ TEST_SERVICES := api
 LINT_SERVICES := api-lint analytics-lint
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
 LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
+OPENAPI := http://api:8000/openapi.json
 
 IMAGE_REVISION ?= e309ede
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
@@ -74,6 +75,12 @@ update-revision:
 .PHONY: generate-migration
 generate-migration:
 	docker compose ${DEV_COMPOSE_ARGS} run api alembic revision --autogenerate -m "$(MESSAGE)"
+
+.PHONY: generate-client
+generate-client:
+	@mkdir -p client
+	docker compose $(DEV_COMPOSE_ARGS) build client
+	docker compose $(DEV_COMPOSE_ARGS) run client generate -i $(OPENAPI) -g python -o /client/home --additional-properties=generateSourceCodeOnly=true
 
 .PHONY: push
 push:
