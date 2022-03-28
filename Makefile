@@ -9,7 +9,7 @@ LINT_COMPOSE_ARGS := -f docker-compose.lint.yml \
 		-p anti-poaching-lint
 
 # The services that will be built and pushed all the time
-SERVICES := api
+SERVICES := api nlp
 TEST_SERVICES := api
 LINT_SERVICES := api-lint analytics-lint
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
@@ -70,6 +70,10 @@ build-lint:
 build-client:
 	@mkdir -p client
 	docker compose $(DEV_COMPOSE_ARGS) build client builder
+
+.PHONY: build-analytics-cli
+build-analytics-cli:
+	docker compose $(DEV_COMPOSE_ARGS) build analytics-cli
 
 .PHONY: update-revision
 update-revision:
@@ -145,6 +149,12 @@ run-prod: $(PROD_SECRETS)
 .PHONY: run-lint
 run-lint:
 	docker compose $(LINT_COMPOSE_ARGS) up $(LINT_SERVICES)
+
+.PHONY: run-analytics-cli
+run-analytics-cli:
+	docker compose $(DEV_COMPOSE_ARGS) run --rm analytics-cli analytics.analyze \
+		analytics/data/openlaw.xlsx --out analytics/data/output.json \
+		--host nlp
 
 .PHONY: clean-containers
 clean-containers:

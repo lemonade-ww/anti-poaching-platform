@@ -28,6 +28,17 @@ services:
   nlp:
     image: pig208/anti-poaching-corenlp:cn
 
+  analytics-cli:
+    image: pig208/anti-poaching-analytics-dev:${REVISION:-latest}
+    build:
+      context: analytics-cli
+      args:
+        REQUIREMENTS_TXT: requirements/dev.txt
+    volumes:
+      - ./analytics-cli/analytics:/opt/app/analytics
+    depends_on:
+      - nlp
+
   api:
     image: pig208/anti-poaching-api-dev:${REVISION:-latest}
     build:
@@ -49,10 +60,10 @@ services:
       - pg_user
 
 volumes:
-    pgdata:
+  pgdata:
 
 secrets:
-    pg_password:
-      file: secrets/dev/pg_password
-    pg_user:
-      file: secrets/dev/pg_user
+  pg_password:
+    file: secrets/dev/pg_password
+  pg_user:
+    file: secrets/dev/pg_user
