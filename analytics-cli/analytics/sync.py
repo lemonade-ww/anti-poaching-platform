@@ -1,7 +1,8 @@
 import argparse
 import json
-from analytics.sync_data import sync_species
+
 from analytics.lib.data_types import SpeciesData
+from analytics.sync_data import sync_species
 
 
 def species_from_json(path: str) -> tuple[list[SpeciesData], list[tuple[str, object]]]:
@@ -20,7 +21,7 @@ def species_from_json(path: str) -> tuple[list[SpeciesData], list[tuple[str, obj
         data = json.load(f)
         if not isinstance(data, dict) or len(data) == 0:
             raise ValueError("Unsupported JSON file for species")
-        skipped: tuple[str, object] = []
+        skipped: list[tuple[str, object]] = []
         result: list[SpeciesData] = []
         for (species_name, value) in data.items():
             if not isinstance(value, str):

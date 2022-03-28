@@ -2,7 +2,7 @@ import argparse
 import json
 import re
 import time
-import urllib
+import urllib.request
 from dataclasses import asdict
 from sys import exit
 from typing import (
