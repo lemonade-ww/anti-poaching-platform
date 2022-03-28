@@ -36,7 +36,7 @@ beautifulsoup4 = ""
 # Code linting, tooling
 black = ""
 isort = ""
-mypy = ""
+mypy = "^0.940"
 pip-tools = ""
 # Typing
 types-pymysql = ""
