@@ -9,6 +9,8 @@ __pycache__
 **/*.pyc
 .mypy_cache
 .pytest_cache
+dist
+*.egg-info
 
 # Mac generated files
 .DS_Store
