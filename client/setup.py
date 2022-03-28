@@ -5,7 +5,7 @@ with open("./openapi_client_README.md", "r") as f:
 
 setup(
     name="passerine_client",
-    version="0.0.2",
+    version="0.0.3",
     description="The API client for the antipoaching platform",
     long_description=long_description,
     long_description_content_type="text/markdown",

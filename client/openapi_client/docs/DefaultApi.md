@@ -546,15 +546,12 @@ with openapi_client.ApiClient() as api_client:
     api_instance = default_api.DefaultApi(api_client)
     judgment_post = JudgmentPost(
         title="title_example",
+        case_number="case_number_example",
+        location="location_example",
+        release_date=dateutil_parser('1970-01-01').date(),
+        content="content_example",
+        sentence="sentence_example",
         species_names=[],
-        defendants=[
-            Defendant(
-                name="name_example",
-                gender="gender_example",
-                birth=dateutil_parser('1970-01-01').date(),
-                education_level="education_level_example",
-            ),
-        ],
     ) # JudgmentPost | 
 
     # example passing only required values which don't have defaults set
