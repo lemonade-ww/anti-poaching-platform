@@ -76,3 +76,12 @@ class PoachingData:
     title: Optional[str] = None
     number: Optional[str] = None
     sources_info: MutableSequence[SourceData] = field(default_factory=list)
+
+
+@dataclass
+class SpeciesData:
+    species: str
+    genus: str
+    family: str
+    order: str
+    _class: str
