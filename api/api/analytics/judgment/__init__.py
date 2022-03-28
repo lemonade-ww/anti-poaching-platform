@@ -51,6 +51,6 @@ def post_judgment(judgment: JudgmentPost, db: Session = Depends(get_db)):
         judgment,
     )
     db.add(new_judgment)
-    db.flush()
+    db.commit()
 
     return new_judgment

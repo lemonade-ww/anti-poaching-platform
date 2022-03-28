@@ -445,14 +445,14 @@ def from_open_law(file: str, limit: Optional[int] = None) -> List[PoachingData]:
         if not defendant:
             continue
 
-        poaching_data.defendants = [
+        poaching_data.defendant = [
             name for name in defendant.split("、") if len(name) <= 4
         ]
 
         # print(sheet['G' + str(i)])
         poaching_data.location = sheet["G" + str(i)].value
 
-        for name in poaching_data.defendants:
+        for name in poaching_data.defendant:
             raw_info = sheet["R" + str(i)].value.replace("。、", "。\n").split()
             poaching_data.defendant_info.append(get_info(raw_info, name))
 
@@ -474,7 +474,7 @@ def from_open_law(file: str, limit: Optional[int] = None) -> List[PoachingData]:
             sheet["V" + str(i)].value.split("。、"),
             poaching_data.title,
             poaching_data.sentence,
-            poaching_data.defendants,
+            poaching_data.defendant,
         )
 
     return result
@@ -491,11 +491,11 @@ def from_file(file: str):
 
         poaching_data = PoachingData(data_id=doc.name)
 
-        poaching_data.defendants = get_name(data)
+        poaching_data.defendant = get_name(data)
 
         poaching_data.location, _, _ = get_location(data)
 
-        for name in poaching_data.defendants:
+        for name in poaching_data.defendant:
             person_info = get_info(data, name)
             poaching_data.defendant_info.append(person_info)
 

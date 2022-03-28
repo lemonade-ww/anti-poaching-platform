@@ -68,7 +68,7 @@ class DefendantData:
 @dataclass
 class PoachingData:
     data_id: str
-    defendants: MutableSequence[str] = field(default_factory=list)
+    defendant: MutableSequence[str] = field(default_factory=list)
     location: str = ""
     defendant_info: MutableSequence[DefendantData] = field(default_factory=list)
     sentence: MutableSequence[str] = field(default_factory=list)

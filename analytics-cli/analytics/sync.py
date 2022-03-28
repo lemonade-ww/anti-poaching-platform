@@ -1,11 +1,22 @@
 import argparse
 import json
+from typing import TypeAlias, TypeVar
 
-from analytics.lib.data_types import SpeciesData
-from analytics.sync_data import sync_species
+from analytics.lib.data_types import (
+    DefendantData,
+    PoachingData,
+    SourceData,
+    SourceInfo,
+    SpeciesData,
+)
+from analytics.lib.functional import unpack, unpack_list
+from analytics.sync_data import sync_poaching_data, sync_species
+
+T = TypeVar("T")
+ParseResult: TypeAlias = tuple[list[T], list[tuple[str, object]]]
 
 
-def species_from_json(path: str) -> tuple[list[SpeciesData], list[tuple[str, object]]]:
+def species_from_json(path: str) -> ParseResult[SpeciesData]:
     """Parse species from a json file into a list of SpeciesData
 
     Args:
@@ -44,10 +55,61 @@ def species_from_json(path: str) -> tuple[list[SpeciesData], list[tuple[str, obj
     return result, skipped
 
 
+def analyzed_data_from_json(path: str) -> ParseResult[PoachingData]:
+    """Parse species from a json file into a list of PoachingData
+
+    Args:
+        path (str): The path to the file to be parsed
+
+    Raises:
+        ValueError: If the structure of the json file is unsupported
+
+    Returns:
+        tuple[list[PoachingData], list[tuple[str, str]]]: A tuple containing the parsed list of PoachingData and a list of skipped entries
+    """
+    with open(path, "r") as f:
+        data = json.load(f)
+        if not isinstance(data, list):
+            raise ValueError("Unsupported JSON file for sources")
+        skipped: list[tuple[str, object]] = []
+        result: list[PoachingData] = []
+        for value in data:
+            if (
+                not isinstance(value, dict)
+                or value.get("title") is None
+                or value.get("data_id") is None
+            ):
+                # Skip entries with non-str values
+                skipped.append(value)
+                continue
+
+            poaching_data = unpack(
+                PoachingData,
+                value,
+                sentence=lambda: "\n".join(value["sentence"]),
+                defendant_info=lambda: unpack_list(
+                    DefendantData, value["defendant_info"]
+                ),
+                sources_info=lambda: unpack_list(
+                    lambda **kwargs: unpack(
+                        SourceData,
+                        kwargs,
+                        input=lambda: unpack_list(SourceInfo, kwargs["input"]),
+                        output=lambda: unpack_list(SourceInfo, kwargs["output"]),
+                    ),
+                    value["sources_info"],
+                ),
+            )
+            print(poaching_data)
+
+            result.append(poaching_data)
+    return result, skipped
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "action", choices=["species"], help="The type of action for sync"
+        "action", choices=["species", "analyzed"], help="The type of action for sync"
     )
     parser.add_argument(
         "sources", nargs="+", help="Files containing data to be synchronized"
@@ -71,6 +133,23 @@ def main():
                 affected = len(result["species"])
                 print(
                     f"[{idx + 1}/{len(sources)}] {source}: {affected}/{len(species_data)} species updated. {len(skipped)} entries skipped."
+                )
+            print("Done.")
+        case "analyzed":
+            print("Reading analyzed data..")
+            for idx, source in enumerate(sources):
+                try:
+                    analyzed_data, skipped = analyzed_data_from_json(source)
+                except json.JSONDecodeError:
+                    print(
+                        f"[{idx + 1}/{len(sources)}] {source}: Invalid JSON file. Skipping..."
+                    )
+                    continue
+
+                result = sync_poaching_data(analyzed_data)
+                affected = 1
+                print(
+                    f"[{idx + 1}/{len(sources)}] {source}: {affected}/{len(analyzed_data)} judgments updated. {len(skipped)} entries skipped."
                 )
             print("Done.")
 
