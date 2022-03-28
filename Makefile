@@ -16,7 +16,7 @@ IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(adds
 LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 OPENAPI := http://api:8000/openapi.json
 
-IMAGE_REVISION ?= e309ede
+IMAGE_REVISION ?= beba177
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
@@ -101,7 +101,7 @@ push-latest:
 	@IMAGE_REVISION=latest $(MAKE) -f $(THIS_FILE) push
 
 .PHONY: bump-image
-bump-revision: update-revision
+bump-revision:
 	git add $(THIS_FILE)
 	git commit -m "docker: Bump image revision"
 
