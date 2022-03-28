@@ -17,6 +17,7 @@ LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 OPENAPI := http://api:8000/openapi.json
 
 IMAGE_REVISION ?= beba177
+CLIENT_VERSION ?= 0.0.4
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
@@ -65,6 +66,11 @@ build-prod:
 build-lint:
 	docker compose $(LINT_COMPOSE_ARGS) build $(LINT_SERVICES) --parallel
 
+.PHONY: build-client
+build-client:
+	@mkdir -p client
+	docker compose $(DEV_COMPOSE_ARGS) build client builder
+
 .PHONY: update-revision
 update-revision:
 	@set -e; \
@@ -78,10 +84,15 @@ generate-migration:
 
 .PHONY: generate-client
 generate-client:
-	@mkdir -p client
-	docker compose $(DEV_COMPOSE_ARGS) build client
-	docker compose $(DEV_COMPOSE_ARGS) run --rm client generate -i $(OPENAPI) -g python -o /client/home --additional-properties=generateSourceCodeOnly=true
+	docker compose $(DEV_COMPOSE_ARGS) run --rm client \
+		generate -i $(OPENAPI) -g python -o /client/home \
+		--additional-properties=generateSourceCodeOnly=true,packageVersion=$(CLIENT_VERSION)
+	docker compose $(DEV_COMPOSE_ARGS) run --rm builder
 
+.PHONY: upload-client
+upload-client: client/dist/*$(CLIENT_VERSION)*
+	docker compose $(DEV_COMPOSE_ARGS) run --rm builder twine upload dist/*$(CLIENT_VERSION)*
+	
 .PHONY: push
 push:
 	@echo pushing $(REVISION)
@@ -147,3 +158,7 @@ clean-db:
 	docker compose down db
 	docker volume rm anti-poaching-platform_pgdata
 	docker volume rm anti-poaching-platform_pgdataprod
+
+.PHONY: clean-dist
+clean-dist:
+	rm -rf client/dist client/passerine_client.egg-info

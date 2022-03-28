@@ -15,3 +15,10 @@ services:
       - ./client:/client/home
     depends_on:
       - api
+
+  builder:
+    build:
+      context: .
+      dockerfile: shared/builder.Dockerfile
+    volumes:
+      - ./client:/opt/client
