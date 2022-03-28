@@ -1,12 +1,11 @@
 import os
 from setuptools import setup
 
-print(os.getcwd())
 with open("./openapi_client_README.md", "r") as f:
     long_description = f.read()
 
 setup(
-    name="openapi_client",
+    name="passerine_client",
     version="0.0.1",
     description="The API client for the antipoaching platform",
     long_description=long_description,

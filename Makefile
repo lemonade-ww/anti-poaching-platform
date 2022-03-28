@@ -80,7 +80,7 @@ generate-migration:
 generate-client:
 	@mkdir -p client
 	docker compose $(DEV_COMPOSE_ARGS) build client
-	docker compose $(DEV_COMPOSE_ARGS) run client generate -i $(OPENAPI) -g python -o /client/home --additional-properties=generateSourceCodeOnly=true
+	docker compose $(DEV_COMPOSE_ARGS) run --rm client generate -i $(OPENAPI) -g python -o /client/home --additional-properties=generateSourceCodeOnly=true
 
 .PHONY: push
 push:
