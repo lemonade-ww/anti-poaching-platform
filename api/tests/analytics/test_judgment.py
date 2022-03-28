@@ -6,13 +6,13 @@ from api.db.models import Judgment
 from api.lib.schemas import JudgmentPost
 
 
-def test_post_judgment(client: TestClient, simple_judgment_defendant: dict):
-    result = client.post("/analytics/judgment", json=simple_judgment_defendant)
+def test_post_judgment(client: TestClient, simple_judgment: dict):
+    result = client.post("/analytics/judgment", json=simple_judgment)
     assert result.status_code == 201
     assert "id" in result.json()
 
     result = client.get(f'/analytics/judgment/{result.json()["id"]}')
-    assert result.json()["defendants"][0] == simple_judgment_defendant["defendants"][0]
+    assert result.json()["content"] == simple_judgment["content"]
 
 
 def test_post_judgment_with_non_existent_species(
@@ -55,17 +55,15 @@ def test_post_and_get_judgment(
 def test_get_single_judgment(
     client: TestClient,
     db_session: Session,
-    simple_judgment_defendant: dict,
+    simple_judgment: dict,
 ):
-    judgment = insert_judgment(
-        db_session, JudgmentPost.parse_obj(simple_judgment_defendant)
-    )
+    judgment = insert_judgment(db_session, JudgmentPost.parse_obj(simple_judgment))
     db_session.add(judgment)
     db_session.commit()
 
     result = client.get(f"/analytics/judgment/{judgment.id}")
     assert result.status_code == 200
-    assert result.json()["title"] == simple_judgment_defendant["title"]
+    assert result.json()["title"] == simple_judgment["title"]
     assert result.json()["id"] == judgment.id
 
 

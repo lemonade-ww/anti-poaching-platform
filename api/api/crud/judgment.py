@@ -22,8 +22,8 @@ def from_judgment_filter(judgment_filter: JudgmentFilter) -> list[QueryFilter]:
         (Judgment.id, "=", judgment_filter.judgment_id),
         (Judgment.title, "~", judgment_filter.title),
         (Judgment.location, "in", judgment_filter.location),
-        (Judgment.date_released, "<", judgment_filter.date_before),
-        (Judgment.date_released, ">", judgment_filter.date_after),
+        (Judgment.release_date, "<", judgment_filter.date_before),
+        (Judgment.release_date, ">", judgment_filter.date_after),
     )
 
 
@@ -74,5 +74,13 @@ def insert_judgment(db: Session, data: JudgmentPost) -> Judgment:
         if name not in existing_species_names:
             raise NoneException(f"species {name}")
 
-    judgment = Judgment(title=data.title, species=species)
+    judgment = Judgment(
+        title=data.title,
+        case_number=data.case_number,
+        location=data.location,
+        release_date=data.release_date,
+        content=data.content,
+        sentence=data.sentence,
+        species=species,
+    )
     return judgment

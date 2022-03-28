@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pytest
 from sqlalchemy.orm.session import Session
 
@@ -26,18 +28,15 @@ def simple_judgment_species(simple_species: dict):
 
 
 @pytest.fixture
-def simple_judgment_defendant():
+def simple_judgment():
     return {
         "title": "A test judgment foo bar with a defendant",
+        "content": "asdasdasdasdasd",
+        "caseNumber": "A120123",
+        "sentence": "asdasd",
+        "location": "asdasdasdasd",
+        "releaseDate": datetime.now().strftime("%Y-%m-%d"),
         "speciesNames": [],
-        "defendants": [
-            {
-                "name": "ASD",
-                "gender": "男",
-                "educationLevel": "高中",
-                "birth": "1980-01-01",
-            }
-        ],
     }
 
 

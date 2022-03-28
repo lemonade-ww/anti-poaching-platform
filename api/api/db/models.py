@@ -110,9 +110,10 @@ class Judgment(Base, IdMixin):
     case_number = Column(String())  # 案号
 
     location = Column(String())
-    date_released = Column(DateTime)
-    date_created = Column(DateTime, server_default=func.now())
+    release_date = Column(Date)
+    creation_time = Column(DateTime, server_default=func.now())
     content = Column(Text())
+    sentence = Column(Text())
 
     species: list[TaxonSpecies] = relationship(
         TaxonSpecies,

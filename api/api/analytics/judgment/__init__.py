@@ -48,34 +48,9 @@ def post_judgment(judgment: JudgmentPost, db: Session = Depends(get_db)):
     # Flush but do not commit
     new_judgment = insert_judgment(
         db,
-        JudgmentPost(
-            title=judgment.title,
-            species_names=judgment.species_names,
-        ),
+        judgment,
     )
     db.add(new_judgment)
     db.flush()
-
-    # Assuming that the insertion was successful
-    assert new_judgment.id is not None
-
-    # Insert the defendants in the requests for this judgment
-    defendants_inserted = []
-
-    # Loop through the defendants and insert them here
-    for defendant in judgment.defendants:
-        defendants_inserted.append(
-            insert_defendant(
-                db,
-                judgment_id=new_judgment.id,
-                name=defendant.name,
-                gender=defendant.gender,
-                birth=defendant.birth,
-                education_level=defendant.education_level,
-            )
-        )
-
-    db.add_all(defendants_inserted)
-    db.commit()
 
     return new_judgment

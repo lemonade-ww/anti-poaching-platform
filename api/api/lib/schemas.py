@@ -176,5 +176,9 @@ class JudgmentFilter(APIModel):
 
 class JudgmentPost(APIModel):
     title: str
+    case_number: str | None
+    location: str | None
+    release_date: datetime.date | None
+    content: str | None
+    sentence: str | None
     species_names: list[str] = []
-    defendants: list[Defendant] = []
