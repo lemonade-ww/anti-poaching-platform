@@ -29,7 +29,7 @@ openpyxl = ""
 stanfordcorenlp = "3.9.1.1"
 # Database access
 psycopg2-binary = ""
-passerine-client = "0.0.4"
+passerine-client = "0.0.5"
 
 [tool.poetry.dev-dependencies]
 # Scraper utilities

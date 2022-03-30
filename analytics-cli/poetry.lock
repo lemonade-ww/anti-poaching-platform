@@ -141,7 +141,7 @@ et-xmlfile = "*"
 
 [[package]]
 name = "passerine-client"
-version = "0.0.4"
+version = "0.0.5"
 description = "The API client for the antipoaching platform"
 category = "main"
 optional = false
@@ -333,7 +333,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "3713607595aa0cf79ceede342b727ed6cc11a9a9f6551c95e13e97563bd9761d"
+content-hash = "0de1fc03fb5843a177f90459c9949793b53b30cc87fd60f2ef3cace95b0f8247"
 
 [metadata.files]
 beautifulsoup4 = [
@@ -427,8 +427,8 @@ openpyxl = [
     {file = "openpyxl-3.0.9.tar.gz", hash = "sha256:40f568b9829bf9e446acfffce30250ac1fa39035124d55fc024025c41481c90f"},
 ]
 passerine-client = [
-    {file = "passerine_client-0.0.4-py3-none-any.whl", hash = "sha256:009c742a0741fd15f36f8f41a537fc0b334bed53ca5ec08e674c9b316f547e36"},
-    {file = "passerine_client-0.0.4.tar.gz", hash = "sha256:8861608263ecde8c641c94f1efaa20d2f45a99f0aed83c6327a6366d139d461c"},
+    {file = "passerine_client-0.0.5-py3-none-any.whl", hash = "sha256:58a52d5a8b77b45bf7a7a1406a8e2624a138fc8dfeba894f84b3a697eeb3c3ae"},
+    {file = "passerine_client-0.0.5.tar.gz", hash = "sha256:dce93c14af5e7078967cf971be1e79de5e7a0b95082deefeb71a1b30f4ccdf48"},
 ]
 pathspec = [
     {file = "pathspec-0.9.0-py2.py3-none-any.whl", hash = "sha256:7d15c4ddb0b5c802d161efc417ec1a2558ea2653c2e8ad9c19098201dc1c993a"},

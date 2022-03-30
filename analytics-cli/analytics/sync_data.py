@@ -78,6 +78,7 @@ def sync_poaching_data(poaching_data: list[PoachingData]):
         print(judgment_result)
 
         # TODO: Use a bulk insertion API endpoint
+        defendant_results: list[Defendant] = []
         for defendant in defendant_data:
             defendant_result: Defendant = (
                 instance.post_defendant_analytics_judgment_defendant_judgment_id_post(
@@ -85,9 +86,17 @@ def sync_poaching_data(poaching_data: list[PoachingData]):
                 )
             )
             print(defendant_result)
+            defendant_results.append(defendant_result)
+
+        name_to_id_map = {
+            defendant_result.name: defendant_result.id
+            for defendant_result in defendant_results
+        }
 
         for (name, sources) in source_data:
             for source in sources:
+                if name in name_to_id_map:
+                    source.set_attribute("defendant_id", name_to_id_map[name])
                 source_result: Source = (
                     instance.post_source_analytics_judgment_source_judgment_id_post(
                         judgment_result.id, source, _check_return_type=False
