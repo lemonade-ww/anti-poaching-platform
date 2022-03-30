@@ -10,6 +10,7 @@ LINT_COMPOSE_ARGS := -f docker-compose.lint.yml \
 
 # The services that will be built and pushed all the time
 SERVICES := api
+PUSH_SERVICES := api analytics-cli
 TEST_SERVICES := api
 LINT_SERVICES := api-lint analytics-lint
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
@@ -100,8 +101,8 @@ upload-client: client/dist/*$(CLIENT_VERSION)*
 .PHONY: push
 push:
 	@echo pushing $(REVISION)
-	docker compose $(DEV_COMPOSE_ARGS) push $(SERVICES)
-	docker compose $(PROD_COMPOSE_ARGS) push $(SERVICES)
+	docker compose $(DEV_COMPOSE_ARGS) push $(PUSH_SERVICES)
+	docker compose $(PROD_COMPOSE_ARGS) push $(PUSH_SERVICES)
 
 $(LATEST_IMAGES):
 	@echo $@ | docker tag $$(sed "s/latest/$(REVISION)/") $@
