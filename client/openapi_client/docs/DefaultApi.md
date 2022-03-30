@@ -275,6 +275,7 @@ with openapi_client.ApiClient() as api_client:
     # Create an instance of the API class
     api_instance = default_api.DefaultApi(api_client)
     judgment_id = 1 # int |  (optional)
+    defendant_id = 1 # int |  (optional)
     category = [
         SourceCategory("收购"),
     ] # [SourceCategory] |  (optional)
@@ -301,7 +302,7 @@ with openapi_client.ApiClient() as api_client:
     # and optional values
     try:
         # Get Sources
-        api_response = api_instance.get_sources_analytics_judgment_source_get(judgment_id=judgment_id, category=category, occasion=occasion, seller=seller, buyer=buyer, method=method, destination=destination, usage=usage)
+        api_response = api_instance.get_sources_analytics_judgment_source_get(judgment_id=judgment_id, defendant_id=defendant_id, category=category, occasion=occasion, seller=seller, buyer=buyer, method=method, destination=destination, usage=usage)
         pprint(api_response)
     except openapi_client.ApiException as e:
         print("Exception when calling DefaultApi->get_sources_analytics_judgment_source_get: %s\n" % e)
@@ -313,6 +314,7 @@ with openapi_client.ApiClient() as api_client:
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **judgment_id** | **int**|  | [optional]
+ **defendant_id** | **int**|  | [optional]
  **category** | [**[SourceCategory]**](SourceCategory.md)|  | [optional]
  **occasion** | **[str]**|  | [optional]
  **seller** | **[str]**|  | [optional]
@@ -623,6 +625,7 @@ with openapi_client.ApiClient() as api_client:
     judgment_id = 1 # int | 
     source_post = SourcePost(
         category=SourceCategory("收购"),
+        defendant_id=1,
         occasion="occasion_example",
         seller="seller_example",
         buyer="buyer_example",
@@ -797,6 +800,7 @@ with openapi_client.ApiClient() as api_client:
     conservation_status = [
         ConservationStatus("EX"),
     ] # [ConservationStatus] |  (optional)
+    defendant_id = 1 # int |  (optional)
     category = [
         SourceCategory("收购"),
     ] # [SourceCategory] |  (optional)
@@ -823,7 +827,7 @@ with openapi_client.ApiClient() as api_client:
     # and optional values
     try:
         # Search Judgments
-        api_response = api_instance.search_judgments_analytics_judgment_get(judgment_id=judgment_id, title=title, location=location, date_before=date_before, date_after=date_after, name=name, gender=gender, birth_before=birth_before, birth_after=birth_after, education_level=education_level, species=species, genus=genus, family=family, order=order, _class=_class, protection_class=protection_class, conservation_status=conservation_status, category=category, occasion=occasion, seller=seller, buyer=buyer, method=method, destination=destination, usage=usage)
+        api_response = api_instance.search_judgments_analytics_judgment_get(judgment_id=judgment_id, title=title, location=location, date_before=date_before, date_after=date_after, name=name, gender=gender, birth_before=birth_before, birth_after=birth_after, education_level=education_level, species=species, genus=genus, family=family, order=order, _class=_class, protection_class=protection_class, conservation_status=conservation_status, defendant_id=defendant_id, category=category, occasion=occasion, seller=seller, buyer=buyer, method=method, destination=destination, usage=usage)
         pprint(api_response)
     except openapi_client.ApiException as e:
         print("Exception when calling DefaultApi->search_judgments_analytics_judgment_get: %s\n" % e)
@@ -851,6 +855,7 @@ Name | Type | Description  | Notes
  **_class** | **[str]**|  | [optional]
  **protection_class** | [**[ProtectionClass]**](ProtectionClass.md)|  | [optional]
  **conservation_status** | [**[ConservationStatus]**](ConservationStatus.md)|  | [optional]
+ **defendant_id** | **int**|  | [optional]
  **category** | [**[SourceCategory]**](SourceCategory.md)|  | [optional]
  **occasion** | **[str]**|  | [optional]
  **seller** | **[str]**|  | [optional]

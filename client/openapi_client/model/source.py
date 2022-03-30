@@ -89,6 +89,7 @@ class Source(ModelNormal):
         return {
             'category': (SourceCategory,),  # noqa: E501
             'judgment_id': (int,),  # noqa: E501
+            'defendant_id': (int,),  # noqa: E501
             'occasion': (str,),  # noqa: E501
             'seller': (str,),  # noqa: E501
             'buyer': (str,),  # noqa: E501
@@ -105,6 +106,7 @@ class Source(ModelNormal):
     attribute_map = {
         'category': 'category',  # noqa: E501
         'judgment_id': 'judgmentId',  # noqa: E501
+        'defendant_id': 'defendantId',  # noqa: E501
         'occasion': 'occasion',  # noqa: E501
         'seller': 'seller',  # noqa: E501
         'buyer': 'buyer',  # noqa: E501
@@ -158,6 +160,7 @@ class Source(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            defendant_id (int): [optional]  # noqa: E501
             occasion (str): [optional]  # noqa: E501
             seller (str): [optional]  # noqa: E501
             buyer (str): [optional]  # noqa: E501
@@ -255,6 +258,7 @@ class Source(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            defendant_id (int): [optional]  # noqa: E501
             occasion (str): [optional]  # noqa: E501
             seller (str): [optional]  # noqa: E501
             buyer (str): [optional]  # noqa: E501

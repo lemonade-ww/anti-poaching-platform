@@ -88,6 +88,7 @@ class SourcePost(ModelNormal):
         lazy_import()
         return {
             'category': (SourceCategory,),  # noqa: E501
+            'defendant_id': (int,),  # noqa: E501
             'occasion': (str,),  # noqa: E501
             'seller': (str,),  # noqa: E501
             'buyer': (str,),  # noqa: E501
@@ -103,6 +104,7 @@ class SourcePost(ModelNormal):
 
     attribute_map = {
         'category': 'category',  # noqa: E501
+        'defendant_id': 'defendantId',  # noqa: E501
         'occasion': 'occasion',  # noqa: E501
         'seller': 'seller',  # noqa: E501
         'buyer': 'buyer',  # noqa: E501
@@ -155,6 +157,7 @@ class SourcePost(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            defendant_id (int): [optional]  # noqa: E501
             occasion (str): [optional]  # noqa: E501
             seller (str): [optional]  # noqa: E501
             buyer (str): [optional]  # noqa: E501
@@ -250,6 +253,7 @@ class SourcePost(ModelNormal):
                                 Animal class but this time we won't travel
                                 through its discriminator because we passed in
                                 _visited_composed_classes = (Animal,)
+            defendant_id (int): [optional]  # noqa: E501
             occasion (str): [optional]  # noqa: E501
             seller (str): [optional]  # noqa: E501
             buyer (str): [optional]  # noqa: E501

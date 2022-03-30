@@ -81,6 +81,7 @@ class Defendant(ModelNormal):
                 and the value is attribute type.
         """
         return {
+            'id': (int,),  # noqa: E501
             'name': (str,),  # noqa: E501
             'gender': (str,),  # noqa: E501
             'birth': (date,),  # noqa: E501
@@ -93,6 +94,7 @@ class Defendant(ModelNormal):
 
 
     attribute_map = {
+        'id': 'id',  # noqa: E501
         'name': 'name',  # noqa: E501
         'gender': 'gender',  # noqa: E501
         'birth': 'birth',  # noqa: E501
@@ -106,10 +108,11 @@ class Defendant(ModelNormal):
 
     @classmethod
     @convert_js_args_to_python_args
-    def _from_openapi_data(cls, name, *args, **kwargs):  # noqa: E501
+    def _from_openapi_data(cls, id, name, *args, **kwargs):  # noqa: E501
         """Defendant - a model defined in OpenAPI
 
         Args:
+            id (int):
             name (str):
 
         Keyword Args:
@@ -177,6 +180,7 @@ class Defendant(ModelNormal):
         self._configuration = _configuration
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
+        self.id = id
         self.name = name
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \
@@ -198,10 +202,11 @@ class Defendant(ModelNormal):
     ])
 
     @convert_js_args_to_python_args
-    def __init__(self, name, *args, **kwargs):  # noqa: E501
+    def __init__(self, id, name, *args, **kwargs):  # noqa: E501
         """Defendant - a model defined in OpenAPI
 
         Args:
+            id (int):
             name (str):
 
         Keyword Args:
@@ -267,6 +272,7 @@ class Defendant(ModelNormal):
         self._configuration = _configuration
         self._visited_composed_classes = _visited_composed_classes + (self.__class__,)
 
+        self.id = id
         self.name = name
         for var_name, var_value in kwargs.items():
             if var_name not in self.attribute_map and \

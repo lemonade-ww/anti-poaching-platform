@@ -232,6 +232,7 @@ class DefaultApi(object):
             params_map={
                 'all': [
                     'judgment_id',
+                    'defendant_id',
                     'category',
                     'occasion',
                     'seller',
@@ -256,6 +257,8 @@ class DefaultApi(object):
                 'openapi_types': {
                     'judgment_id':
                         (int,),
+                    'defendant_id':
+                        (int,),
                     'category':
                         ([SourceCategory],),
                     'occasion':
@@ -273,6 +276,7 @@ class DefaultApi(object):
                 },
                 'attribute_map': {
                     'judgment_id': 'judgmentId',
+                    'defendant_id': 'defendantId',
                     'category': 'category',
                     'occasion': 'occasion',
                     'seller': 'seller',
@@ -283,6 +287,7 @@ class DefaultApi(object):
                 },
                 'location_map': {
                     'judgment_id': 'query',
+                    'defendant_id': 'query',
                     'category': 'query',
                     'occasion': 'query',
                     'seller': 'query',
@@ -625,6 +630,7 @@ class DefaultApi(object):
                     '_class',
                     'protection_class',
                     'conservation_status',
+                    'defendant_id',
                     'category',
                     'occasion',
                     'seller',
@@ -681,6 +687,8 @@ class DefaultApi(object):
                         ([ProtectionClass],),
                     'conservation_status':
                         ([ConservationStatus],),
+                    'defendant_id':
+                        (int,),
                     'category':
                         ([SourceCategory],),
                     'occasion':
@@ -714,6 +722,7 @@ class DefaultApi(object):
                     '_class': 'class',
                     'protection_class': 'protectionClass',
                     'conservation_status': 'conservationStatus',
+                    'defendant_id': 'defendantId',
                     'category': 'category',
                     'occasion': 'occasion',
                     'seller': 'seller',
@@ -740,6 +749,7 @@ class DefaultApi(object):
                     '_class': 'query',
                     'protection_class': 'query',
                     'conservation_status': 'query',
+                    'defendant_id': 'query',
                     'category': 'query',
                     'occasion': 'query',
                     'seller': 'query',
@@ -1040,6 +1050,7 @@ class DefaultApi(object):
 
         Keyword Args:
             judgment_id (int): [optional]
+            defendant_id (int): [optional]
             category ([SourceCategory]): [optional]
             occasion ([str]): [optional]
             seller ([str]): [optional]
@@ -1557,6 +1568,7 @@ class DefaultApi(object):
             _class ([str]): [optional]
             protection_class ([ProtectionClass]): [optional]
             conservation_status ([ConservationStatus]): [optional]
+            defendant_id (int): [optional]
             category ([SourceCategory]): [optional]
             occasion ([str]): [optional]
             seller ([str]): [optional]

@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **category** | [**SourceCategory**](SourceCategory.md) |  | 
+**defendant_id** | **int** |  | [optional] 
 **occasion** | **str** |  | [optional] 
 **seller** | **str** |  | [optional] 
 **buyer** | **str** |  | [optional] 

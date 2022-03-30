@@ -5,6 +5,7 @@ Basic information of a defendant
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**id** | **int** |  | 
 **name** | **str** |  | 
 **gender** | **str** |  | [optional] 
 **birth** | **date** |  | [optional] 

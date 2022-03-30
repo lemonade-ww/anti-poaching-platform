@@ -17,7 +17,7 @@ LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 OPENAPI := http://api:8000/openapi.json
 
 IMAGE_REVISION ?= beba177
-CLIENT_VERSION ?= 0.0.4
+CLIENT_VERSION ?= 0.0.5
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
 SECRET_NAMES := pg_password pg_user
