@@ -93,6 +93,7 @@ class Defendant(APIModel):
     Basic information of a defendant
     """
 
+    id: int
     name: str
     gender: str | None
     birth: datetime.date | None

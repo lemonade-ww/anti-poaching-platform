@@ -3,11 +3,11 @@ import datetime
 from fastapi.testclient import TestClient
 from sqlalchemy.orm.session import Session
 
-from api.crud.defendant import insert_defendant, query_defendant
+from api.crud.defendant import insert_defendant
 from api.crud.judgment import query_judgment
 from api.db.models import Judgment
 from api.lib.errors import check_not_none
-from api.lib.schemas import DefendantFilter, DefendantPost, JudgmentFilter
+from api.lib.schemas import JudgmentFilter
 
 
 def test_get_defendant(
@@ -66,7 +66,9 @@ def test_post_defendant(
     result = client.post(
         f"/analytics/judgment/defendant/{judgment_id}", json=simple_defendant
     )
-    assert result.json() == simple_defendant
+    result_json = result.json()
+    del result_json["id"]
+    assert result_json == simple_defendant
     assert result.status_code == 201
 
 
