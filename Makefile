@@ -9,14 +9,14 @@ LINT_COMPOSE_ARGS := -f docker-compose.lint.yml \
 		-p anti-poaching-lint
 
 # The services that will be built and pushed all the time
-SERVICES := api nlp
+SERVICES := api
 TEST_SERVICES := api
 LINT_SERVICES := api-lint analytics-lint
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
 LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 OPENAPI := http://api:8000/openapi.json
 
-IMAGE_REVISION ?= beba177
+IMAGE_REVISION ?= cabc29d
 CLIENT_VERSION ?= 0.0.5
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
@@ -36,7 +36,7 @@ help:
 	@echo "make run-prod - Run the prod build"
 	@echo 'make MESSAGE="migration revision message" generate-migration - Auto generate a new alembic migration'
 
-build: build-prod build-dev
+build: build-prod build-dev build-lint build-client build-analytics-cli
 
 all-secrets: $(PROD_SECRETS) $(DEV_SECRETS)
 
@@ -155,6 +155,10 @@ run-analytics-cli:
 	docker compose $(DEV_COMPOSE_ARGS) run --rm analytics-cli analytics.analyze \
 		analytics/data/openlaw.xlsx --out analytics/data/output.json \
 		--host nlp
+
+.PHONY: run-nlp
+run-nlp:
+	docker compose $(DEV_COMPOSE_ARGS) up -d nlp
 
 .PHONY: clean-containers
 clean-containers:
