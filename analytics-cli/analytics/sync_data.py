@@ -15,7 +15,10 @@ from openapi_client.model.species_bulk_patch_result import SpeciesBulkPatchResul
 from analytics.lib.data_types import PoachingData, SpeciesData
 from analytics.lib.functional import apply_non_none
 
-client = openapi_client.ApiClient()
+# TODO: Make host configurable
+# We assume that we are running in a container here
+configuration = openapi_client.Configuration(host="http://api:8000")
+client = openapi_client.ApiClient(configuration=configuration)
 instance = default_api.DefaultApi(client)
 
 
