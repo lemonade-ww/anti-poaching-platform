@@ -151,11 +151,16 @@ run-prod: $(PROD_SECRETS)
 run-lint:
 	docker compose $(LINT_COMPOSE_ARGS) up $(LINT_SERVICES)
 
-.PHONY: run-analytics-cli
-run-analytics-cli:
+.PHONY: run-analytics-analyze
+run-analytics-analyze:
 	docker compose $(DEV_COMPOSE_ARGS) run --rm analytics-cli analytics.analyze \
-		analytics/data/openlaw.xlsx --out analytics/data/output.json \
+		$(TARGET) --out analytics/data/output.json \
 		--host nlp
+
+.PHONY: run-analytics-sync
+run-analytics-sync:
+	docker compose $(DEV_COMPOSE_ARGS) run --rm analytics-cli analytics.sync \
+		analyzed analytics/data/output.json
 
 .PHONY: run-nlp
 run-nlp:
