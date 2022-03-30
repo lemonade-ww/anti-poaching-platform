@@ -118,6 +118,7 @@ class DefendantPost(APIModel):
 # Schema definitions for /analytics/source
 class SourcePost(APIModel):
     category: SourceCategory
+    defendant_id: int | None
     occasion: str | None
     seller: str | None
     buyer: str | None
@@ -132,6 +133,7 @@ class Source(SourcePost):
 
 class SourceFilter(APIModel):
     judgment_id: int | None
+    defendant_id: int | None
     category: list[SourceCategory] | None
     occasion: list[str] | None
     seller: list[str] | None

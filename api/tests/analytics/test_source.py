@@ -55,3 +55,40 @@ def test_get_source(client: TestClient, db_session: Session, simple_source: dict
     get_result = client.get("/analytics/judgment/source", params=[("buyer", "asd")])
     assert get_result.status_code == 200
     assert len(get_result.json()) == 0
+
+
+def test_post_source_with_defendant(
+    client: TestClient,
+    simple_judgment: dict,
+    simple_source: dict,
+    simple_defendant: dict,
+):
+    judgment_result = client.post("/analytics/judgment", json=simple_judgment)
+    assert judgment_result.status_code == 201
+    judgment_id = judgment_result.json()["id"]
+
+    defendant_result = client.post(
+        f"/analytics/judgment/defendant/{judgment_id}",
+        json=simple_defendant,
+    )
+    assert defendant_result.status_code == 201
+    assert defendant_result.json().get("id") is not None
+    defedant_id = defendant_result.json()["id"]
+
+    simple_source["defendantId"] = defendant_result.json()["id"]
+    source_result = client.post(
+        f"analytics/judgment/source/{judgment_id}", json=simple_source
+    )
+    assert source_result.status_code == 201
+    assert source_result.json()["defendantId"] == defendant_result.json()["id"]
+
+    source_get_result = client.get(
+        f"analytics/judgment/source",
+        params=[("judgmentId", judgment_id), ("defendantId", defedant_id)],
+    )
+    source_data = source_get_result.json()[0]
+    # category is a enum. We convert it to its value before comparison
+    simple_source["category"] = simple_source["category"].value
+    # The fixture does not have judgmentId
+    del source_data["judgmentId"]
+    assert source_data == simple_source

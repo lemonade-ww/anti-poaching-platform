@@ -86,6 +86,7 @@ class Defendant(Base, IdMixin):
     judgment_id = Column(Integer, ForeignKey("judgment.id"), nullable=False)
 
     judgment: "Judgment" = relationship("Judgment", back_populates="defendants")
+    sources: "Source" = relationship("Source", back_populates="defendant")
 
 
 class Source(Base, IdMixin):
@@ -96,6 +97,10 @@ class Source(Base, IdMixin):
     method = Column(String(255))
     destination = Column(String(255))
     usage = Column(String(255))
+
+    # The source may or may not be related to a defendant
+    defendant_id = Column(Integer, ForeignKey(Defendant.id))
+    defendant: Defendant | None = relationship(Defendant, back_populates="sources")
 
     judgment_id = Column(Integer, ForeignKey("judgment.id"), nullable=False)
     judgment: "Judgment" = relationship("Judgment", back_populates="sources")

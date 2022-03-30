@@ -1,6 +1,6 @@
 from sqlalchemy.orm.session import Session
 
-from api.db.models import Judgment, Source
+from api.db.models import Defendant, Judgment, Source
 from api.db.utils import QueryFilter, apply_filters, optional_filters
 from api.lib.errors import check_not_none
 from api.lib.schemas import SourceFilter, SourcePost
@@ -17,6 +17,7 @@ def from_source_filter(source_filter: SourceFilter) -> list[QueryFilter]:
     """
     return optional_filters(
         (Source.judgment_id, "=", source_filter.judgment_id),
+        (Source.defendant_id, "=", source_filter.defendant_id),
         (Source.category, "in", source_filter.category),
         (Source.seller, "in", source_filter.seller),
         (Source.buyer, "in", source_filter.buyer),
@@ -42,6 +43,14 @@ def insert_source(db: Session, judgment_id: int, data: SourcePost) -> Source:
         f"judgment {judgment_id}",
     )
 
+    defendant: Defendant | None = None
+
+    if data.defendant_id is not None:
+        defendant = check_not_none(
+            db.query(Defendant).filter(Defendant.id == data.defendant_id).first(),
+            f"defendant {data.defendant_id}",
+        )
+
     source = Source(
         category=data.category,
         seller=data.seller,
@@ -51,5 +60,6 @@ def insert_source(db: Session, judgment_id: int, data: SourcePost) -> Source:
         method=data.method,
         usage=data.usage,
         judgment=judgment,
+        defendant=defendant,
     )
     return source
