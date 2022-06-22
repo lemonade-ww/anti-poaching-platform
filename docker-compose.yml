@@ -45,8 +45,6 @@ services:
         REQUIREMENTS_TXT: requirements/dev.txt
     ports:
       - 8000:8000
-    depends_on:
-      - db
     environment:
       PG_HOST: db
       PG_DBNAME: antipoaching

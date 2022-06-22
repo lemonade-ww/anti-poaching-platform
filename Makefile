@@ -8,6 +8,9 @@ DEV_COMPOSE_ARGS := -f docker-compose.yml \
 LINT_COMPOSE_ARGS := -f docker-compose.lint.yml \
 		-p anti-poaching-lint
 
+TEST_COMPOSE_ARGS := -f docker-compose.yml \
+		-f docker-compose.test.yml
+
 # The services that will be built and pushed all the time
 SERVICES := api
 PUSH_SERVICES := api analytics-cli
@@ -136,12 +139,12 @@ inspect-dev-db: $(DEV_SECRETS)
 .PHONY: run-tests
 run-tests: $(DEV_SECRETS)
 	@echo Preparing tests... Please make sure that the dev services are running
-	docker compose $(DEV_COMPOSE_ARGS) exec $(TEST_SERVICES) pytest -vvv
+	docker compose $(TEST_COMPOSE_ARGS) run $(TEST_SERVICES) pytest -vvv
 
 .PHONY: run-tests-no-tty
 run-tests-no-tty: $(DEV_SECRETS)
 	@echo Preparing tests... Please make sure that the dev services are running
-	docker compose $(DEV_COMPOSE_ARGS) exec -T $(TEST_SERVICES) pytest -vvv
+	docker compose $(TEST_COMPOSE_ARGS) run -T $(TEST_SERVICES) pytest -vvv
 
 .PHONY: run-prod
 run-prod: $(PROD_SECRETS)

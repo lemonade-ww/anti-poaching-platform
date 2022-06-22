@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  api:
+    depends_on:
+      - db-test
+    volumes:
+      - ./api:/opt/app
