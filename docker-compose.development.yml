@@ -7,6 +7,13 @@ services:
     volumes:
       - ./api:/opt/app
 
+  web:
+    build:
+      context: web
+      target: dev
+    volumes:
+      - ./web:/opt/app
+
   client:
     build:
       context: .

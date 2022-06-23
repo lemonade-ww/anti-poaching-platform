@@ -26,6 +26,11 @@ services:
       - pg_user
       - pg_password
 
+  web:
+    image: pig208/anti-poaching-web-prod:${REVISION:-latest}
+    build:
+      context: web
+
 volumes:
     pgdataprod:
 

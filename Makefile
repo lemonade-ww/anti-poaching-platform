@@ -12,7 +12,7 @@ TEST_COMPOSE_ARGS := -f docker-compose.yml \
 		-f docker-compose.test.yml
 
 # The services that will be built and pushed all the time
-SERVICES := api
+SERVICES := api web
 PUSH_SERVICES := api analytics-cli
 TEST_SERVICES := api
 LINT_SERVICES := api-lint analytics-lint

@@ -55,6 +55,11 @@ services:
       - pg_password
       - pg_user
 
+  web:
+    image: pig208/anti-poaching-web-dev:${REVISION:-latest}
+    ports:
+      - 3000:3000
+
 volumes:
   pgdata:
 
