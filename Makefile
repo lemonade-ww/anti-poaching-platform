@@ -13,14 +13,14 @@ TEST_COMPOSE_ARGS := -f docker-compose.yml \
 
 # The services that will be built and pushed all the time
 SERVICES := api web
-PUSH_SERVICES := api analytics-cli
+PUSH_SERVICES := api analytics-cli web
 TEST_SERVICES := api
 LINT_SERVICES := api-lint analytics-lint
 IMAGES := $(addprefix pig208/anti-poaching-,$(addsuffix -dev,$(SERVICES)) $(addsuffix -prod,$(SERVICES)))
 LATEST_IMAGES := $(addsuffix \:latest,$(IMAGES))
 OPENAPI := http://api:8000/openapi.json
 
-IMAGE_REVISION ?= cabc29d
+IMAGE_REVISION ?= 046a321
 CLIENT_VERSION ?= 0.0.5
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 SECRETS_DIR := secrets
